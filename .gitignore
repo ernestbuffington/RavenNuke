@@ -1,3 +1,7 @@
+html/vendor
+html/rector.php
+html/composer.json
+html/composer.lock
 html/INSTALLATION
 html/INSTALLATION_
 html/cache
@@ -6,6 +10,7 @@ html/config.php
 html/rnconfig.php
 
 # OS or Editor folders
+_notes
 ._*
 .cache
 .DS_Store
@@ -19,3 +24,4 @@ html/rnconfig.php
 *.sublime-workspace
 nbproject
 Thumbs.db
+desktop.ini
