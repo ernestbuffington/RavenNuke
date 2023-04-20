@@ -56,9 +56,9 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 //                        within rnconfig.php)
 //#####################################################################
 $dbhost = 'localhost';
-$dbuname = 'rnuser';
-$dbpass = 'rnuser';
-$dbname = 'ravennuke';
+$dbuname = 'raven_db';
+$dbpass = '';
+$dbname = 'raven_db';
 $prefix = 'nuke';
 $user_prefix = 'nuke';
 $dbtype = 'MySQLI';
