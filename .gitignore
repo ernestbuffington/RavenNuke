@@ -1,5 +1,7 @@
 html/vendor
 html/rector.php
+html/config.php
+html/_notes
 html/composer.json
 html/composer.lock
 html/INSTALLATION
