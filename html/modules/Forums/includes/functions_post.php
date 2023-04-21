@@ -18,6 +18,11 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGHost) 04/21/2023 7:00 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Remove STFU Operators
  ***************************************************************************/
 
 if (!defined('IN_PHPBB'))
@@ -161,11 +166,11 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
                         }
                         $option_text = $temp_option_text;
 
-                        if (count($poll_options) < 2)
+                        if ((is_countable($poll_options) ? count($poll_options) : 0) < 2)
                         {
                                 $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_few_poll_options'] : $lang['To_few_poll_options'];
                         }
-                        else if (count($poll_options) > $board_config['max_poll_options'])
+                        else if ((is_countable($poll_options) ? count($poll_options) : 0) > $board_config['max_poll_options'])
                         {
                                 $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_many_poll_options'] : $lang['To_many_poll_options'];
                         }
@@ -219,7 +224,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
         if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
         {
-                $topic_vote = (!empty($poll_title) && count($poll_options) >= 2) ? 1 : 0;
+                $topic_vote = (!empty($poll_title) && (is_countable($poll_options) ? count($poll_options) : 0) >= 2) ? 1 : 0;
 
 		$sql  = ($mode != "editpost") ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type, topic_vote) VALUES ('$post_subject', " . $userdata['user_id'] . ", $current_time, $forum_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_vote)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', topic_type = $topic_type " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . " WHERE topic_id = $topic_id";
                 if (!$db->sql_query($sql))
@@ -257,7 +262,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
         //
         // Add poll
         //
-        if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2)
+        if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && (is_countable($poll_options) ? count($poll_options) : 0) >= 2)
         {
 		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '$poll_title', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '$poll_title', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
                 if (!$db->sql_query($sql))
@@ -293,24 +298,23 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
                         $poll_id = $db->sql_nextid();
                 }
 
-                @reset($poll_options);
+                reset($poll_options);
 
                 $poll_option_id = 1;
                 foreach($poll_options as $option_id => $option_text)
-                while (list($option_id, $option_text) = each($poll_options))
-                {
-                        if (!empty($option_text))
-                        {
-                                $option_text = str_replace("\'", "''", htmlspecialchars($option_text, ENT_COMPAT));
-                                $poll_result = ($mode == "editpost" && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
+                foreach ($poll_options as $option_id => $option_text) {
+                    if (!empty($option_text))
+                    {
+                            $option_text = str_replace("\'", "''", htmlspecialchars($option_text, ENT_COMPAT));
+                            $poll_result = ($mode == "editpost" && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
 
 				$sql = ($mode != "editpost" || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '$option_text', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '$option_text', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
-                                if (!$db->sql_query($sql))
-                                {
-                                        message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
-                                }
-                                $poll_option_id++;
-                        }
+                            if (!$db->sql_query($sql))
+                            {
+                                    message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
+                            }
+                            $poll_option_id++;
+                    }
                 }
 
                 if ($delete_option_sql != '')
@@ -456,7 +460,8 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 //
 function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
 {
-	global $board_config, $lang, $db, $phpbb_root_path, $phpEx;
+	$forum_update_sql = null;
+ global $board_config, $lang, $db, $phpbb_root_path, $phpEx;
 	global $userdata, $user_ip;
 
         if ($mode != 'poll_delete')
@@ -590,7 +595,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                         if ($row = $db->sql_fetchrow($result))
                         {
                                 // Sixty second limit
-                                @set_time_limit(60);
+                                set_time_limit(60);
 
                                 do
                                 {
@@ -608,12 +613,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                                 //
                                 if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
                                 {
-                                        $ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
+                                        $ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
                                         // We are running on windows, force delivery to use our smtp functions
                                         // since php's are broken by default
                                         $board_config['smtp_delivery'] = 1;
-                                        $board_config['smtp_host'] = @$ini_val('SMTP');
+                                        $board_config['smtp_host'] = $ini_val('SMTP');
                                 }
 
                                 if (sizeof($bcc_list_ary))
@@ -636,7 +641,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
                                         $topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
 
-                                        @reset($bcc_list_ary);
+                                        reset($bcc_list_ary);
                                         foreach($bcc_list_ary as $user_lang => $bcc_list)
                                         {
                                                 $emailer->use_template('topic_notify', $user_lang);
@@ -719,7 +724,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function generate_smilies($mode, $page_id)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path;
+	$nukeuser = null;
+ global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path;
 	global $user_ip, $session_length, $starttime;
 	global $userdata;
 
