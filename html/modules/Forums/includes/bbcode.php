@@ -17,6 +17,12 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 6:35 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * IfToSpaceshipRector (https://wiki.php.net/rfc/combined-comparison-operator https://3v4l.org/LPbA0)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -459,9 +465,7 @@ function bbencode_first_pass($text, $uid)
 	// [img]image_url_here[/img] code..
 	$text = preg_replace_callback(
 		"#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#si",
-		function ($m) use ($uid) {
-			return "[img:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/img:$uid]";
-		},
+		fn($m) => "[img:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/img:$uid]",
 		$text
 	);
 
@@ -477,17 +481,13 @@ function bbencode_first_pass($text, $uid)
 	// Floating Images
 	$text = preg_replace_callback(
 		"#\[imgleft\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/imgleft\]#si",
-		function ($m) use ($uid) {
-			return "[imgleft:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/imgleft:$uid]";
-		},
+		fn($m) => "[imgleft:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/imgleft:$uid]",
 		$text
 	);
 
 	$text = preg_replace_callback(
 		"#\[imgright\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/imgright\]#si",
-		function ($m) use ($uid) {
-			return "[imgright:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/imgright:$uid]";
-		},
+		fn($m) => "[imgright:$uid]$m[1]" . str_replace(' ', '%20', $m[3]) . "[/imgright:$uid]",
 		$text
 	);
 
@@ -1050,20 +1050,21 @@ function bbcode_array_push(&$stack, $value)
  */
 function bbcode_array_pop(&$stack)
 {
-   $arrSize = count($stack);
+   $tmpArr = [];
+   $return_val = null;
+   $arrSize = is_countable($stack) ? count($stack) : 0;
    $x = 1;
 
-   while(list($key, $val) = each($stack))
-   {
-      if($x < count($stack))
-      {
-	 		$tmpArr[] = $val;
-      }
-      else
-      {
-	 		$return_val = $val;
-      }
-      $x++;
+   foreach ($stack as $key => $val) {
+       if($x < (is_countable($stack) ? count($stack) : 0))
+       {
+ 	 		$tmpArr[] = $val;
+       }
+       else
+       {
+ 	 		$return_val = $val;
+       }
+       $x++;
    }
    $stack = $tmpArr;
 
@@ -1090,12 +1091,12 @@ function smilies_pass($message)
 		}
 		$smilies = $db->sql_fetchrowset($result);
 
-		if (count($smilies))
+		if (is_countable($smilies) ? count($smilies) : 0)
 		{
 			usort($smilies, 'smiley_sort');
 		}
 
-		for ($i = 0; $i < count($smilies); $i++)
+		for ($i = 0; $i < (is_countable($smilies) ? count($smilies) : 0); $i++)
 		{
 			$orig[] = "/(?<=.\W|\W.|^\W)" . preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
 			$repl[] = '<img src="'. $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" border="0" />';
@@ -1113,12 +1114,7 @@ function smilies_pass($message)
 
 function smiley_sort($a, $b)
 {
-	if ( strlen($a['code']) == strlen($b['code']) )
-	{
-		return 0;
-	}
-
-	return ( strlen($a['code']) > strlen($b['code']) ) ? -1 : 1;
+    return strlen($b['code']) <=> strlen($a['code']);
 }
 
 ?>
