@@ -17,6 +17,9 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:47 PM
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -24,29 +27,35 @@ if ( !defined('IN_PHPBB') )
 	die("Hacking attempt");
 }
 
-//
-error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
-@ini_set('magic_quotes_runtime', 0); // Disable magic_quotes_runtime
-
-// The following code (unsetting globals)
-// Thanks to Matt Kavanagh and Stefan Esser for providing feedback as well as patch files
-
-// PHP5 with register_long_arrays off?
-if (@phpversion() >= '5.0.0' && (!@ini_get('register_long_arrays') || @ini_get('register_long_arrays') == '0' || strtolower(@ini_get('register_long_arrays')) == 'off'))
+global $board_config;
+// based on http://forum.mamboserver.com/showthread.php?t=26406 article
+$url_denied = array(
+	'/bin', '/usr', '/etc', '/boot', '/dev', '/perl', '/initrd', '/lost+found', '/mnt', '/proc', '/root', '/sbin', '/cgi-bin', '/tmp', '/var',
+	'ps%20', 'wget%20', 'uname%20-a', '/chgrp', 'chgrp%20', '/chown', 'chown%20', '/chmod', 'chmod%20', 'md%20', 'mdir', 'rm%20', 'rmdir%20', 'mv%20', 'tftp%20', 'ftp%20', 'telnet%20', 'ls%20',
+	'gcc%20-o', 'cc%20', 'cpp%20', 'g++%20', 'python%20', 'tclsh8%20', 'nasm%20', 'perl%20', 'traceroute%20', 'nc%20', 'nmap%20', '%20-display%20', 'lsof%20',
+	'.conf', '.htgroup', '.htpasswd', '.htaccess', '.history', '.bash_history',
+	'/rksh', '/bash', '/zsh', '/csh', '/tcsh', '/rsh', '/ksh', '/icat', 'document.domain(',
+	'/....', '..../', 'cat%20', '/*%0a.pl',
+	'/server-status', 'chunked', '/mod_gzip_status',
+	'cmdd=', 'path=http://', 'exec', 'passthru', 'cmd', 'fopen', 'exit', 'fwrite',
+	'<script', '/script>', '<?', '?>', 'javascript://', 'img src=',
+	'phpbb_root_path=', 'sql=', 'delete%20', '%20delete', 'drop%20', '%20drop', 'insert into', 'select%20', '%20select', 'union%20', '%20union', 'union(',
+	'chr%20', 'chr(', 'http_', '_http', 'php_', '_php', '_global', 'global_', 'global[', '_globals', 'globals_', 'globals[', '_server', 'server_', 'server[',
+	'$_request', '$_get', '$request', '$get',
+);
+$_server = isset($_SERVER) && !empty($_SERVER) ? '_SERVER' : 'HTTP_SERVER_VARS';
+$_env = isset($_ENV) && !empty($_ENV) ? '_ENV' : 'HTTP_ENV_VARS';
+if ( ($url_request = !empty(${$_server}['QUERY_STRING']) ? ${$_server}['QUERY_STRING'] : (!empty(${$_env}['QUERY_STRING']) ? ${$_env}['QUERY_STRING'] : getenv('QUERY_STRING'))) )
 {
-	$HTTP_POST_VARS = $_POST;
-	$HTTP_GET_VARS = $_GET;
-	$HTTP_SERVER_VARS = $_SERVER;
-	$HTTP_COOKIE_VARS = $_COOKIE;
-	$HTTP_ENV_VARS = $_ENV;
-	$HTTP_POST_FILES = $_FILES;
-
-	// _SESSION is the only superglobal which is conditionally set
-	if (isset($_SESSION))
+	$url_request = preg_replace('/([\s]+)/', '%20', strtolower($url_request));
+	$url_checked = preg_replace('/[\n\r]/', '', str_replace($url_denied, '', $url_request));
+	if ( $url_request != $url_checked )
 	{
-		$HTTP_SESSION_VARS = $_SESSION;
+		die('Hack attempt');
 	}
 }
+unset($_server);
+unset($_env);
 
 // Protect against GLOBALS tricks
 if (isset($HTTP_POST_VARS['GLOBALS']) || isset($HTTP_POST_FILES['GLOBALS']) || isset($HTTP_GET_VARS['GLOBALS']) || isset($HTTP_COOKIE_VARS['GLOBALS']))
@@ -60,119 +69,40 @@ if (isset($HTTP_SESSION_VARS) && !is_array($HTTP_SESSION_VARS))
 	die("Hacking attempt");
 }
 
-if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
+if (ini_get('register_globals') == '1' || strtolower(ini_get('register_globals')) == 'on')
 {
-	// PHP4+ path
-	$not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path', 'name', 'admin', 'nukeuser', 'user', 'no_page_header', 'cookie', 'db', 'prefix');
+    // PHP4+ path
+    $not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path', 'name', 'admin', 'nukeuser', 'user', 'no_page_header', 'cookie', 'db', 'prefix', 'cancel');
+    //$not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path');
 
-	// Not only will array_merge give a warning if a parameter
-	// is not an array, it will actually fail. So we check if
-	// HTTP_SESSION_VARS has been initialised.
+    // Not only will array_merge give a warning if a parameter
+    // is not an array, it will actually fail. So we check if
+    // HTTP_SESSION_VARS has been initialised.
+    if (!isset($HTTP_SESSION_VARS) || !is_array($HTTP_SESSION_VARS))
+    {
+        $HTTP_SESSION_VARS = array();
+    }
 
-	/*
-	 * montego:0000772 - following code apparently is not enough to stop the issue mentioned above
-	 * in PHP5, so will change the approach and check each and every super global.
-	 */
-	//if (!isset($HTTP_SESSION_VARS) || !is_array($HTTP_SESSION_VARS))
-	//{
-	//	$HTTP_SESSION_VARS = array();
-	//}
-	$rn_asSuperGlobals = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES');
-	foreach($rn_asSuperGlobals as $var)
-	{
-		if (!isset($$var) || !is_array($$var))
-		{
-			$$var = array();
-		}
-	}
-	/*
-	 * montego:0000772 - end of modification
-	 */
+    // Merge all into one extremely huge array; unset
+    // this later
+    $input = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS, $HTTP_SESSION_VARS, $HTTP_ENV_VARS, $HTTP_POST_FILES);
 
-	// Merge all into one extremely huge array; unset
-	// this later
-	$input = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS, $HTTP_SESSION_VARS, $HTTP_ENV_VARS, $HTTP_POST_FILES);
+    unset($input['input']);
+    unset($input['not_unset']);
 
-	unset($input['input']);
-	unset($input['not_unset']);
-
-	while (list($var,) = @each($input))
-	{
-		if (!in_array($var, $not_unset))
-		{
-			unset($$var);
-		}
-	}
-
-	unset($input);
+    foreach (array_keys($input) as $var) {
+      if (!in_array($var, $not_unset))
+     {
+       unset(${$var});
+     }
+    }
+    unset($input);
 }
 
-//
-// addslashes to vars if magic_quotes_gpc is off
-// this is a security precaution to prevent someone
-// trying to break out of a SQL statement.
-//
-if( !@get_magic_quotes_gpc() )
-{
-	if( is_array($HTTP_GET_VARS) )
-	{
-		while( list($k, $v) = each($HTTP_GET_VARS) )
-		{
-			if( is_array($HTTP_GET_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_GET_VARS[$k]) )
-				{
-					$HTTP_GET_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_GET_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_GET_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_GET_VARS);
-	}
-
-	if( is_array($HTTP_POST_VARS) )
-	{
-		while( list($k, $v) = each($HTTP_POST_VARS) )
-		{
-			if( is_array($HTTP_POST_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_POST_VARS[$k]) )
-				{
-					$HTTP_POST_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_POST_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_POST_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_POST_VARS);
-	}
-
-	if( is_array($HTTP_COOKIE_VARS) )
-	{
-		while( list($k, $v) = each($HTTP_COOKIE_VARS) )
-		{
-			if( is_array($HTTP_COOKIE_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]) )
-				{
-					$HTTP_COOKIE_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_COOKIE_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_COOKIE_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_COOKIE_VARS);
-	}
+if ($_POST != $HTTP_POST_VARS) {
+    $HTTP_POST_VARS =& $_POST;
+    $HTTP_GET_VARS =& $_GET;
+    $HTTP_COOKIE_VARS =& $_COOKIE;
 }
 
 //
@@ -188,7 +118,7 @@ $lang = array();
 $nav_links = array();
 $dss_seeded = false;
 $gen_simple_header = FALSE;
-
+$phpEx = 'php';
 include_once($phpbb_root_path . 'config.'.$phpEx);
 
 if( !defined("PHPBB_INSTALLED") )
@@ -211,7 +141,6 @@ if (defined('FORUM_ADMIN')) {
     include_once("modules/Forums/includes/auth.php");
     include_once("modules/Forums/includes/functions.php");
     include_once("db/db.php");
-}
 
 // We do not need this any longer, unset for safety purposes
 unset($dbpasswd);
