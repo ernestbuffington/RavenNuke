@@ -17,6 +17,13 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 6:41 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Remove STFU Operators
  ***************************************************************************/
 
 //
@@ -31,13 +38,13 @@ if (!defined('IN_PHPBB')) {
 
 class emailer
 {
-        var $msg, $subject, $extra_headers;
-        var $addresses, $reply_to, $from;
-        var $use_smtp;
+        public $msg, $subject, $extra_headers;
+        public $addresses, $reply_to, $from;
+        public $use_smtp;
 
-        var $tpl_msg = array();
+        public $tpl_msg = array();
 
-        function emailer($use_smtp)
+        function __construct($use_smtp)
         {
                 $this->reset();
                 $this->use_smtp = $use_smtp;
@@ -107,17 +114,17 @@ class emailer
                 {
                         $tpl_file = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/' . $template_file . '.tpl';
 
-                        if (!@file_exists(@phpbb_realpath($tpl_file)))
+                        if (!file_exists(phpbb_realpath($tpl_file)))
                         {
                                 $tpl_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_file . '.tpl';
 
-                                if (!@file_exists(@phpbb_realpath($tpl_file)))
+                                if (!file_exists(phpbb_realpath($tpl_file)))
                                 {
                                         message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
                                 }
                         }
 
-                        if (!($fd = @fopen($tpl_file, 'r')))
+                        if (!($fd = fopen($tpl_file, 'r')))
                         {
                                 message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
                         }
@@ -148,18 +155,16 @@ class emailer
 
                 // Set vars
                 reset ($this->vars);
-                while (list($key, $val) = each($this->vars))
-                {
-                        $$key = $val;
+                foreach ($this->vars as $key => $val) {
+                    ${$key} = $val;
                 }
 
                 eval("\$this->msg = '$this->msg';");
 
                 // Clear vars
                 reset ($this->vars);
-                while (list($key, $val) = each($this->vars))
-                {
-                        unset($$key);
+                foreach ($this->vars as $key => $val) {
+                    unset(${$key});
                 }
 
                 // We now try and pull a subject from the email body ... if it exists,
@@ -213,7 +218,7 @@ class emailer
                 {
 			$empty_to_header = ($to == '') ? TRUE : FALSE;
 			$to = ($to == '') ? (($board_config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
-                        $result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
+                        $result = mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
 
                         if (!$result && !$board_config['sendmail_fix'] && $empty_to_header)
                         {
@@ -228,7 +233,7 @@ class emailer
                                 }
 
                                 $board_config['sendmail_fix'] = 1;
-                                $result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
+                                $result = mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
                         }
                 }
 
@@ -275,6 +280,8 @@ class emailer
         //
         function attachFile($filename, $mimetype = "application/octet-stream", $szFromAddress, $szFilenameToDisplay)
         {
+                $mime_filename = null;
+                $out = null;
                 global $lang;
                 $mime_boundary = "--==================_846811060==_";
 
@@ -361,6 +368,7 @@ class emailer
         //
         function encode_file($sourcefile)
         {
+                $encoded = null;
                 if (is_readable(phpbb_realpath($sourcefile)))
                 {
                         $fd = fopen($sourcefile, "r");
