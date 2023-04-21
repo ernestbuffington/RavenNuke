@@ -18,6 +18,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 01/21/2023 5:00 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -128,7 +130,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                         {
                                 $ip = gethostbynamel(trim($ip_list_temp[$i]));
 
-                                for($j = 0; $j < count($ip); $j++)
+                                for($j = 0; $j < (is_countable($ip) ? count($ip) : 0); $j++)
                                 {
                                         if ( !empty($ip[$j]) )
                                         {
@@ -175,7 +177,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         for($i = 0; $i < count($user_list); $i++)
         {
                 $in_banlist = false;
-                for($j = 0; $j < count($current_banlist); $j++)
+                for($j = 0; $j < (is_countable($current_banlist) ? count($current_banlist) : 0); $j++)
                 {
                         if ( $user_list[$i] == $current_banlist[$j]['ban_userid'] )
                         {
@@ -199,7 +201,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         for($i = 0; $i < count($ip_list); $i++)
         {
                 $in_banlist = false;
-                for($j = 0; $j < count($current_banlist); $j++)
+                for($j = 0; $j < (is_countable($current_banlist) ? count($current_banlist) : 0); $j++)
                 {
                         if ( $ip_list[$i] == $current_banlist[$j]['ban_ip'] )
                         {
@@ -247,7 +249,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         for($i = 0; $i < count($email_list); $i++)
         {
                 $in_banlist = false;
-                for($j = 0; $j < count($current_banlist); $j++)
+                for($j = 0; $j < (is_countable($current_banlist) ? count($current_banlist) : 0); $j++)
                 {
                         if ( $email_list[$i] == $current_banlist[$j]['ban_email'] )
                         {
@@ -272,7 +274,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         {
                 $user_list = $HTTP_POST_VARS['unban_user'];
 
-                for($i = 0; $i < count($user_list); $i++)
+                for($i = 0; $i < (is_countable($user_list) ? count($user_list) : 0); $i++)
                 {
                         if ( $user_list[$i] != -1 )
                         {
@@ -285,7 +287,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         {
                 $ip_list = $HTTP_POST_VARS['unban_ip'];
 
-                for($i = 0; $i < count($ip_list); $i++)
+                for($i = 0; $i < (is_countable($ip_list) ? count($ip_list) : 0); $i++)
                 {
                         if ( $ip_list[$i] != -1 )
                         {
@@ -298,7 +300,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
         {
                 $email_list = $HTTP_POST_VARS['unban_email'];
 
-                for($i = 0; $i < count($email_list); $i++)
+                for($i = 0; $i < (is_countable($email_list) ? count($email_list) : 0); $i++)
                 {
                         if ( $email_list[$i] != -1 )
                         {
