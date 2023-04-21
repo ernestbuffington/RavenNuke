@@ -18,6 +18,11 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 4:52 PM
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -42,16 +47,15 @@ require_once('./pagestart.' . $phpEx);
 
 $params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL, 'adv' => 'adv');
 
-while( list($var, $param) = @each($params) )
-{
-        if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
-        {
-                $$var = ( !empty($HTTP_POST_VARS[$param]) ) ? $HTTP_POST_VARS[$param] : $HTTP_GET_VARS[$param];
-        }
-        else
-        {
-                $$var = "";
-        }
+foreach ($params as $var => $param) {
+    if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
+    {
+            ${$var} = ( !empty($HTTP_POST_VARS[$param]) ) ? $HTTP_POST_VARS[$param] : $HTTP_GET_VARS[$param];
+    }
+    else
+    {
+            ${$var} = "";
+    }
 }
 
 $user_id = intval($user_id);
@@ -96,9 +100,9 @@ function check_auth($type, $key, $u_access, $is_admin)
 {
         $auth_user = 0;
 
-        if( count($u_access) )
+        if( is_countable($u_access) ? count($u_access) : 0 )
         {
-                for($j = 0; $j < count($u_access); $j++)
+                for($j = 0; $j < (is_countable($u_access) ? count($u_access) : 0); $j++)
                 {
                         $result = 0;
                         switch($type)
@@ -231,7 +235,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
                 else
                 {
 
-                        $change_mod_list = ( isset($HTTP_POST_VARS['moderator']) ) ? $HTTP_POST_VARS['moderator'] : array();
+                        $change_mod_list = $HTTP_POST_VARS['moderator'] ?? array();
 
                         if ( empty($adv) )
                         {
@@ -261,16 +265,14 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
                         		}
                         	}
 
-                        	while( list($forum_id, $value) = @each($HTTP_POST_VARS['private']) )
-                        	{
-                        		while( list($auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]) )
-                        		{
-                        			if ($exists)
-                        			{
-                        				$change_acl_list[$forum_id][$auth_field] = $value;
-                        			}
-                        		}
-                        	}
+                        	foreach ($HTTP_POST_VARS['private'] as $forum_id => $value) {
+                             foreach ($forum_auth_level_fields[$forum_id] as $auth_field => $exists) {
+                                 if ($exists)
+                              			{
+                              				$change_acl_list[$forum_id][$auth_field] = $value;
+                              			}
+                             }
+                         }
 			            }
                         else
                         {
@@ -279,9 +281,8 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
                                 {
                                         $auth_field = $forum_auth_fields[$j];
 
-                                        while( list($forum_id, $value) = @each($HTTP_POST_VARS['private_' . $auth_field]) )
-                                        {
-                                                $change_acl_list[$forum_id][$auth_field] = $value;
+                                        foreach ($HTTP_POST_VARS['private_' . $auth_field] as $forum_id => $value) {
+                                            $change_acl_list[$forum_id][$auth_field] = $value;
                                         }
                                 }
                         }
@@ -382,48 +383,45 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
                         // Checks complete, make updates to DB
                         //
                         $delete_sql = '';
-                        while( list($forum_id, $action) = @each($forum_auth_action) )
-                        {
-                                if ( $action == 'delete' )
-                                {
-                                        $delete_sql .= ( ( $delete_sql != '' ) ? ', ' : '' ) . $forum_id;
-                                }
-                                else
-                                {
-                                        if ( $action == 'insert' )
-                                        {
-                                                $sql_field = '';
-                                                $sql_value = '';
-                                                while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
-                                                {
-                                                        $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . $auth_type;
-                                                        $sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . $value;
-                                                }
-                                                $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . 'auth_mod';
-                                                $sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . ( ( !isset($update_mod_status[$forum_id]) ) ? 0 : $update_mod_status[$forum_id]);
+                        foreach ($forum_auth_action as $forum_id => $action) {
+                            if ( $action == 'delete' )
+                            {
+                                    $delete_sql .= ( ( $delete_sql != '' ) ? ', ' : '' ) . $forum_id;
+                            }
+                            else
+                            {
+                                    if ( $action == 'insert' )
+                                    {
+                                            $sql_field = '';
+                                            $sql_value = '';
+                                            foreach ($update_acl_status[$forum_id] as $auth_type => $value) {
+                                                $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . $auth_type;
+                                                $sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . $value;
+                                            }
+                                            $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . 'auth_mod';
+                                            $sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . ( ( !isset($update_mod_status[$forum_id]) ) ? 0 : $update_mod_status[$forum_id]);
 
-                                                $sql = "INSERT INTO " . AUTH_ACCESS_TABLE . " (forum_id, group_id, $sql_field)
+                                            $sql = "INSERT INTO " . AUTH_ACCESS_TABLE . " (forum_id, group_id, $sql_field)
                                                         VALUES ($forum_id, $group_id, $sql_value)";
-                                        }
-                                        else
-                                        {
-                                                $sql_values = '';
-                                                while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
-                                                {
-                                                        $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . $auth_type . ' = ' . $value;
-                                                }
-                                                $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . 'auth_mod = ' . ( ( !isset($update_mod_status[$forum_id]) ) ? 0 : $update_mod_status[$forum_id]);
+                                    }
+                                    else
+                                    {
+                                            $sql_values = '';
+                                            foreach ($update_acl_status[$forum_id] as $auth_type => $value) {
+                                                $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . $auth_type . ' = ' . $value;
+                                            }
+                                            $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . 'auth_mod = ' . ( ( !isset($update_mod_status[$forum_id]) ) ? 0 : $update_mod_status[$forum_id]);
 
-                                                $sql = "UPDATE " . AUTH_ACCESS_TABLE . "
+                                            $sql = "UPDATE " . AUTH_ACCESS_TABLE . "
                                                         SET $sql_values
                                                         WHERE group_id = '$group_id'
                                                                 AND forum_id = '$forum_id'";
-                                        }
-                                        if( !($result = $db->sql_query($sql)) )
-                                        {
-                                                message_die(GENERAL_ERROR, "Couldn't update private forum permissions", "", __LINE__, __FILE__, $sql);
-                                        }
-                                }
+                                    }
+                                    if( !($result = $db->sql_query($sql)) )
+                                    {
+                                            message_die(GENERAL_ERROR, "Couldn't update private forum permissions", "", __LINE__, __FILE__, $sql);
+                                    }
+                            }
                         }
 
                         if ( $delete_sql != '' )
@@ -751,124 +749,118 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
         }
 
         $i = 0;
-        @reset($auth_ug);
-        while( list($forum_id, $user_ary) = @each($auth_ug) )
-        {
-                if ( empty($adv) )
-                {
-                        if ( $forum_auth_level[$forum_id] == AUTH_ACL )
-                        {
-                                $allowed = 1;
+        reset($auth_ug);
+        foreach ($auth_ug as $forum_id => $user_ary) {
+            if ( empty($adv) )
+            {
+                    if ( $forum_auth_level[$forum_id] == AUTH_ACL )
+                    {
+                            $allowed = 1;
 
-                                for($j = 0; $j < count($forum_auth_level_fields[$forum_id]); $j++)
-                                {
-                                        if ( !$auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]] )
-                                        {
-                                                $allowed = 0;
-                                        }
-                                }
+                            for($j = 0; $j < (is_countable($forum_auth_level_fields[$forum_id]) ? count($forum_auth_level_fields[$forum_id]) : 0); $j++)
+                            {
+                                    if ( !$auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]] )
+                                    {
+                                            $allowed = 0;
+                                    }
+                            }
 
-                                $optionlist_acl = '<select name="private[' . $forum_id . ']">';
+                            $optionlist_acl = '<select name="private[' . $forum_id . ']">';
 
-                                if ( $is_admin || $user_ary['auth_mod'] )
-                                {
-                                        $optionlist_acl .= '<option value="1">' . $lang['Allowed_Access'] . '</option>';
-                                }
-                                else if ( $allowed )
-                                {
-                                        $optionlist_acl .= '<option value="1" selected="selected">' . $lang['Allowed_Access'] . '</option><option value="0">'. $lang['Disallowed_Access'] . '</option>';
-                                }
-                                else
-                                {
-                                        $optionlist_acl .= '<option value="1">' . $lang['Allowed_Access'] . '</option><option value="0" selected="selected">' . $lang['Disallowed_Access'] . '</option>';
-                                }
+                            if ( $is_admin || $user_ary['auth_mod'] )
+                            {
+                                    $optionlist_acl .= '<option value="1">' . $lang['Allowed_Access'] . '</option>';
+                            }
+                            else if ( $allowed )
+                            {
+                                    $optionlist_acl .= '<option value="1" selected="selected">' . $lang['Allowed_Access'] . '</option><option value="0">'. $lang['Disallowed_Access'] . '</option>';
+                            }
+                            else
+                            {
+                                    $optionlist_acl .= '<option value="1">' . $lang['Allowed_Access'] . '</option><option value="0" selected="selected">' . $lang['Disallowed_Access'] . '</option>';
+                            }
 
-                                $optionlist_acl .= '</select>';
-                        }
-                        else
-                        {
-                                $optionlist_acl = '&nbsp;';
-                        }
-                }
-                else
-                {
-                        for($j = 0; $j < count($forum_access); $j++)
-                        {
-                                if ( $forum_access[$j]['forum_id'] == $forum_id )
-                                {
-                                        for($k = 0; $k < count($forum_auth_fields); $k++)
-                                        {
-                                                $field_name = $forum_auth_fields[$k];
+                            $optionlist_acl .= '</select>';
+                    }
+                    else
+                    {
+                            $optionlist_acl = '&nbsp;';
+                    }
+            }
+            else
+            {
+                    for($j = 0; $j < count($forum_access); $j++)
+                    {
+                            if ( $forum_access[$j]['forum_id'] == $forum_id )
+                            {
+                                    for($k = 0; $k < count($forum_auth_fields); $k++)
+                                    {
+                                            $field_name = $forum_auth_fields[$k];
 
-                                                if( $forum_access[$j][$field_name] == AUTH_ACL )
-                                                {
-                                                        $optionlist_acl_adv[$forum_id][$k] = '<select name="private_' . $field_name . '[' . $forum_id . ']">';
+                                            if( $forum_access[$j][$field_name] == AUTH_ACL )
+                                            {
+                                                    $optionlist_acl_adv[$forum_id][$k] = '<select name="private_' . $field_name . '[' . $forum_id . ']">';
 
-                                                        if( isset($auth_field_acl[$forum_id][$field_name]) && !($is_admin || $user_ary['auth_mod']) )
-                                                        {
-                                                                if( !$auth_field_acl[$forum_id][$field_name] )
-                                                                {
-                                                                        $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
-                                                                }
-                                                                else
-                                                                {
-                                                                        $optionlist_acl_adv[$forum_id][$k] .= '<option value="1" selected="selected">' . $lang['ON'] . '</option><option value="0">' . $lang['OFF'] . '</option>';
-                                                                }
-                                                        }
-                                                        else
-                                                        {
-                                                                if( $is_admin || $user_ary['auth_mod'] )
-                                                                {
-                                                                        $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option>';
-                                                                }
-                                                                else
-                                                                {
-                                                                        $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
-                                                                }
-                                                        }
+                                                    if( isset($auth_field_acl[$forum_id][$field_name]) && !($is_admin || $user_ary['auth_mod']) )
+                                                    {
+                                                            if( !$auth_field_acl[$forum_id][$field_name] )
+                                                            {
+                                                                    $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
+                                                            }
+                                                            else
+                                                            {
+                                                                    $optionlist_acl_adv[$forum_id][$k] .= '<option value="1" selected="selected">' . $lang['ON'] . '</option><option value="0">' . $lang['OFF'] . '</option>';
+                                                            }
+                                                    }
+                                                    else
+                                                    {
+                                                            if( $is_admin || $user_ary['auth_mod'] )
+                                                            {
+                                                                    $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option>';
+                                                            }
+                                                            else
+                                                            {
+                                                                    $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
+                                                            }
+                                                    }
 
-                                                        $optionlist_acl_adv[$forum_id][$k] .= '</select>';
+                                                    $optionlist_acl_adv[$forum_id][$k] .= '</select>';
 
-                                                }
-                                        }
-                                }
-                        }
-                }
+                                            }
+                                    }
+                            }
+                    }
+            }
+            $optionlist_mod = '<select name="moderator[' . $forum_id . ']">';
+            $optionlist_mod .= ( $user_ary['auth_mod'] ) ? '<option value="1" selected="selected">' . $lang['Is_Moderator'] . '</option><option value="0">' . $lang['Not_Moderator'] . '</option>' : '<option value="1">' . $lang['Is_Moderator'] . '</option><option value="0" selected="selected">' . $lang['Not_Moderator'] . '</option>';
+            $optionlist_mod .= '</select>';
+            $row_class = ( !( $i % 2 ) ) ? 'row2' : 'row1';
+            $row_color = ( !( $i % 2 ) ) ? $theme['td_color1'] : $theme['td_color2'];
+            $template->assign_block_vars('forums', array(
+                    'ROW_COLOR' => '#' . $row_color,
+                    'ROW_CLASS' => $row_class,
+                    'FORUM_NAME' => $forum_access[$i]['forum_name'],
 
-                $optionlist_mod = '<select name="moderator[' . $forum_id . ']">';
-                $optionlist_mod .= ( $user_ary['auth_mod'] ) ? '<option value="1" selected="selected">' . $lang['Is_Moderator'] . '</option><option value="0">' . $lang['Not_Moderator'] . '</option>' : '<option value="1">' . $lang['Is_Moderator'] . '</option><option value="0" selected="selected">' . $lang['Not_Moderator'] . '</option>';
-                $optionlist_mod .= '</select>';
+                    'U_FORUM_AUTH' => append_sid("admin_forumauth.$phpEx?f=" . $forum_access[$i]['forum_id']),
 
-                $row_class = ( !( $i % 2 ) ) ? 'row2' : 'row1';
-                $row_color = ( !( $i % 2 ) ) ? $theme['td_color1'] : $theme['td_color2'];
-
-                $template->assign_block_vars('forums', array(
-                        'ROW_COLOR' => '#' . $row_color,
-                        'ROW_CLASS' => $row_class,
-                        'FORUM_NAME' => $forum_access[$i]['forum_name'],
-
-                        'U_FORUM_AUTH' => append_sid("admin_forumauth.$phpEx?f=" . $forum_access[$i]['forum_id']),
-
-                        'S_MOD_SELECT' => $optionlist_mod)
-                );
-
-                if( !$adv )
-                {
-                        $template->assign_block_vars('forums.aclvalues', array(
-                                'S_ACL_SELECT' => $optionlist_acl)
-                        );
-                }
-                else
-                {
-                        for($j = 0; $j < count($forum_auth_fields); $j++)
-                        {
-                                $template->assign_block_vars('forums.aclvalues', array(
-                                        'S_ACL_SELECT' => $optionlist_acl_adv[$forum_id][$j])
-                                );
-                        }
-                }
-
-                $i++;
+                    'S_MOD_SELECT' => $optionlist_mod)
+            );
+            if( !$adv )
+            {
+                    $template->assign_block_vars('forums.aclvalues', array(
+                            'S_ACL_SELECT' => $optionlist_acl)
+                    );
+            }
+            else
+            {
+                    for($j = 0; $j < count($forum_auth_fields); $j++)
+                    {
+                            $template->assign_block_vars('forums.aclvalues', array(
+                                    'S_ACL_SELECT' => $optionlist_acl_adv[$forum_id][$j])
+                            );
+                    }
+            }
+            $i++;
         }
 
         if ( $mode == 'user' )
