@@ -19,6 +19,8 @@
  *   (at your option) any later version.
  *
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 6:57 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
  ***************************************************************************/
 
 //
@@ -107,8 +109,8 @@ function sync($type, $id = false)
 
                         if ( $row = $db->sql_fetchrow($result) )
                         {
-                                $last_post = ( $row['last_post'] ) ? $row['last_post'] : 0;
-                                $total_posts = ($row['total']) ? $row['total'] : 0;
+                                $last_post = $row['last_post'] ?: 0;
+                                $total_posts = $row['total'] ?: 0;
                         }
                         else
                         {
@@ -124,7 +126,7 @@ function sync($type, $id = false)
                                 message_die(GENERAL_ERROR, 'Could not get topic count', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $total_topics = ( $row = $db->sql_fetchrow($result) ) ? ( ( $row['total'] ) ? $row['total'] : 0 ) : 0;
+                        $total_topics = ( $row = $db->sql_fetchrow($result) ) ? ( $row['total'] ?: 0 ) : 0;
 
                         $sql = "UPDATE " . FORUMS_TABLE . "
                                 SET forum_last_post_id = '$last_post', forum_posts = '$total_posts', forum_topics = '$total_topics'
