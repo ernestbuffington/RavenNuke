@@ -18,6 +18,9 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:17 PM
+ * TernaryToNullCoalescingRector
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -49,7 +52,7 @@ if ( $board_config['gzip_compress'] )
 {
         $phpver = phpversion();
 
-  $useragent = (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) ? $HTTP_SERVER_VARS['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT');
+  $useragent = $HTTP_SERVER_VARS['HTTP_USER_AGENT'] ?? getenv('HTTP_USER_AGENT');
 
         if ( $phpver >= '4.0.4pl1' && ( strstr($useragent,'compatible') || strstr($useragent,'Gecko') ) )
         {
@@ -341,9 +344,8 @@ while( list($nav_item, $nav_array) = @each($nav_links) )
         else
         {
                 // We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-                while( list(,$nested_array) = each($nav_array) )
-                {
-                        $nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], $nested_array['title']);
+                foreach ($nav_array as $nested_array) {
+                    $nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], $nested_array['title']);
                 }
         }
 }
