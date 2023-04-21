@@ -18,6 +18,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:10 PM
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
  ***************************************************************************/
 
 //
@@ -166,9 +168,9 @@ function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$website, &$loca
 
         for($i = 0; $i < count($check_var_length); $i++)
         {
-                if (strlen($$check_var_length[$i]) < 2)
+                if (strlen(${$check_var_length}[$i]) < 2)
                 {
-                        $$check_var_length[$i] = '';
+                        ${$check_var_length}[$i] = '';
                 }
         }
 
