@@ -18,6 +18,9 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 2:20 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -48,7 +51,7 @@ else
 
 if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
 {
-        $mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+        $mode = $HTTP_POST_VARS['mode'] ?? $HTTP_GET_VARS['mode'];
         $mode = htmlspecialchars($mode);
 }
 else
@@ -203,7 +206,7 @@ else if ( isset($HTTP_POST_VARS['group_update']) )
                         }
 
                         $rows = $db->sql_fetchrowset($result);
-                        for ($i = 0; $i < count($rows); $i++)
+                        for ($i = 0; $i < (is_countable($rows) ? count($rows) : 0); $i++)
                         {
                                 $sql = "SELECT g.group_id FROM " . AUTH_ACCESS_TABLE . " a, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
                                 WHERE (a.auth_mod = 1) AND (g.group_id = a.group_id) AND (a.group_id = ug.group_id) AND (g.group_id = ug.group_id)
@@ -259,7 +262,7 @@ else if ( isset($HTTP_POST_VARS['group_update']) )
                 $group_type = isset($HTTP_POST_VARS['group_type']) ? intval($HTTP_POST_VARS['group_type']) : GROUP_OPEN;
 		$group_name = isset($HTTP_POST_VARS['group_name']) ? htmlspecialchars(trim($HTTP_POST_VARS['group_name']), ENT_COMPAT) : '';
                 $group_description = isset($HTTP_POST_VARS['group_description']) ? trim($HTTP_POST_VARS['group_description']) : '';
-                $group_moderator = isset($HTTP_POST_VARS['username']) ? $HTTP_POST_VARS['username'] : '';
+                $group_moderator = $HTTP_POST_VARS['username'] ?? '';
                 $delete_old_moderator = isset($HTTP_POST_VARS['delete_old_moderator']) ? true : false;
 
                 if ( $group_name == '' )
