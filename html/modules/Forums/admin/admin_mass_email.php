@@ -17,6 +17,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 4:26 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -118,7 +120,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 $emailer->from($board_config['board_email']);
                 $emailer->replyto($board_config['board_email']);
 
-                for ($i = 0; $i < count($bcc_list); $i++)
+                for ($i = 0; $i < (is_countable($bcc_list) ? count($bcc_list) : 0); $i++)
                 {
                         $emailer->bcc($bcc_list[$i]);
                 }
