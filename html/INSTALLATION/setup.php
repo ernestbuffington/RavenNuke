@@ -111,7 +111,7 @@ function validateInput(formName) {
 <div class="c1">
 	<img style="float:left;" src="images/logo.gif" border="0" alt="" />
 	<span class="c5">
-		RavenNuke&trade; v<?php echo RAVENNUKE_VERSION_FRIENDLY;?> Setup/Configuration Tool &copy;2005-2013
+		RavenNuke&trade; v<?php echo RAVENNUKE_VERSION_FRIENDLY;?> Setup/Configuration Tool &copy;2005-2023
 	</span>
 </div>
 <br /><br /><br />
@@ -127,18 +127,18 @@ ini_set('mysql.connect_timeout',120);
 $dbCheck = array();
 // $nukeConfigFile = "../config.php";
 // if (!file_exists($nukeConfigFile)) {rnInstallErr(1); die();}
-echo '<span class="msg">config.php file found!</span><br />';
+echo '<span class="msg"><span style="color: green;">config.php</span> file found!</span><br />';
 require_once INCLUDE_PATH . 'config.php';
 $conn = mysqli_connect($dbhost,$dbuname,$dbpass);
 if (!$conn)  {rnInstallErr(2); die();}
-echo '<span class="msg">Successfully connected to '.$dbhost.' as user '.$dbuname.' and assigned password!</span><br />';
+echo '<span class="msg">Successfully connected to <span style="color: green;">'.$dbhost.'</span> as user <span style="color: green;">'.$dbuname.'</span> and assigned password!</span><br />';
 $db = mysqli_select_db($conn, $dbname);
 if (!$db)  {rnInstallErr(3); die();}
-echo '<span class="msg">Database '.$dbname.' found!</span><br />';
+echo '<span class="msg">Database <span style="color: green;">'.$dbname.'</span> found!</span><br />';
 ?>
 <form name="mysql" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 	<p class="c3">
-		<input type="button"  name="btnCheckMysqlUserPermissions" class="button2" id="btnCheckMysqlUserPermissions" readonly size="75" onFocus="blur()" onClick="browserWindowSize(1.07,.7);dhtmlmodal.open('mysqlCheck', 'iframe', 'serverMysqlUserPermissionsCheck.php', 'Ravenstaller™ MySQL User Permissions Check', 'width='+bwW+',height='+bwH+',center=1,resize=1,scrolling=1');" value="Run Ravenstaller™ MySQL User Permissions Check" />
+		<input type="button"  name="btnCheckMysqlUserPermissions" class="button2" id="btnCheckMysqlUserPermissions" readonly size="75" onFocus="blur()" onClick="browserWindowSize(1.07,.7);dhtmlmodal.open('mysqlCheck', 'iframe', 'serverMysqlUserPermissionsCheck.php', 'Ravenstaller™ MySQLi User Permissions Check', 'width='+bwW+',height='+bwH+',center=1,resize=1,scrolling=1');" value="Run Ravenstaller™ MySQLi User Permissions Check" />
 	</p>
 </form>
 <?php
