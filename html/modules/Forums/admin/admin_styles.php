@@ -18,6 +18,11 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 4:34 PM
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -60,7 +65,7 @@ if ($cancel)
 
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
-	$mode = ( isset($HTTP_GET_VARS['mode']) ) ? $HTTP_GET_VARS['mode'] : $HTTP_POST_VARS['mode'];
+	$mode = $HTTP_GET_VARS['mode'] ?? $HTTP_POST_VARS['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
@@ -79,27 +84,26 @@ switch( $mode )
 
 			include_once($phpbb_root_path. "templates/" . basename($install_to) . "/theme_info.cfg");
 
-			$template_name = $$install_to;
+			$template_name = ${$install_to};
                         $found = FALSE;
 
-			for($i = 0; $i < count($template_name) && !$found; $i++)
+			for($i = 0; $i < (is_countable($template_name) ? count($template_name) : 0) && !$found; $i++)
 			{
 				if( $template_name[$i]['style_name'] == $style_name )
 				{
-					while(list($key, $val) = each($template_name[$i]))
-					{
-						$db_fields[] = $key;
-						$db_values[] = str_replace("\'", "''" , $val);
-					}
+					foreach ($template_name[$i] as $key => $val) {
+         $db_fields[] = $key;
+         $db_values[] = str_replace("\'", "''" , $val);
+     }
 				}
 			}
 
 			$sql = "INSERT INTO " . THEMES_TABLE . " (";
 
-			for($i = 0; $i < count($db_fields); $i++)
+			for($i = 0; $i < (is_countable($db_fields) ? count($db_fields) : 0); $i++)
 			{
 				$sql .= $db_fields[$i];
-				if($i != (count($db_fields) - 1))
+				if($i != ((is_countable($db_fields) ? count($db_fields) : 0) - 1))
 				{
 					$sql .= ", ";
 				}
@@ -108,10 +112,10 @@ switch( $mode )
 
 			$sql .= ") VALUES (";
 
-			for($i = 0; $i < count($db_values); $i++)
+			for($i = 0; $i < (is_countable($db_values) ? count($db_values) : 0); $i++)
 			{
 				$sql .= "'" . $db_values[$i] . "'";
-				if($i != (count($db_values) - 1))
+				if($i != ((is_countable($db_values) ? count($db_values) : 0) - 1))
 				{
 					$sql .= ", ";
 				}
@@ -142,9 +146,9 @@ switch( $mode )
 						{
 							include_once($phpbb_root_path. "templates/" . $sub_dir . "/theme_info.cfg");
 
-							for($i = 0; $i < count($$sub_dir); $i++)
+							for($i = 0; $i < (is_countable(${$sub_dir}) ? count($$sub_dir) : 0); $i++)
 							{
-								$working_data = $$sub_dir;
+								$working_data = ${$sub_dir};
 
 								$style_name = $working_data[$i]['style_name'];
 
@@ -289,21 +293,18 @@ switch( $mode )
 				$sql = "UPDATE " . THEMES_TABLE . " SET ";
 				$count = 0;
 
-				while(list($key, $val) = each($updated))
-				{
-					if($count != 0)
-					{
-						$sql .= ", ";
-					}
-
-					//
-					// I don't like this but it'll keep MSSQL from throwing
-					// an error and save me alot of typing
-					//
-					$sql .= ( stristr($key, "fontsize") ) ? "$key = $val" : "$key = '" . str_replace("\'", "''", $val) . "'";
-
-					$count++;
-				}
+				foreach ($updated as $key => $val) {
+        if($count != 0)
+   					{
+   						$sql .= ", ";
+   					}
+        //
+        // I don't like this but it'll keep MSSQL from throwing
+        // an error and save me alot of typing
+        //
+        $sql .= ( stristr($key, "fontsize") ) ? "$key = $val" : "$key = '" . str_replace("\'", "''", $val) . "'";
+        $count++;
+    }
 
 				$sql .= " WHERE themes_id = '$style_id'";
 
@@ -328,17 +329,14 @@ switch( $mode )
                                         $sql = "UPDATE " . THEMES_NAME_TABLE . "
 						SET ";
 					$count = 0;
-					while(list($key, $val) = each($updated_name))
-					{
-						if($count != 0)
-						{
-							$sql .= ", ";
-						}
-
-						$sql .= "$key = '$val'";
-
-						$count++;
-					}
+					foreach ($updated_name as $key => $val) {
+         if($count != 0)
+   						{
+   							$sql .= ", ";
+   						}
+         $sql .= "$key = '$val'";
+         $count++;
+     }
 
 					$sql .= " WHERE themes_id = '$style_id'";
 				}
@@ -348,13 +346,12 @@ switch( $mode )
 					// Nope, no names entry so we create a new one.
 					//
 					$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (themes_id, ";
-					while(list($key, $val) = each($updated_name))
-					{
-						$fields[] = $key;
-						$vals[] = str_replace("\'", "''", $val);
-					}
+					foreach ($updated_name as $key => $val) {
+         $fields[] = $key;
+         $vals[] = str_replace("\'", "''", $val);
+     }
 
-					for($i = 0; $i < count($fields); $i++)
+					for($i = 0; $i < (is_countable($fields) ? count($fields) : 0); $i++)
 					{
 						if($i > 0)
 						{
@@ -364,7 +361,7 @@ switch( $mode )
 					}
 
 					$sql .= ") VALUES ($style_id, ";
-					for($i = 0; $i < count($vals); $i++)
+					for($i = 0; $i < (is_countable($vals) ? count($vals) : 0); $i++)
 					{
 						if($i > 0)
 						{
@@ -403,23 +400,21 @@ switch( $mode )
 					message_die(GENERAL_ERROR, $lang['Style_exists'], $lang['Error']);
                                 }
 
-				while(list($key, $val) = each($updated))
-				{
-					$field_names[] = $key;
-
-					if(stristr($key, "fontsize"))
-					{
-						$values[] = "$val";
-					}
-					else
-					{
-						$values[] = "'" . str_replace("\'", "''", $val) . "'";
-					}
-				}
+				foreach ($updated as $key => $val) {
+        $field_names[] = $key;
+        if(stristr($key, "fontsize"))
+   					{
+   						$values[] = "$val";
+   					}
+   					else
+   					{
+   						$values[] = "'" . str_replace("\'", "''", $val) . "'";
+   					}
+    }
 
                                 $sql = "INSERT
 					INTO " . THEMES_TABLE . " (";
-				for($i = 0; $i < count($field_names); $i++)
+				for($i = 0; $i < (is_countable($field_names) ? count($field_names) : 0); $i++)
 				{
 					if($i != 0)
 					{
@@ -429,7 +424,7 @@ switch( $mode )
 				}
 
 				$sql .= ") VALUES (";
-				for($i = 0; $i < count($values); $i++)
+				for($i = 0; $i < (is_countable($values) ? count($values) : 0); $i++)
 				{
 					if($i != 0)
 					{
@@ -450,13 +445,12 @@ switch( $mode )
 				// Insert names data
 				//
 				$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (themes_id, ";
-				while(list($key, $val) = each($updated_name))
-				{
-					$fields[] = $key;
-					$vals[] = $val;
-				}
+				foreach ($updated_name as $key => $val) {
+        $fields[] = $key;
+        $vals[] = $val;
+    }
 
-				for($i = 0; $i < count($fields); $i++)
+				for($i = 0; $i < (is_countable($fields) ? count($fields) : 0); $i++)
 				{
 					if($i > 0)
 					{
@@ -466,7 +460,7 @@ switch( $mode )
 				}
 
 				$sql .= ") VALUES ($style_id, ";
-				for($i = 0; $i < count($vals); $i++)
+				for($i = 0; $i < (is_countable($vals) ? count($vals) : 0); $i++)
 				{
 					if($i > 0)
 					{
@@ -718,7 +712,7 @@ switch( $mode )
 
 			$theme_rowset = $db->sql_fetchrowset($result);
 
-			if( count($theme_rowset) == 0 )
+			if( (is_countable($theme_rowset) ? count($theme_rowset) : 0) == 0 )
 			{
 				message_die(GENERAL_MESSAGE, $lang['No_themes']);
 			}
@@ -726,15 +720,14 @@ switch( $mode )
 			$theme_data = '<?php'."\n\n";
 			$theme_data .= "//\n// phpBB 2.x auto-generated theme config file for $template_name\n// Do not change anything in this file!\n//\n\n";
 
-			for($i = 0; $i < count($theme_rowset); $i++)
+			for($i = 0; $i < (is_countable($theme_rowset) ? count($theme_rowset) : 0); $i++)
 			{
-				while(list($key, $val) = each($theme_rowset[$i]))
-				{
-					if(!intval($key) && $key != "0" && $key != "themes_id")
-					{
-						$theme_data .= '$' . $template_name . "[$i]['$key'] = \"" . addslashes($val) . "\";\n";
-					}
-				}
+				foreach ($theme_rowset[$i] as $key => $val) {
+        if(!intval($key) && $key != "0" && $key != "themes_id")
+   					{
+   						$theme_data .= '$' . $template_name . "[$i]['$key'] = \"" . addslashes($val) . "\";\n";
+   					}
+    }
 				$theme_data .= "\n";
 			}
 
@@ -915,7 +908,7 @@ switch( $mode )
 			"L_DELETE" => $lang['Delete'])
 		);
 
-		for($i = 0; $i < count($style_rowset); $i++)
+		for($i = 0; $i < (is_countable($style_rowset) ? count($style_rowset) : 0); $i++)
 		{
 			$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
