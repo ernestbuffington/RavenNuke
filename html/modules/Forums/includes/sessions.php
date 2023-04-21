@@ -18,6 +18,10 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:30 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
  ***************************************************************************/
 
 //
@@ -26,7 +30,8 @@
 //
 function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_autologin = 0, $admin = 0)
 {
-	global $db, $board_config;
+	$login = null;
+ global $db, $board_config;
 	global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
 
 	$cookiename = $board_config['cookie_name'];
@@ -36,14 +41,14 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 
 	if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
 	{
-		$session_id = isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) ? $HTTP_COOKIE_VARS[$cookiename . '_sid'] : '';
+		$session_id = $HTTP_COOKIE_VARS[$cookiename . '_sid'] ?? '';
 		$sessiondata = isset($HTTP_COOKIE_VARS[$cookiename . '_data']) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
 		$sessionmethod = SESSION_METHOD_COOKIE;
 	}
 	else
 	{
 		$sessiondata = array();
-		$session_id = ( isset($HTTP_GET_VARS['sid']) ) ? $HTTP_GET_VARS['sid'] : '';
+		$session_id = $HTTP_GET_VARS['sid'] ?? '';
 		$sessionmethod = SESSION_METHOD_GET;
 	}
 
@@ -247,8 +252,8 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 	$userdata['session_admin'] = $admin;
 	$userdata['session_key'] = $sessiondata['autologinid'];
 
-	setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-	setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
+	setcookie($cookiename . '_data', serialize($sessiondata), ['expires' => $current_time + 31536000, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
+	setcookie($cookiename . '_sid', $session_id, ['expires' => 0, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
 
 	$SID = 'sid=' . $session_id;
 
@@ -261,7 +266,9 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 //
 function session_pagestart($user_ip, $thispage_id, $nukeuser)
 {
-	global $db, $lang, $board_config, $session_id;
+	$userdata = [];
+ $sql = null;
+ global $db, $lang, $board_config, $session_id;
 	global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
 
 	$cookiename = $board_config['cookie_name'];
@@ -275,13 +282,13 @@ function session_pagestart($user_ip, $thispage_id, $nukeuser)
 	if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
 	{
 		$sessiondata = isset( $HTTP_COOKIE_VARS[$cookiename . '_data'] ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
-		$session_id = isset( $HTTP_COOKIE_VARS[$cookiename . '_sid'] ) ? $HTTP_COOKIE_VARS[$cookiename . '_sid'] : '';
+		$session_id = $HTTP_COOKIE_VARS[$cookiename . '_sid'] ?? '';
 		$sessionmethod = SESSION_METHOD_COOKIE;
 	}
 	else
 	{
 		$sessiondata = array();
-		$session_id = ( isset($HTTP_GET_VARS['sid']) ) ? $HTTP_GET_VARS['sid'] : '';
+		$session_id = $HTTP_GET_VARS['sid'] ?? '';
 		$sessionmethod = SESSION_METHOD_GET;
 	}
 
@@ -362,8 +369,8 @@ function session_pagestart($user_ip, $thispage_id, $nukeuser)
 
 					session_clean($userdata['session_id']);
 
-					setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-					setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
+					setcookie($cookiename . '_data', serialize($sessiondata), ['expires' => $current_time + 31536000, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
+					setcookie($cookiename . '_sid', $session_id, ['expires' => 0, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
 				}
 
 				// Add the session_key to the userdata array if it is set
@@ -455,8 +462,8 @@ function session_end($session_id, $user_id)
 	{
 		message_die(CRITICAL_ERROR, 'Error obtaining user details', '', __LINE__, __FILE__, $sql);
 	}
-	setcookie($cookiename . '_data', '', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-	setcookie($cookiename . '_sid', '', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
+	setcookie($cookiename . '_data', '', ['expires' => $current_time - 31536000, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
+	setcookie($cookiename . '_sid', '', ['expires' => $current_time - 31536000, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
 
 	return true;
 }
@@ -500,7 +507,8 @@ function session_clean($session_id)
 */
 function session_reset_keys($user_id, $user_ip)
 {
-	global $db, $userdata, $board_config;
+	$sessiondata = [];
+ global $db, $userdata, $board_config;
 
 	$key_sql = ($user_id == $userdata['user_id'] && !empty($userdata['session_key'])) ? "AND key_id != '" . md5($userdata['session_key']) . "'" : '';
 
@@ -545,7 +553,7 @@ function session_reset_keys($user_id, $user_ip)
 		$cookiedomain = $board_config['cookie_domain'];
 		$cookiesecure = $board_config['cookie_secure'];
 
-		setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
+		setcookie($cookiename . '_data', serialize($sessiondata), ['expires' => $current_time + 31536000, 'path' => $cookiepath, 'domain' => $cookiedomain, 'secure' => $cookiesecure]);
 
 		$userdata['session_key'] = $auto_login_key;
 		unset($sessiondata);
