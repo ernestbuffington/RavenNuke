@@ -18,6 +18,12 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:38 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
  ***************************************************************************/
 
 /**
@@ -31,7 +37,7 @@ if (!defined('IN_PHPBB')) {
 	die();
 }
 class Template {
-        var $classname = "Template";
+        public $classname = "Template";
 
         // variable that holds all the data we'll be substituting into
         // the compiled templates.
@@ -40,25 +46,25 @@ class Template {
         // $this->_tpldata[block.][iteration#][child.][iteration#][child2.][iteration#][variablename] == value
         // if it's a root-level variable, it'll be like this:
         // $this->_tpldata[.][0][varname] == value
-        var $_tpldata = array();
+        public $_tpldata = array();
 
         // Hash of filenames for each template handle.
-        var $files = array();
+        public $files = array();
 
         // Root template directory.
-        var $root = "";
+        public $root = "";
 
         // this will hash handle names to the compiled code for that handle.
-        var $compiled_code = array();
+        public $compiled_code = array();
 
         // This will hold the uncompiled code for that handle.
-        var $uncompiled_code = array();
+        public $uncompiled_code = array();
 
         /**
          * Constructor. Simply sets the root dir.
          *
          */
-        function Template($root = ".")
+        function __construct($root = ".")
         {
                 $this->set_rootdir($root);
         }
@@ -98,9 +104,8 @@ class Template {
                 }
 
                 reset($filename_array);
-                while(list($handle, $filename) = each($filename_array))
-                {
-                        $this->files[$handle] = $this->make_filename($filename);
+                foreach ($filename_array as $handle => $filename) {
+                    $this->files[$handle] = $this->make_filename($filename);
                 }
 
                 return true;
@@ -165,6 +170,7 @@ class Template {
          */
         function assign_block_vars($blockname, $vararray)
         {
+                $lastiteration = null;
                 if (strstr($blockname, '.'))
                 {
                         // Nested block.
@@ -203,9 +209,8 @@ class Template {
         function assign_vars($vararray)
         {
                 reset ($vararray);
-                while (list($key, $val) = each($vararray))
-                {
-                        $this->_tpldata['.'][0][$key] = $val;
+                foreach ($vararray as $key => $val) {
+                    $this->_tpldata['.'][0][$key] = $val;
                 }
 
                 return true;
@@ -231,7 +236,7 @@ class Template {
         function make_filename($filename)
         {
                 // Check if it's an absolute or relative path.
-                if (substr($filename, 0, 1) != '/')
+                if (!str_starts_with($filename, '/'))
                 {
                        $filename = ($rp_filename = phpbb_realpath($this->root . '/' . $filename)) ? $rp_filename : $filename;
                 }
@@ -287,6 +292,7 @@ class Template {
          */
         function compile($code, $do_not_echo = false, $retvar = '')
         {
+                $n = [];
                 // replace \ with \\ and then ' with \'.
                 $code = str_replace('\\', '\\\\', $code);
                 $code = str_replace('\'', '\\\'', $code);
