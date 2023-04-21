@@ -17,6 +17,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:39 PM
+ * TernaryToNullCoalescingRector 
  ***************************************************************************/
 
 define('IN_PHPBB', true);
@@ -43,7 +45,7 @@ require_once("../includes/functions_admin.php");
 //
 if( isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]) )
 {
-        $forum_id = ( isset($HTTP_POST_VARS[POST_FORUM_URL]) ) ? $HTTP_POST_VARS[POST_FORUM_URL] : $HTTP_GET_VARS[POST_FORUM_URL];
+        $forum_id = $HTTP_POST_VARS[POST_FORUM_URL] ?? $HTTP_GET_VARS[POST_FORUM_URL];
 
         if( $forum_id == -1 )
         {
