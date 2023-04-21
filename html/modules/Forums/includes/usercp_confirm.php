@@ -17,6 +17,10 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:45 PM
+ * RandomFunctionRector
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ * REmove STFU Operators
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -96,15 +100,15 @@ else
 	$char_widths = array();
 	for ($i = 0; $i < strlen($code); $i++)
 	{
-		$char = $code{$i};
+		$char = $code[$i];
 
-		$width = mt_rand(0, 4);
+		$width = random_int(0, 4);
 		$char_widths[] = $width;
 		$img_width += $_png[$char]['width'] - $width;
 	}
 
-	$offset_x = mt_rand(0, $total_width - $img_width);
-	$offset_y = mt_rand(0, $total_height - $img_height);
+	$offset_x = random_int(0, $total_width - $img_width);
+	$offset_y = random_int(0, $total_height - $img_height);
 
 	$image = '';
 	$hold_chars = array();
@@ -118,12 +122,12 @@ else
 
 			for ($k = 0; $k < $offset_x; $k++)
 			{
-				$image .= chr(mt_rand(140, 255));
+				$image .= chr(random_int(140, 255));
 			}
 
 			for ($k = 0; $k < strlen($code); $k++)
 			{
-				$char = $code{$k};
+				$char = $code[$k];
 
 				if (empty($hold_chars[$char]))
 				{
@@ -135,7 +139,7 @@ else
 
 			for ($k = $offset_x + $img_width; $k < $total_width; $k++)
 			{
-				$image .= chr(mt_rand(140, 255));
+				$image .= chr(random_int(140, 255));
 			}
 
 			$l++;
@@ -144,7 +148,7 @@ else
 		{
 			for ($k = 0; $k < $total_width; $k++)
 			{
-				$image .= chr(mt_rand(140, 255));
+				$image .= chr(random_int(140, 255));
 			}
 		}
 
@@ -174,19 +178,19 @@ function randomise($scanline, $width)
 
 	for ($i = $start; $i < $end; $i++)
 	{
-		$pixel = ord($scanline{$i});
+		$pixel = ord($scanline[$i]);
 
 		if ($pixel < 190)
 		{
-			$new_line .= chr(mt_rand(0, 205));
+			$new_line .= chr(random_int(0, 205));
 		}
 		else if ($pixel > 190)
 		{
-			$new_line .= chr(mt_rand(145, 255));
+			$new_line .= chr(random_int(145, 255));
 		}
 		else
 		{
-			$new_line .= $scanline{$i};
+			$new_line .= $scanline[$i];
 		}
 	}
 
@@ -218,7 +222,7 @@ function create_png($raw_image, $width, $height)
 	$raw .= pack('C4', $height >> 24, $height >> 16, $height >> 8, $height);
 	$raw .= pack('C5', 8, 0, 0, 0, 0);
 	$image .= png_chunk(13, 'IHDR', $raw);
-	if (@extension_loaded('zlib'))
+	if (extension_loaded('zlib'))
 	{
 		$raw_image = gzcompress($raw_image);
 		$length = strlen($raw_image);
