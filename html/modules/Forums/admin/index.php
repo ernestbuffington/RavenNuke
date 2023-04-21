@@ -18,6 +18,11 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:20 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * Remove STFU Operators
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -53,10 +58,10 @@ function inarray($needle, $haystack)
 //
 if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 {
-        $dir = @opendir(".");
+        $dir = opendir(".");
 
         $setmodules = 1;
-        while( $file = @readdir($dir) )
+        while( $file = readdir($dir) )
         {
                 if( preg_match("/^admin_.*?\." . $phpEx . "$/", $file) )
                 {
@@ -64,7 +69,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
                 }
         }
 
-        @closedir($dir);
+        closedir($dir);
 
         unset($setmodules);
 
@@ -86,33 +91,26 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         ksort($module);
 
-        while( list($cat, $action_array) = each($module) )
-        {
-                $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
+        foreach ($module as $cat => $action_array) {
+            $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
+            $template->assign_block_vars("catrow", array(
+                    "ADMIN_CATEGORY" => $cat)
+            );
+            ksort($action_array);
+            $row_count = 0;
+            foreach ($action_array as $action => $file) {
+                $row_color = ( !($row_count%2) ) ? $theme['td_color1'] : $theme['td_color2'];
+                $row_class = ( !($row_count%2) ) ? $theme['td_class1'] : $theme['td_class2'];
+                $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
+                $template->assign_block_vars("catrow.modulerow", array(
+                        "ROW_COLOR" => "#" . $row_color,
+                        "ROW_CLASS" => $row_class,
 
-                $template->assign_block_vars("catrow", array(
-                        "ADMIN_CATEGORY" => $cat)
+                        "ADMIN_MODULE" => $action,
+                        "U_ADMIN_MODULE" => append_sid($file))
                 );
-
-                ksort($action_array);
-
-                $row_count = 0;
-                while( list($action, $file)        = each($action_array) )
-                {
-                        $row_color = ( !($row_count%2) ) ? $theme['td_color1'] : $theme['td_color2'];
-                        $row_class = ( !($row_count%2) ) ? $theme['td_class1'] : $theme['td_class2'];
-
-                        $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
-
-                        $template->assign_block_vars("catrow.modulerow", array(
-                                "ROW_COLOR" => "#" . $row_color,
-                                "ROW_CLASS" => $row_class,
-
-                                "ADMIN_MODULE" => $action,
-                                "U_ADMIN_MODULE" => append_sid($file))
-                        );
-                        $row_count++;
-                }
+                $row_count++;
+            }
         }
 
         $template->pparse("body");
@@ -170,16 +168,16 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
         $avatar_dir_size = 0;
 
-        if ($avatar_dir = @opendir($phpbb_root_path . $board_config['avatar_path']))
+        if ($avatar_dir = opendir($phpbb_root_path . $board_config['avatar_path']))
         {
-                while( $file = @readdir($avatar_dir) )
+                while( $file = readdir($avatar_dir) )
                 {
                         if( $file != "." && $file != ".." )
                         {
-                                $avatar_dir_size += @filesize($phpbb_root_path . $board_config['avatar_path'] . "/" . $file);
+                                $avatar_dir_size += filesize($phpbb_root_path . $board_config['avatar_path'] . "/" . $file);
                         }
                 }
-                @closedir($avatar_dir);
+                closedir($avatar_dir);
 
                 //
                 // This bit of code translates the avatar directory size into human readable format
@@ -246,13 +244,13 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                                         $tabledata_ary = $db->sql_fetchrowset($result);
 
                                         $dbsize = 0;
-                                        for($i = 0; $i < count($tabledata_ary); $i++)
+                                        for($i = 0; $i < (is_countable($tabledata_ary) ? count($tabledata_ary) : 0); $i++)
                                         {
                                                 if( $tabledata_ary[$i]['Type'] != "MRG_MyISAM" )
                                                 {
                                                         if( $table_prefix != "" )
                                                         {
-                                                                if( strstr($tabledata_ary[$i]['Name'], $table_prefix) )
+                                                                if( strstr($tabledata_ary[$i]['Name'], (string) $table_prefix) )
                                                                 {
                                                                         $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                                 }
