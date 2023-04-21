@@ -27,7 +27,7 @@ $phpbb_root_path = './../';
 require($phpbb_root_path . 'extension.inc');
 require('pagestart.' . $phpEx);
 
-@include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
+include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {
