@@ -19,7 +19,14 @@
  *   (at your option) any later version.
  *
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 6:46 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Remove STFU Operators
  ***************************************************************************/
+ 
 if ( !defined('IN_PHPBB') )
 {
         die("Hacking attempt");
@@ -30,28 +37,28 @@ if ( !defined('IN_PHPBB') )
 
 function check_unread($forum_id)
 {
+$unread_topics = null;
 global $new_topic_data, $tracking_topics, $tracking_forums, $HTTP_COOKIE_VARS, $board_config;
    if ( !empty($new_topic_data[$forum_id]) )
    {
       $forum_last_post_time = 0;
 
-      while( list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]) )
-      {
-         if ( empty($tracking_topics[$check_topic_id]) )
-         {
-            $unread_topics = true;
-            $forum_last_post_time = max($check_post_time, $forum_last_post_time);
-
-         }
-         else
-         {
-            if ( $tracking_topics[$check_topic_id] < $check_post_time )
-            {
-               $unread_topics = true;
-               $forum_last_post_time = max($check_post_time, $forum_last_post_time);
-            }
-         }
-      }
+foreach ($new_topic_data[$forum_id] as $check_topic_id => $check_post_time) {
+    if ( empty($tracking_topics[$check_topic_id]) )
+    {
+       $unread_topics = true;
+       $forum_last_post_time = max($check_post_time, $forum_last_post_time);
+ 
+    }
+    else
+    {
+       if ( $tracking_topics[$check_topic_id] < $check_post_time )
+       {
+          $unread_topics = true;
+          $forum_last_post_time = max($check_post_time, $forum_last_post_time);
+       }
+    }
+}
 
       if ( !empty($tracking_forums[$forum_id]) )
       {
@@ -79,6 +86,7 @@ return $unread_topics;
 
 function get_db_stat($mode)
 {
+  $sql = null;
   global $db;
 
   switch( $mode )
@@ -156,7 +164,7 @@ function phpbb_ltrim($str, $charlist = false)
    // php version < 4.1.0
    if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
    {
-      while ($str{0} == $charlist)
+      while ($str[0] == $charlist)
       {
          $str = substr($str, 1);
       }
@@ -182,7 +190,7 @@ function phpbb_rtrim($str, $charlist = false)
   // php version < 4.1.0
   if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
   {
-    while ($str{strlen($str)-1} == $charlist)
+    while ($str[strlen($str)-1] == $charlist)
     {
       $str = substr($str, 0, strlen($str)-1);
     }
@@ -256,6 +264,8 @@ function get_userdata($user, $force_str = false)
 
 function make_jumpbox($action, $match_forum_id = 0)
 {
+  $assigned = null;
+  $boxstring = null;
   global $template, $userdata, $lang, $db, $nav_links, $phpEx, $SID;
   global $parent_lookup;
 
@@ -380,6 +390,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
+  $default_lang = null;
   global $board_config, $theme, $images;
   global $template, $lang, $phpEx, $phpbb_root_path, $db;
   global $nav_links;
@@ -406,7 +417,7 @@ function init_userprefs($userdata)
     $default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
   }
 
-  if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
+  if ( !file_exists(phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
   {
     if ( $userdata['user_id'] != ANONYMOUS )
     {
@@ -420,7 +431,7 @@ function init_userprefs($userdata)
       // but english is part of a new install so it's worth us trying
       $default_lang = 'english';
     }
-    if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
+    if ( !file_exists(phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
     {
       message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
     }
@@ -460,7 +471,7 @@ function init_userprefs($userdata)
 
   if ( defined('IN_ADMIN') )
   {
-    if( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.'.$phpEx)) )
+    if( !file_exists(phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.'.$phpEx)) )
     {
       $board_config['default_lang'] = 'english';
     }
@@ -556,7 +567,7 @@ function setup_style($style)
                 if (file_exists("themes/$ThemeSel/$template_name/index_body.tpl")) {
                     include_once($template_path . $template_name . '/' . $template_name . '.cfg');
                 } else {
-    @include_once($phpbb_root_path . $template_path . $template_name . '/' . $template_name . '.cfg');
+    include_once($phpbb_root_path . $template_path . $template_name . '/' . $template_name . '.cfg');
                 }
     if ( !defined('TEMPLATE_CONFIG') )
     {
@@ -569,16 +580,15 @@ function setup_style($style)
     $img_lang = $userdata['user_lang'];
       } else {
 // end fix
-    $img_lang = ( file_exists(@phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
+    $img_lang = ( file_exists(phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
     }
 
-    while( list($key, $value) = @each($images) )
-    {
-      if ( !is_array($value) )
-      {
-        $images[$key] = str_replace('{LANG}', 'lang_' . $img_lang, $value);
-      }
+    foreach ($images as $key => $value) {
+    if ( !is_array($value) )
+     {
+      $images[$key] = str_replace('{LANG}', 'lang_' . $img_lang, (string) $value);
     }
+}
   }
 
   return $row;
@@ -606,14 +616,12 @@ function create_date($format, $gmepoch, $tz)
 
   if ( empty($translate) && $board_config['default_lang'] != 'english' )
   {
-    @reset($lang['datetime']);
-    while ( list($match, $replace) = @each($lang['datetime']) )
-    {
-      $translate[$match] = $replace;
-    }
-  }
+    reset($lang['datetime']);
+    foreach ($lang['datetime'] as $match => $replace) {
+    $translate[$match] = $replace;
+}  }
 
-  return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz)), $translate) : @gmdate($format, $gmepoch + (3600 * $tz));
+  return ( !empty($translate) ) ? strtr(gmdate($format, $gmepoch + (3600 * $tz)), $translate) : gmdate($format, $gmepoch + (3600 * $tz));
 }
 
 //
@@ -778,6 +786,8 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
+  $nukeuser = null;
+  $debug_text = null;
   global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb_root_path, $nav_links, $gen_simple_header, $images;
   global $userdata, $user_ip, $session_length;
   global $starttime, $do_gzip_compress;
@@ -981,7 +991,7 @@ function phpbb_realpath($path)
 {
   global $phpbb_root_path, $phpEx;
 
-  return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.'.$phpEx)) ? $path : @realpath($path);
+  return (!function_exists('realpath') || !realpath($phpbb_root_path . 'includes/functions.'.$phpEx)) ? $path : realpath($path);
 }
 
 function redirect($url)
@@ -1006,7 +1016,7 @@ function redirect($url)
   $url = str_replace('&amp;', "&", $url);
 
   // Redirect via an HTML form for PITA webservers
-  if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
+  if (preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
   {
     header('Refresh: 0; URL=' . $server_protocol . $server_name . $server_port . $script_name . $url);
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta http-equiv="refresh" content="0; url=' . $server_protocol . $server_name . $server_port . $script_name . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $server_protocol . $server_name . $server_port . $script_name . $url . '">HERE</a> to be redirected</div></body></html>';
@@ -1018,6 +1028,9 @@ function redirect($url)
   exit;
 }
 function bblogin($nukeuser, $session_id) {
+        $board_config = [];
+        $lang = [];
+        $redirect = null;
         global $nukeuser, $userdata, $user_ip, $session_length, $session_id, $db, $nuke_file_path;
         define('IN_LOGIN', true);
         $cookie = explode(":", $nukeuser);
@@ -1042,7 +1055,7 @@ function bblogin($nukeuser, $session_id) {
             }
             $rowresult = $db->sql_fetchrow($result);
             $password = $cookie[2];
-            if(count($rowresult) ) {
+            if(is_countable($rowresult) ? count($rowresult) : 0 ) {
                 if( $rowresult['user_level'] != ADMIN && $board_config['board_disable'] ) {
                     header("Location: " . append_sid("index.php", true));
                 } else {
