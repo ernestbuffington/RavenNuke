@@ -18,7 +18,7 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
- * Applied rules: Ernest Allen Buffington (TheGHost) 04/21/2023 7:00 PM
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:00 PM
  * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
  * CountOnNullRector (https://3v4l.org/Bndc9)
  * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
