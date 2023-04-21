@@ -10,6 +10,7 @@
  *
  *
  ***************************************************************************/
+ 
 /***************************************************************************
 * phpbb2 forums port version 2.1 (c) 2003 - Nuke Cops (http://nukecops.com)
 *
@@ -33,6 +34,7 @@
 * now reflecting phpbb2 standalone 2.0.4 that fixes some major SQL
 * injection exploits.
 ***************************************************************************/
+
 /***************************************************************************
  *   This file is part of the phpBB2 port to Nuke 6.0 (c) copyright 2002
  *   by Tom Nitzschner (tom@toms-home.com)
@@ -58,7 +60,11 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:14 PM
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Fix Magic Quotes
  ***************************************************************************/
+
 $forum_admin = "1";
 if ( !defined('IN_PHPBB') )
 {
@@ -67,73 +73,67 @@ if ( !defined('IN_PHPBB') )
 //$root_path = "./../../../";
 $root_path = "./../";
 error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
-@set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
+//set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
 
 //
 // addslashes to vars if magic_quotes_gpc is off
 // this is a security precaution to prevent someone
 // trying to break out of a SQL statement.
 //
-if( !@get_magic_quotes_gpc() )
+if (!function_exists('get_magic_quotes_runtime'))
 {
 	if( is_array($HTTP_GET_VARS) )
 	{
-		while( list($k, $v) = each($HTTP_GET_VARS) )
-		{
-			if( is_array($HTTP_GET_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_GET_VARS[$k]) )
-				{
-					$HTTP_GET_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_GET_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_GET_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_GET_VARS);
+		foreach ($HTTP_GET_VARS as $k => $v) {
+      if( is_array($HTTP_GET_VARS[$k]) )
+   			{
+   				foreach ($HTTP_GET_VARS[$k] as $k2 => $v2) {
+           $HTTP_GET_VARS[$k][$k2] = addslashes($v2);
+       }
+   				reset($HTTP_GET_VARS[$k]);
+   			}
+   			else
+   			{
+   				$HTTP_GET_VARS[$k] = addslashes($v);
+   			}
+  }
+		reset($HTTP_GET_VARS);
 	}
 
 	if( is_array($HTTP_POST_VARS) )
 	{
-		while( list($k, $v) = each($HTTP_POST_VARS) )
-		{
-			if( is_array($HTTP_POST_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_POST_VARS[$k]) )
-				{
-					$HTTP_POST_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_POST_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_POST_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_POST_VARS);
+		foreach ($HTTP_POST_VARS as $k => $v) {
+      if( is_array($HTTP_POST_VARS[$k]) )
+   			{
+   				foreach ($HTTP_POST_VARS[$k] as $k2 => $v2) {
+           $HTTP_POST_VARS[$k][$k2] = addslashes($v2);
+       }
+   				reset($HTTP_POST_VARS[$k]);
+   			}
+   			else
+   			{
+   				$HTTP_POST_VARS[$k] = addslashes($v);
+   			}
+  }
+		reset($HTTP_POST_VARS);
 	}
 
 	if( is_array($HTTP_COOKIE_VARS) )
 	{
-		while( list($k, $v) = each($HTTP_COOKIE_VARS) )
-		{
-			if( is_array($HTTP_COOKIE_VARS[$k]) )
-			{
-				while( list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]) )
-				{
-					$HTTP_COOKIE_VARS[$k][$k2] = addslashes($v2);
-				}
-				@reset($HTTP_COOKIE_VARS[$k]);
-			}
-			else
-			{
-				$HTTP_COOKIE_VARS[$k] = addslashes($v);
-			}
-		}
-		@reset($HTTP_COOKIE_VARS);
+		foreach ($HTTP_COOKIE_VARS as $k => $v) {
+      if( is_array($HTTP_COOKIE_VARS[$k]) )
+   			{
+   				foreach ($HTTP_COOKIE_VARS[$k] as $k2 => $v2) {
+           $HTTP_COOKIE_VARS[$k][$k2] = addslashes($v2);
+       }
+   				reset($HTTP_COOKIE_VARS[$k]);
+   			}
+   			else
+   			{
+   				$HTTP_COOKIE_VARS[$k] = addslashes($v);
+   			}
+  }
+		reset($HTTP_COOKIE_VARS);
 	}
 }
 
