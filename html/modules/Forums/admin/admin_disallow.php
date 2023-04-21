@@ -18,6 +18,9 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:59 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ *
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -111,7 +114,7 @@ if( trim($disallowed) == "" )
 else
 {
         $user = array();
-        for( $i = 0; $i < count($disallowed); $i++ )
+        for( $i = 0; $i < (is_countable($disallowed) ? count($disallowed) : 0); $i++ )
         {
                 $disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';
         }
