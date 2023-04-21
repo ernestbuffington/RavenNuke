@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS $prefix.`_nsnst_admins`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_admins` (`aid` varchar(25) NOT NULL default '', `login` varchar(25) NOT NULL default '', `password` varchar(40) NOT NULL default '', `password_md5` varchar(60) NOT NULL default '', `password_crypt` varchar(60) NOT NULL default '', `protected` tinyint(2) NOT NULL default '0', PRIMARY KEY  (`aid`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_admins` (`aid` varchar(25) NOT NULL default '', `login` varchar(25) NOT NULL default '', `password` varchar(40) NOT NULL default '', `password_md5` varchar(60) NOT NULL default '', `password_crypt` varchar(60) NOT NULL default '', `protected` tinyint(2) NOT NULL default '0', PRIMARY KEY  (`aid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_blocked_ips`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blocked_ips` (`ip_addr` varchar(15) NOT NULL default '', `ip_long` int(10) unsigned NOT NULL default '0', `user_id` int(11) NOT NULL default '1', `username` varchar(60) NOT NULL default '', `user_agent` text NOT NULL, `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `reason` tinyint(1) NOT NULL default '0', `query_string` text NOT NULL, `get_string` text NOT NULL, `post_string` text NOT NULL, `x_forward_for` varchar(32) NOT NULL default '', `client_ip` varchar(32) NOT NULL default '',`remote_addr` varchar(32) NOT NULL default '',`remote_port` varchar(11) NOT NULL default '', `request_method` varchar(10) NOT NULL default '', `expires` int(20) NOT NULL default '0', `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_addr`), KEY `ip_long` (`ip_long`), KEY `c2c` (`c2c`), KEY `date` (`date`), KEY `expires` (`expires`), KEY `reason` (`reason`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blocked_ips` (`ip_addr` varchar(15) NOT NULL default '', `ip_long` int(10) unsigned NOT NULL default '0', `user_id` int(11) NOT NULL default '1', `username` varchar(60) NOT NULL default '', `user_agent` text NOT NULL, `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `reason` tinyint(1) NOT NULL default '0', `query_string` text NOT NULL, `get_string` text NOT NULL, `post_string` text NOT NULL, `x_forward_for` varchar(32) NOT NULL default '', `client_ip` varchar(32) NOT NULL default '',`remote_addr` varchar(32) NOT NULL default '',`remote_port` varchar(11) NOT NULL default '', `request_method` varchar(10) NOT NULL default '', `expires` int(20) NOT NULL default '0', `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_addr`), KEY `ip_long` (`ip_long`), KEY `c2c` (`c2c`), KEY `date` (`date`), KEY `expires` (`expires`), KEY `reason` (`reason`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_blocked_ranges`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blocked_ranges` (`ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `reason` tinyint(1) NOT NULL default '0', `expires` int(20) NOT NULL default '0',  `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`), KEY `expires` (`expires`), KEY `reason` (`reason`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blocked_ranges` (`ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `reason` tinyint(1) NOT NULL default '0', `expires` int(20) NOT NULL default '0',  `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`), KEY `expires` (`expires`), KEY `reason` (`reason`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_blockers`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blockers` ( `blocker` int(4) NOT NULL default '0', `block_name` varchar(20) NOT NULL default '', `activate` int(4) NOT NULL default '0', `block_type` int(4) NOT NULL default '0', `email_lookup` int(4) NOT NULL default '0', `forward` varchar(255) NOT NULL default '', `reason` varchar(20) NOT NULL default '', `template` varchar(255) NOT NULL default '', `duration` int(20) NOT NULL default '0', `htaccess` int(4) NOT NULL default '0', `list` longtext NOT NULL, PRIMARY KEY  (`blocker`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_blockers` ( `blocker` int(4) NOT NULL default '0', `block_name` varchar(20) NOT NULL default '', `activate` int(4) NOT NULL default '0', `block_type` int(4) NOT NULL default '0', `email_lookup` int(4) NOT NULL default '0', `forward` varchar(255) NOT NULL default '', `reason` varchar(20) NOT NULL default '', `template` varchar(255) NOT NULL default '', `duration` int(20) NOT NULL default '0', `htaccess` int(4) NOT NULL default '0', `list` longtext NOT NULL, PRIMARY KEY  (`blocker`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO $prefix.`_nsnst_blockers` (`blocker`, `block_name`, `activate`, `block_type`, `email_lookup`, `forward`, `reason`, `template`, `duration`, `htaccess`, `list`) VALUES(0, 'other', 0, 0, 0, '', 'Abuse-Other', 'abuse_default.tpl', 0, 0, '');
 INSERT INTO $prefix.`_nsnst_blockers` (`blocker`, `block_name`, `activate`, `block_type`, `email_lookup`, `forward`, `reason`, `template`, `duration`, `htaccess`, `list`) VALUES(1, 'union', 1, 0, 0, '', 'Abuse-Union', 'abuse_union.tpl', 0, 0, '');
 INSERT INTO $prefix.`_nsnst_blockers` (`blocker`, `block_name`, `activate`, `block_type`, `email_lookup`, `forward`, `reason`, `template`, `duration`, `htaccess`, `list`) VALUES(2, 'clike', 1, 0, 0, '', 'Abuse-CLike', 'abuse_clike.tpl', 0, 0, '');
@@ -23,7 +23,7 @@ INSERT INTO $prefix.`_nsnst_blockers` (`blocker`, `block_name`, `activate`, `blo
 INSERT INTO $prefix.`_nsnst_blockers` (`blocker`, `block_name`, `activate`, `block_type`, `email_lookup`, `forward`, `reason`, `template`, `duration`, `htaccess`, `list`) VALUES(11, 'flood', 0, 0, 0, '', 'Abuse-Flood', 'abuse_flood.tpl', 0, 0, '');
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_cidrs`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_cidrs` ( `cidr` int(2) NOT NULL default '0', `hosts` int(10) NOT NULL default '0', `mask` varchar(15) NOT NULL default '', PRIMARY KEY  (`cidr`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_cidrs` ( `cidr` int(2) NOT NULL default '0', `hosts` int(10) NOT NULL default '0', `mask` varchar(15) NOT NULL default '', PRIMARY KEY  (`cidr`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO $prefix.`_nsnst_cidrs` (`cidr`, `hosts`, `mask`) VALUES(1, 2147483647, '127.255.255.255');
 INSERT INTO $prefix.`_nsnst_cidrs` (`cidr`, `hosts`, `mask`) VALUES(2, 1073741824, '63.255.255.255');
 INSERT INTO $prefix.`_nsnst_cidrs` (`cidr`, `hosts`, `mask`) VALUES(3, 536870912, '31.255.255.255');
@@ -58,7 +58,7 @@ INSERT INTO $prefix.`_nsnst_cidrs` (`cidr`, `hosts`, `mask`) VALUES(31, 2, '0.0.
 INSERT INTO $prefix.`_nsnst_cidrs` (`cidr`, `hosts`, `mask`) VALUES(32, 1, '0.0.0.0');
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_config`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_config` ( `config_name` varchar(255) NOT NULL default '', `config_value` longtext NOT NULL, PRIMARY KEY  (`config_name`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_config` ( `config_name` varchar(255) NOT NULL default '', `config_value` longtext NOT NULL, PRIMARY KEY  (`config_name`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO $prefix.`_nsnst_config` (`config_name`, `config_value`) VALUES('admin_contact', 'webmaster@yoursite.com');
 INSERT INTO $prefix.`_nsnst_config` (`config_name`, `config_value`) VALUES('blocked_clear', '0');
 INSERT INTO $prefix.`_nsnst_config` (`config_name`, `config_value`) VALUES('block_perpage', '50');
@@ -100,13 +100,13 @@ INSERT INTO $prefix.`_nsnst_config` (`config_name`, `config_value`) VALUES('trac
 INSERT INTO $prefix.`_nsnst_config` (`config_name`, `config_value`) VALUES('version_number', '2.6.03');
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_countries`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_countries` ( `c2c` char(2) NOT NULL default '', `country` varchar(60) NOT NULL default '', PRIMARY KEY  (`c2c`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_countries` ( `c2c` char(2) NOT NULL default '', `country` varchar(60) NOT NULL default '', PRIMARY KEY  (`c2c`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_excluded_ranges`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_excluded_ranges` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_excluded_ranges` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_harvesters`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_harvesters` ( `hid` int(2) NOT NULL auto_increment, `harvester` varchar(255) NOT NULL default '', PRIMARY KEY  (`harvester`), KEY `hid` (`hid`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_harvesters` ( `hid` int(2) NOT NULL auto_increment, `harvester` varchar(255) NOT NULL default '', PRIMARY KEY  (`harvester`), KEY `hid` (`hid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO $prefix.`_nsnst_harvesters` (`hid`, `harvester`) VALUES(1, '@yahoo.com');
 INSERT INTO $prefix.`_nsnst_harvesters` (`hid`, `harvester`) VALUES(2, 'alexibot');
 INSERT INTO $prefix.`_nsnst_harvesters` (`hid`, `harvester`) VALUES(3, 'alligator');
@@ -328,13 +328,13 @@ INSERT INTO $prefix.`_nsnst_harvesters` (`hid`, `harvester`) VALUES(218, 'ziggy'
 INSERT INTO $prefix.`_nsnst_harvesters` (`hid`, `harvester`) VALUES(219, 'zippy');
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_ip2country`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_ip2country` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `c2c` char(2) NOT NULL default '', PRIMARY KEY  (`ip_lo`,`ip_hi`,`c2c`), UNIQUE KEY `c2c` (`c2c`,`ip_hi`,`ip_lo`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_ip2country` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `c2c` char(2) NOT NULL default '', PRIMARY KEY  (`ip_lo`,`ip_hi`,`c2c`), UNIQUE KEY `c2c` (`c2c`,`ip_hi`,`ip_lo`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_protected_ranges`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_protected_ranges` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_protected_ranges` ( `ip_lo` int(10) unsigned NOT NULL default '0', `ip_hi` int(10) unsigned NOT NULL default '0', `date` int(20) NOT NULL default '0', `notes` text NOT NULL, `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`ip_lo`,`ip_hi`), KEY `c2c` (`c2c`), KEY `date` (`date`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_referers`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_referers` ( `rid` int(2) NOT NULL auto_increment, `referer` varchar(255) NOT NULL default '', PRIMARY KEY  (`referer`), KEY `rid` (`rid`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_referers` ( `rid` int(2) NOT NULL auto_increment, `referer` varchar(255) NOT NULL default '', PRIMARY KEY  (`referer`), KEY `rid` (`rid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO $prefix.`_nsnst_referers` (`rid`, `referer`) VALUES(1, '121hr.com');
 INSERT INTO $prefix.`_nsnst_referers` (`rid`, `referer`) VALUES(2, '1st-call.net');
 INSERT INTO $prefix.`_nsnst_referers` (`rid`, `referer`) VALUES(3, '1stcool.com');
@@ -702,7 +702,7 @@ INSERT INTO $prefix.`_nsnst_referers` (`rid`, `referer`) VALUES(364, 'zhaori-foo
 INSERT INTO $prefix.`_nsnst_referers` (`rid`, `referer`) VALUES(365, 'zwiebelbacke.com');
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_strings`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_strings` ( `sid` int(2) NOT NULL auto_increment, `string` varchar(255) NOT NULL default '', PRIMARY KEY  (`string`), KEY `sid` (`sid`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_strings` ( `sid` int(2) NOT NULL auto_increment, `string` varchar(255) NOT NULL default '', PRIMARY KEY  (`string`), KEY `sid` (`sid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_nsnst_tracked_ips`;
-CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_tracked_ips` ( `tid` int(10) NOT NULL auto_increment, `ip_addr` varchar(15) NOT NULL default '', `ip_long` int(10) unsigned NOT NULL default '0', `user_id` int(11) NOT NULL default '1', `username` varchar(60) NOT NULL default '', `user_agent` text NOT NULL, `refered_from` text NOT NULL, `date` int(20) NOT NULL default '0', `page` text NOT NULL, `x_forward_for` varchar(32) NOT NULL default '',  `client_ip` varchar(32) NOT NULL default '', `remote_addr` varchar(32) NOT NULL default '', `remote_port` varchar(11) NOT NULL default '', `request_method` varchar(10) NOT NULL default '',  `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`tid`), KEY `ip_addr` (`ip_addr`), KEY `ip_long` (`ip_long`), KEY `user_id` (`user_id`), KEY `username` (`username`), KEY `user_agent` (`user_agent`(255)), KEY `refered_from` (`refered_from`(255)), KEY `date` (`date`), KEY `page` (`page`(255)), KEY `c2c` (`c2c`)) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS $prefix.`_nsnst_tracked_ips` ( `tid` int(10) NOT NULL auto_increment, `ip_addr` varchar(15) NOT NULL default '', `ip_long` int(10) unsigned NOT NULL default '0', `user_id` int(11) NOT NULL default '1', `username` varchar(60) NOT NULL default '', `user_agent` text NOT NULL, `refered_from` text NOT NULL, `date` int(20) NOT NULL default '0', `page` text NOT NULL, `x_forward_for` varchar(32) NOT NULL default '',  `client_ip` varchar(32) NOT NULL default '', `remote_addr` varchar(32) NOT NULL default '', `remote_port` varchar(11) NOT NULL default '', `request_method` varchar(10) NOT NULL default '',  `c2c` char(2) NOT NULL default '00', PRIMARY KEY  (`tid`), KEY `ip_addr` (`ip_addr`), KEY `ip_long` (`ip_long`), KEY `user_id` (`user_id`), KEY `username` (`username`), KEY `user_agent` (`user_agent`(255)), KEY `refered_from` (`refered_from`(255)), KEY `date` (`date`), KEY `page` (`page`(255)), KEY `c2c` (`c2c`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

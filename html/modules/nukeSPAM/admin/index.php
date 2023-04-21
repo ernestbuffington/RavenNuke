@@ -23,7 +23,7 @@ if ( !function_exists('seoCheckInstall') ) {
 			`config_name` varchar(150) NOT NULL,
 			`config_value` text NOT NULL,
 			PRIMARY KEY  (`config_type`,`config_name`)
-			) ENGINE=MyISAM;';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 		seoCheckCreateTable($existSQL, $createSQL);
 
 		#$existSQL = 'SELECT 1 FROM `'.$prefix.'_seo_config` INTO @x where config_type = \'nukeSPAM\' LIMIT 0';
@@ -81,7 +81,7 @@ if ( !function_exists('seoCheckInstall') ) {
 			`matched` VARCHAR(255) NOT NULL ,
 			`added` INT( 11 ) NOT NULL ,
 			`count` INT UNSIGNED NOT NULL
-			) ENGINE=MyISAM;';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 		seoCheckCreateTable($existSQL, $createSQL);
 
 		// Create nukeSPAM whitelist table
@@ -92,7 +92,7 @@ if ( !function_exists('seoCheckInstall') ) {
 			`wltype` CHAR( 1 ) NOT NULL ,
 			`wlvalue` VARCHAR( 255 ) NOT NULL ,
 			INDEX (  `wltype` ,  `wlvalue`  )
-			) ENGINE=MyISAM;';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 		seoCheckCreateTable($existSQL, $createSQL);
 
 		// Add blocklist.de database

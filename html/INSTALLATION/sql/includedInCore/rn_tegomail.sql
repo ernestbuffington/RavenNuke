@@ -11,6 +11,6 @@ CREATE TABLE `nuke_mail_config` (
   `qmail_path` varchar(255) NOT NULL default '/var/qmail/bin/sendmail',
   PRIMARY KEY  (`mailer`),
   UNIQUE KEY `mailer` (`mailer`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `nuke_mail_config` VALUES(0, 1, 'smtp.tusitio.com', 'smtp.tusitio.com', 25, 0, 'tu@tusitio.com', 'tupassword', '/usr/sbin/sendmail', '/var/qmail/bin/sendmail');

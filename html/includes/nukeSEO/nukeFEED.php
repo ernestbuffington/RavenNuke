@@ -417,7 +417,7 @@ if ( !function_exists('seoCheckInstall') )
       `config_name` varchar(150) NOT NULL,
       `config_value` text NOT NULL,
       PRIMARY KEY  (`config_type`,`config_name`)
-      ) TYPE=MyISAM;';
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     $createSQL[] = "INSERT INTO `".$prefix."_seo_config` VALUES ('Feeds', 'use_fb', '1');";
     $createSQL[] = "INSERT INTO `".$prefix."_seo_config` VALUES ('Feeds', 'feedburner_url', 'http://feeds.feedburner.com');";
     $createSQL[] = "INSERT INTO `".$prefix."_seo_config` VALUES ('Feeds', 'version_check', '0');";
@@ -438,7 +438,7 @@ if ( !function_exists('seoCheckInstall') )
       `title` varchar(255) NOT NULL,
       `seo_module` varchar(255) NOT NULL,
       PRIMARY KEY  (`title`,`seo_module`)
-      ) TYPE=MyISAM;';
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     seoCheckCreateTable($existSQL, $createSQL);
     # Feeds
     $existSQL = 'SELECT 1 FROM `'.$prefix.'_seo_feed` LIMIT 0';
@@ -460,7 +460,7 @@ if ( !function_exists('seoCheckInstall') )
       `feedburner_address` varchar(100) NOT NULL,
       PRIMARY KEY  (`fid`),
       KEY `content` (`content`,`title`)
-      ) TYPE=MyISAM;';
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     $createSQL[] = "INSERT INTO `".$prefix."_seo_feed` VALUES (1, 'News', '"._nF_NEWS."', 'module', 0, '".$sitename." "._nF_NEWS."', '', 'recent', '10', 1, '', '', '', '');";
     $createSQL[] = "INSERT INTO `".$prefix."_seo_feed` VALUES (2, 'Forums', '"._nF_FORUMS."', 'module', 0, '".$sitename." "._nF_FORUMS."', '', 'recent', '10', 1, '', '', '', '');";
     seoCheckCreateTable($existSQL, $createSQL);
@@ -477,7 +477,7 @@ if ( !function_exists('seoCheckInstall') )
       `url` varchar(255) NOT NULL,
       `active` int(1) NOT NULL,
       PRIMARY KEY  (`sid`)
-      ) TYPE=MyISAM;';
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
     $createSQL[] = "INSERT INTO `".$prefix."_seo_subscriptions` VALUES (1, 'aggregator', '01 Google Reader', 'Add to Google', 'images/nukeFEED/subscribe/add-to-google-plus.gif', '', 'http://fusion.google.com/add?feedurl={URL}', 1);";
     $createSQL[] = "INSERT INTO `".$prefix."_seo_subscriptions` VALUES (2, 'aggregator', '02 My Yahoo!', 'Add to My Yahoo!', 'images/nukeFEED/subscribe/myYahoo.gif', '', 'http://add.my.yahoo.com/rss?url={URL}', 1);";
     $createSQL[] = "INSERT INTO `".$prefix."_seo_subscriptions` VALUES (3, 'aggregator', '03 My AOL', 'Add to My AOL', 'images/nukeFEED/subscribe/myAOL.gif', '', 'http://feeds.my.aol.com/add.jsp?url={URL}', 1);";

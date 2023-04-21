@@ -2,18 +2,20 @@
 /*
 Written and solely owned by Raven Web Services, LLC
 Not for distribution other than by Raven Web Services, LLC
-Copyright 2005-2018
+Copyright 2005-2023
 */
 
 session_start();
 
+global $noConfigFile;
+
 if (!defined('INCLUDE_PATH')) define('INCLUDE_PATH', '../');
 $nukeConfigFile = INCLUDE_PATH . 'config.php';
 if (file_exists($nukeConfigFile)) {
-	$noConfigFile = FALSE;
+	$noConfigFile = false;
 	require_once $nukeConfigFile;
 } else {
-	$noConfigFile = TRUE;
+	$noConfigFile = true;
 }
 
 define('_rnINSTALLATION_FOLDER', INCLUDE_PATH . basename(dirname(__FILE__)) . '/');
@@ -24,13 +26,13 @@ require_once _rnINSTALLATION_LANG_FILE;
 
 if($display_errors) {
 	error_reporting(E_ALL);
-	@ini_set('display_errors', 1);
+	ini_set('display_errors', 1);
 } else {
 	error_reporting(E_ALL &~ E_NOTICE);
-	@ini_set('display_errors', 0);
+	ini_set('display_errors', 0);
 }
 
-if ($debugShowPathSettings === TRUE) {
+if ($debugShowPathSettings === true) {
 /*
  Rudimentry - for diagnosing problems
  */
@@ -51,7 +53,7 @@ if ($debugShowPathSettings === TRUE) {
 }
 
 require_once INCLUDE_PATH . 'includes/mimetype.php';
-if ($noConfigFile) {
+if ($noConfigFile == true) {
 	$dbhost = '';
 	$dbuname = '';
 	$dbname = '';
@@ -74,7 +76,7 @@ if(!isset($_SESSION['lip5'])) $_SESSION['lip5'] = _rnNOT_LOADED;
 if(!isset($_SESSION['lip6'])) $_SESSION['lip6'] = _rnNOT_LOADED;
 if(!isset($_SESSION['lip7'])) $_SESSION['lip7'] = _rnNOT_LOADED;
 if(!isset($_SESSION['lip8'])) $_SESSION['lip8'] = _rnNOT_LOADED;
-if(!isset($_SESSION['noip2c'])) $_SESSION['noip2c'] = FALSE;
+if(!isset($_SESSION['noip2c'])) $_SESSION['noip2c'] = false;
 if(!isset($_GET['setup'])) $_GET['setup'] = '';
 ?>
 <meta name="rating" content="general" />
@@ -97,7 +99,7 @@ if(!isset($_GET['setup'])) $_GET['setup'] = '';
 <div class="c1">
 	<img style="float:left;" src="images/logo.gif" border="0" alt="" />
 	<span class="c5">
-		<?php echo _rnRAVENNUKE;?>&trade; &copy; 2005-2018 - <?php echo _rnMYSQL_TABLE_INSTALLER;?>
+		<?php echo _rnRAVENNUKE;?>&trade; &copy; 2005-2023 - <?php echo _rnMYSQL_TABLE_INSTALLER;?>
 	</span>
 </div>
 <br /><br /><br />
@@ -113,9 +115,9 @@ ini_set('display_errors','on');
 ini_set('mysql.connect_timeout',120);
 $dbCheck = array();
 echo '<span class="msg">' , _rnCONFIG_FILE_FOUND , '</span><br />';
-$conn = @mysqli_connect($dbhost, $dbuname, $dbpass) or die(rnInstallErr(2));
+$conn = mysqli_connect($dbhost, $dbuname, $dbpass) or die(rnInstallErr(2));
 echo '<span class="msg">' , _rnSUCCESS_CONNECT_HOST , '</span>';
-$db = @mysqli_select_db($conn, $dbname) or die(rnInstallErr(3));
+$db = mysqli_select_db($conn, $dbname) or die(rnInstallErr(3));
 echo '<span class="msg">' , _rnFOUND_DB , '</span>'
 	, '<span class="msg">' , _rnTABLE_PREFIX , '</span>';
 
@@ -145,7 +147,7 @@ global $conn;
 						<td>
 							<form name="lsec" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<span class="c3">
-									<input type="button"  name="btnCheckServerEnvironment" class="button2" id="btnCheckServerEnvironment" readonly="readonly" size="75" onfocus="blur()" onclick="browserWindowSize();dhtmlmodal.open('serverEnvironmentCheck', 'iframe', 'serverEnvironmentCheck.php', '<?php echo _rnLOAD_SERVER_ENVIRONMENT_CHECK;?>', 'width='+bwW+',height='+bwH+',center=1,resize=1,scrolling=1');" value="<?php echo _rnRUN.' '. _rnLOAD_SERVER_ENVIRONMENT_CHECK;?>" />
+									<input type="button"  name="btnCheckServerEnvironment" class="button2" id="btnCheckServerEnvironment" readonly size="75" onFocus="blur()" onClick="browserWindowSize();dhtmlmodal.open('serverEnvironmentCheck', 'iframe', 'serverEnvironmentCheck.php', '<?php echo _rnLOAD_SERVER_ENVIRONMENT_CHECK;?>', 'width='+bwW+',height='+bwH+',center=1,resize=1,scrolling=1');" value="<?php echo _rnRUN.' '. _rnLOAD_SERVER_ENVIRONMENT_CHECK;?>" />
 								</span>
 								<input type="hidden" name="op" value="lsec" />
 							</form>
@@ -161,7 +163,7 @@ global $conn;
 						<td>
 							<form name="lct" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP1;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_CORE_TABLES;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lct'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lct'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lct" />
 							</form>
 						</td>
@@ -176,7 +178,7 @@ global $conn;
 						<td>
 							<form name="lns" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP2;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_NUKESENTINEL_TABLES;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lns'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lns'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lns" />
 							</form>
 						</td>
@@ -197,7 +199,7 @@ global $conn;
 								</p>
 								<hr />
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3a;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA1_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip1'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip1'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip1" />
 							</form>
 						</td>
@@ -212,7 +214,7 @@ global $conn;
 						<td>
 							<form name="lip2" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3b;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA2_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip2'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip2'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip2" />
 							</form>
 						</td>
@@ -227,7 +229,7 @@ global $conn;
 						<td>
 							<form name="lip3" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3c;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA3_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip3'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip3'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip3" />
 							</form>
 						</td>
@@ -242,7 +244,7 @@ global $conn;
 						<td>
 							<form name="lip4" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3d;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA4_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip4'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip4'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip4" />
 							</form>
 						</td>
@@ -257,7 +259,7 @@ global $conn;
 						<td>
 							<form name="lip5" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3e;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA5_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip5'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip5'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip5" />
 							</form>
 						</td>
@@ -272,7 +274,7 @@ global $conn;
 						<td>
 							<form name="lip6" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3f;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA6_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip6'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip6'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip6" />
 							</form>
 						</td>
@@ -287,7 +289,7 @@ global $conn;
 						<td>
 							<form name="lip7" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3g;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA7_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip7'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip7'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip7" />
 							</form>
 						</td>
@@ -302,7 +304,7 @@ global $conn;
 						<td>
 							<form name="lip8" method="post" action="<?php $_SERVER['PHP_SELF'];?>">
 								<input class="button" type="submit" name="<?php echo _rnSUBMIT;?>" value="<?php echo _rnSTEP3h;?>&nbsp;:&nbsp;&nbsp;<?php echo _rnLOAD_IP2COUNTRY_DATA8_10;?>" />
-								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip8'];?>" readonly="readonly" size="75" onfocus="blur()" /></span>
+								&nbsp;&nbsp;<span class="c3"><input class="inputbox" name="session" value="<?php echo $_SESSION['lip8'];?>" readonly size="75" onFocus="blur()" /></span>
 								<input type="hidden" name="op" value="lip8" />
 							</form>
 						</td>
@@ -320,7 +322,7 @@ if ($_GET['setup']) {
 ?>
 	<hr />
 	<div align="center" class="msg">
-		<?php echo _rnCOPYRIGHT;?> 2005-2018 &copy;Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC -- <?php echo _rnALL_RIGHTS;?> --<br />
+		<?php echo _rnCOPYRIGHT;?> 2005-2023 &copy;Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC -- <?php echo _rnALL_RIGHTS;?> --<br />
 		<?php echo _rnNO_PORTION;?> Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC
 	</div>
 	<hr />
@@ -346,19 +348,23 @@ reset($_POST);
 
 if (strlen($_POST[_rnSUBMIT]) > 0 && $isValidOp && $_POST['op'] !== 'lsec') {
 	if ($_POST['op']=='lct') {
-		$rnSql = array('rnCoreSql' => 'rn_core.sql');
+		$rnSql = array(
+			'rnCoreSql' => 'rn_core.sql',
+			'rnNukeSentinelSql'=>'ns_core.sql',
+		);
 	} elseif ($_POST['op']=='lns') {
-		$sql = 'TRUNCATE TABLE `' . $prefix . '_nsnst_countries`';
-		$rc = @mysqli_query($conn, $sql);
+
+ 		$sql = 'TRUNCATE TABLE `' . $prefix . '_nsnst_countries`';
+		$rc = mysqli_query($conn, $sql);
 		$rnSql = array(
 			'rnNukeSentinelSql'=>'ns_core.sql',
 			'rnNukeSentinelSql0'=>'ns_countries.dat.gz',
 		);
 	} elseif ($_POST['op'] == 'lip1') {
 		$sql = 'TRUNCATE TABLE `' . $prefix . '_nsnst_ip2country`';
-		$rc = @mysqli_query($conn, $sql);
+		$rc = mysqli_query($conn, $sql);
 		$sql = 'ALTER TABLE `' . $prefix . '_nsnst_ip2country` DISABLE KEYS';
-		$rc = @mysqli_query($conn, $sql);
+		$rc = mysqli_query($conn, $sql);
 		$rnSql = array(
 			'ip2country1sql'=>'ns_ip2c_01.dat.gz',
 			'ip2country2sql'=>'ns_ip2c_02.dat.gz'
@@ -395,7 +401,7 @@ if (strlen($_POST[_rnSUBMIT]) > 0 && $isValidOp && $_POST['op'] !== 'lsec') {
 		);
 	} elseif ($_POST['op'] == 'lip8') {
 		$sql = 'ALTER TABLE `' . $prefix . '_nsnst_ip2country` ENABLE KEYS';
-		$rc = @mysqli_query($conn, $sql);
+		$rc = mysqli_query($conn, $sql);
 		$rnSql = array(
 			'ip2country15sql'=>'ns_ip2c_15.dat.gz',
 			'ip2country16sql'=>'ns_ip2c_16.dat.gz'
@@ -452,7 +458,7 @@ MysQL dump comment types
 				if (empty($line) || strlen($line) == 0) continue;
 			}
 			$cnt++;
-			$rc = @mysqli_query($conn, $line);
+			$rc = mysqli_query($conn, $line);
 			if (!$rc && !in_array(mysqli_errno($conn), $byPassSqlErrors)) {
 				rnInstallErr(4, $value, $lineNumberInFile, $line);
 				die();

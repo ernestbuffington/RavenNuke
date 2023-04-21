@@ -3,7 +3,7 @@ CREATE TABLE `nuke_bbattachments_config` (
   config_name varchar(255) NOT NULL,
   config_value varchar(255) NOT NULL,
   PRIMARY KEY (config_name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO `nuke_bbattachments_config` (`config_name`, `config_value`) VALUES ('upload_dir','modules/Forums/files');
 INSERT INTO `nuke_bbattachments_config` (`config_name`, `config_value`) VALUES ('upload_img','modules/Forums/images/icon_clip.gif');
 INSERT INTO `nuke_bbattachments_config` (`config_name`, `config_value`) VALUES ('topic_icon','modules/Forums/images/icon_clip.gif');
@@ -44,7 +44,7 @@ CREATE TABLE `nuke_bbforbidden_extensions` (
   ext_id mediumint(8) UNSIGNED NOT NULL auto_increment,
   extension varchar(100) NOT NULL,
   PRIMARY KEY (ext_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO `nuke_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (1,'php');
 INSERT INTO `nuke_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (2,'php3');
 INSERT INTO `nuke_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (3,'php4');
@@ -66,7 +66,7 @@ CREATE TABLE `nuke_bbextension_groups` (
   max_filesize int(20) DEFAULT '0' NOT NULL,
   forum_permissions varchar(255) default '' NOT NULL,
   PRIMARY KEY group_id (group_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO `nuke_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (1,'Images',1,1,1,'',0,'');
 INSERT INTO `nuke_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (2,'Archives',0,1,1,'',0,'');
 INSERT INTO `nuke_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (3,'Plain Text',0,0,1,'',0,'');
@@ -82,7 +82,7 @@ CREATE TABLE `nuke_bbextensions` (
   extension varchar(100) NOT NULL,
   comment varchar(100),
   PRIMARY KEY ext_id (ext_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO `nuke_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (1, 1,'gif', '');
 INSERT INTO `nuke_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (2, 1,'png', '');
 INSERT INTO `nuke_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (3, 1,'jpeg', '');
@@ -128,7 +128,7 @@ CREATE TABLE `nuke_bbattachments_desc` (
   KEY `filetime` (`filetime`),
   KEY `physical_filename` (`physical_filename`(10)),
   KEY `filesize` (`filesize`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `nuke_bbattachments`;
 CREATE TABLE `nuke_bbattachments` (
@@ -141,7 +141,7 @@ CREATE TABLE `nuke_bbattachments` (
   KEY `attach_id_privmsgs_id` (`attach_id`, `privmsgs_id`),
   KEY `post_id` (`post_id`),
   KEY `privmsgs_id` (`privmsgs_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `nuke_bbquota_limits`;
 CREATE TABLE `nuke_bbquota_limits` (
@@ -149,7 +149,7 @@ CREATE TABLE `nuke_bbquota_limits` (
   `quota_desc` varchar(20) NOT NULL default '',
   `quota_limit` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`quota_limit_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 INSERT INTO `nuke_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (1, 'Low', 262144);
 INSERT INTO `nuke_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (2, 'Medium', 2097152);
 INSERT INTO `nuke_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (3, 'High', 5242880);
@@ -161,7 +161,7 @@ CREATE TABLE `nuke_bbattach_quota` (
   `quota_type` smallint(2) NOT NULL default '0',
   `quota_limit_id` mediumint(8) unsigned NOT NULL default '0',
   KEY `quota_type` (`quota_type`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 ALTER TABLE `nuke_bbforums` ADD `auth_download` TINYINT(2) DEFAULT '0' NOT NULL;
 ALTER TABLE `nuke_bbauth_access` ADD `auth_download` TINYINT(1) DEFAULT '0' NOT NULL;

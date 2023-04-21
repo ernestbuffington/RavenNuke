@@ -30,7 +30,7 @@ define('_rnSTEP3i','Step 3i');
 define('_rnSTEP3j','Step 3j');
 define('_rnSUBMIT','submit');
 define('_rnLOAD_CORE_TABLES','Load Core Tables');
-define('_rnLOAD_NUKESENTINEL_TABLES','Load NukeSentinel&trade; Tables');
+define('_rnLOAD_NUKESENTINEL_TABLES','Load NukeSentinel&trade; Data');
 define('_rnLOAD_IP2COUNTRY_DATA','Load IP2COUNTRY Data');
 define('_rnLOAD_IP2COUNTRY_DATA1_10' ,'Load IP2COUNTRY Data Part 1/8');
 define('_rnLOAD_IP2COUNTRY_DATA2_10' ,'Load IP2COUNTRY Data Part 2/8');

@@ -2,7 +2,7 @@
 /**
  * Written and solely owned by Raven Web Services, LLC
  * Not for distribution other than by Raven Web Services, LLC
- * Copyright 2005-2018
+ * Copyright 2005-2023
  *
  * INSTRUCTIONS FOR NEW VERSION UPDATES:
  *
@@ -32,10 +32,10 @@ if (file_exists($nukeConfigFile)) {
 
 if($display_errors) {
 	error_reporting(E_ALL);
-	@ini_set('display_errors', 1);
+	ini_set('display_errors', 1);
 } else {
 	error_reporting(E_ALL &~ E_NOTICE);
-	@ini_set('display_errors', 0);
+	ini_set('display_errors', 0);
 }
 
 define('_rnINSTALLATION_LANG_FILE', _rnINSTALLATION_FOLDER . 'language/' . $useLanguageFile . '.php');
@@ -152,7 +152,7 @@ echo '
 <body class="c1">
 <div class="c1">
 	<img style="float:left;" src="images/logo.gif" border="0" alt="" />
-	<span class="c5">' , _rnRAVENNUKE , '&trade; &copy; 2005-2018 - v' , RAVENNUKE_VERSION_FRIENDLY , ' Database Upgrade Script</span>
+	<span class="c5">' , _rnRAVENNUKE , '&trade; &copy; 2005-2023 - v' , RAVENNUKE_VERSION_FRIENDLY , ' Database Upgrade Script</span>
 </div>
 <br /><br /><br />
 <div>
@@ -249,7 +249,7 @@ if ($update == 1) {
 
 echo '<br /><br /><hr />'
 	, '<div align="center" class="msg">'
-	, _rnCOPYRIGHT , ' 2005-2018 &copy;Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC -- ' , _rnALL_RIGHTS , ' --<br />'
+	, _rnCOPYRIGHT , ' 2005-2023 &copy;Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC -- ' , _rnALL_RIGHTS , ' --<br />'
 	, _rnNO_PORTION , ' Raven Web Services<span class="c1"><sup>&trade;</sup></span>, LLC'
 	, '</div>'
 	, '<hr />'
@@ -434,13 +434,13 @@ function rn20202() {
 	$sql = "ALTER TABLE ".$prefix."_banner ADD INDEX `bid` (bid);";
 	sqlexec($sql);
 
-	$sql = "CREATE TABLE ".$prefix."_banner_clients (`cid` int(11) NOT NULL auto_increment, `name` varchar(60) NOT NULL default '', `contact` varchar(60) NOT NULL default '', `email` varchar(60) NOT NULL default '', `login` varchar(10) NOT NULL default '', `passwd` varchar(10) NOT NULL default '', `extrainfo` text NOT NULL default '', PRIMARY KEY  (`cid`), KEY `cid` (`cid`)) TYPE=MyISAM AUTO_INCREMENT=1";
+	$sql = "CREATE TABLE ".$prefix."_banner_clients (`cid` int(11) NOT NULL auto_increment, `name` varchar(60) NOT NULL default '', `contact` varchar(60) NOT NULL default '', `email` varchar(60) NOT NULL default '', `login` varchar(10) NOT NULL default '', `passwd` varchar(10) NOT NULL default '', `extrainfo` text NOT NULL default '', PRIMARY KEY  (`cid`), KEY `cid` (`cid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1";
 	sqlexec($sql);
 
-	$sql = "CREATE TABLE ".$prefix."_banner_plans (`pid` int(10) NOT NULL auto_increment, `active` tinyint(1) NOT NULL default '0', `name` varchar(255) NOT NULL default '', `description` text NOT NULL default '', `delivery` varchar(10) NOT NULL default '', `delivery_type` varchar(25) NOT NULL default '', `price` varchar(25) NOT NULL default '0', `buy_links` text NOT NULL default '', PRIMARY KEY  (`pid`)) TYPE=MyISAM AUTO_INCREMENT=1";
+	$sql = "CREATE TABLE ".$prefix."_banner_plans (`pid` int(10) NOT NULL auto_increment, `active` tinyint(1) NOT NULL default '0', `name` varchar(255) NOT NULL default '', `description` text NOT NULL default '', `delivery` varchar(10) NOT NULL default '', `delivery_type` varchar(25) NOT NULL default '', `price` varchar(25) NOT NULL default '0', `buy_links` text NOT NULL default '', PRIMARY KEY  (`pid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1";
 	sqlexec($sql);
 
-	$sql = "CREATE TABLE ".$prefix."_banner_positions (`apid` int(10) NOT NULL auto_increment, `position_number` int(5) NOT NULL default '0', `position_name` varchar(255) NOT NULL default '', PRIMARY KEY  (`apid`), KEY `position_number` (`position_number`)) TYPE=MyISAM AUTO_INCREMENT=3";
+	$sql = "CREATE TABLE ".$prefix."_banner_positions (`apid` int(10) NOT NULL auto_increment, `position_number` int(5) NOT NULL default '0', `position_name` varchar(255) NOT NULL default '', PRIMARY KEY  (`apid`), KEY `position_number` (`position_number`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=3";
 	sqlexec($sql);
 
 	$sql = "INSERT INTO ".$prefix."_banner_positions VALUES (1, 0, 'Page Top');";
@@ -449,7 +449,7 @@ function rn20202() {
 	$sql = "INSERT INTO ".$prefix."_banner_positions VALUES (2, 1, 'Page Header')";
 	sqlexec($sql);
 
-	$sql = "CREATE TABLE ".$prefix."_banner_terms (`terms_body` text NOT NULL default '', `country` varchar(255) NOT NULL default '') TYPE=MyISAM";
+	$sql = "CREATE TABLE ".$prefix."_banner_terms (`terms_body` text NOT NULL default '', `country` varchar(255) NOT NULL default '') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 	sqlexec($sql);
 
 	$sql = 'INSERT INTO '. $prefix.'_banner_terms  VALUES ('. '\'<div align="justify"><strong>Introduction:</strong> This Agreement between you and [sitename] consists of these Terms and Conditions. &quot;You&quot; or &quot;Advertiser&quot; means the entity identified in this enrollment form, and/or any agency acting on its behalf, which shall also be bound by the terms of this Agreement. Please read very carefully these Terms and Conditions.<br /><strong><br />Uses:</strong> You agree that your ads may be placed on (i) [sitename] web site and (ii) Any ads may be modified without your consent to comply with any policy of [sitename]. [sitename] reserves the right to, and in its sole discretion may, at any time review, reject, modify, or remove any ad. No liability of [sitename] and/or its owner(s) shall result from any such decision.<br /><br /></div><div align="justify"><strong>Parties&rsquot; Responsibilities:</strong> You are responsible of your own site and/or service advertised in [sitename] web site. You are solely responsible for the advertising image creation, advertising text and for the content of your ads, including URL links. [sitename] is not responsible for anything regarding your Web site(s) including, but not limited to, maintenance of your Web site(s), order entry, customer service, payment processing, shipping, cancellations or returns.<br /><br /></div><div align="justify"><strong>Impressions Count:</strong> Any hit to [sitename] web site is counted as an impression. Due to our advertising price we don&rsquot;t discriminate from users or automated robots. Even if your access to [sitename] web site and see your own banner ad it will be counted as a valid impression. Only in the case of [sitename] web site administrator, the impressions will not be counted.<br /><br /></div><div align="justify"><strong>Termination, Cancellation:</strong> [sitename] may at any time, in its sole discretion, terminate the Campaign, terminate this Agreement, or cancel any ad(s) or your use of any Target. [sitename] will notify you via email of any such termination or cancellation, which shall be effective immediately. No refund will be made for any reason. Remaining impressions will be stored in a database and you&rsquot;ll be able to request another campaign to complete your inventory. You may cancel any ad and/or terminate this Agreement with or without cause at any time. Termination of your account shall be effective when [sitename] receives your notice via email. No refund will be made for any reason. Remaining impressions will be stored in a database for future uses by you and/or your company.<br /><br /></div><div align="justify"><strong>Content:</strong> [sitename] web site doesn&rsquo;t accepts advertising that contains: (i) pornography, (ii) explicit adult content, (iii) moral questionable content, (iv) illegal content of any kind, (v) illegal drugs promotion, (vi) racism, (vii) politics content, (viii) religious content, and/or (ix) fraudulent suspicious content. If your advertising and/or target web site has any of this content and you purchased an advertising package, you&rsquo;ll not receive refund of any kind but your banners ads impressions will be stored for future use.<br /><br /></div><div align="justify"><strong>Confidentiality:</strong> Each party agrees not to disclose Confidential Information of the other party without prior written consent except as provided herein. &quot;Confidential  Information&quot; includes (i) ads, prior to publication, (ii) submissions or modifications relating to any advertising campaign, (iii) clickthrough rates or other statistics (except in an aggregated form that includes no identifiable information about you), and (iv) any other information designated in writing as &quot;Confidential&quot;. It does not include information that has become publicly known through no breach by a party, or has been (i) independently developed without access to the other party&rsquo;s Confidential Information; (ii) rightfully received from a third party; or (iii) required to be disclosed by law or by a governmental authority.<br /><br /></div><div align="justify"><strong>No Guarantee:</strong> [sitename] makes no guarantee regarding the levels of clicks for any ad on its site. [sitename] may offer the same Target to more than one advertiser. You may not receive exclusivity unless special private contract between [sitename] and you.<br /><br /></div><div align="justify"><strong>No Warranty:</strong> [sitename] MAKES NO WARRANTY, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION WITH RESPECT TO ADVERTISING AND OTHER SERVICES, AND EXPRESSLY DISCLAIMS THE WARRANTIES OR CONDITIONS OF NONINFRINGEMENT, MERCHANTABILITY AND FITNESS FOR ANY PARTICULAR PURPOSE.<br /><br /></div><div align="justify"><strong>Limitations of Liability:</strong> In no event shall [sitename] be liable for any act or omission, or any event directly or indirectly resulting from any act or omission of Advertiser, Partner, or any third parties (if any). EXCEPT FOR THE PARTIES&rsquo; INDEMNIFICATION AND CONFIDENTIALITY OBLIGATIONS HEREUNDER, (i) IN NO EVENT SHALL EITHER PARTY BE LIABLE UNDER THIS AGREEMENT FOR ANY CONSEQUENTIAL, SPECIAL, INDIRECT, EXEMPLARY, PUNITIVE, OR OTHER DAMAGES WHETHER IN CONTRACT, TORT OR ANY OTHER LEGAL THEORY, EVEN IF SUCH PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND NOTWITHSTANDING ANY FAILURE OF ESSENTIAL PURPOSE OF ANY LIMITED REMEDY AND (ii) [sitename] AGGREGATE LIABILITY TO ADVERTISER UNDER THIS AGREEMENT FOR ANY CLAIM IS LIMITED TO THE AMOUNT PAID TO [sitename] BY ADVERTISER FOR THE AD GIVING RISE TO THE CLAIM. Each party acknowledges that the other party has entered into this Agreement relying on the limitations of liability stated herein and that those limitations are an essential basis of the bargain between the parties. Without limiting the foregoing and except for payment obligations, neither party shall have any liability for any failure or delay resulting from any condition beyond the reasonable control of such party, including but not limited to governmental action or acts of terrorism, earthquake or other acts of God, labor conditions, and power failures.<br /><br /></div><div align="justify"><strong>Payment:</strong> You agree to pay in advance the cost of the advertising. [sitename] will not setup any banner ads campaign(s) unless the payment process is complete. [sitename] may change its pricing at any time without prior notice. If you have an advertising campaign running and/or impressions stored for future use for any mentioned cause and [sitename] changes its pricing, you&rsquo;ll not need to pay any difference. Your purchased banners fee will remain the same. Charges shall be calculated solely based on records maintained by [sitename]. No other measurements or statistics of any kind shall be accepted by [sitename] or have any effect under this Agreement.<br /><br /></div><div align="justify"><strong>Representations and Warranties:</strong> You represent and warrant that (a) all of the information provided by you to [sitename] to enroll in the Advertising Campaign is correct and current; (b) you hold all rights to permit [sitename] and any Partner(s) to use, reproduce, display, transmit and distribute your ad(s); and (c) [sitename] and any Partner(s) Use, your Target(s), and any site(s) linked to, and products or services to which users are directed, will not, in any state or country where the ad is displayed (i) violate any criminal laws or third party rights giving rise to civil liability, including but not limited to trademark rights or rights relating to the performance of music; or (ii) encourage conduct that would violate any criminal or civil law. You further represent and warrant that any Web site linked to your ad(s) (i) complies with all laws and regulations in any state or country where the ad is displayed; (ii) does not breach and has not breached any duty toward or rights of any person or entity including, without limitation, rights of publicity or privacy, or rights or duties under consumer protection, product liability, tort, or contract theories; and (iii) is not false, misleading, defamatory, libelous, slanderous or threatening.<br /><br /></div><div align="justify"><strong>Your Obligation to Indemnify:</strong> You agree to indemnify, defend and hold [sitename], its agents, affiliates, subsidiaries, directors, officers, employees, and applicable third parties (e.g., all relevant Partner(s), licensors, licensees, consultants and contractors) (&quot;Indemnified Person(s)&quot;) harmless from and against any and all third party claims, liability, loss, and expense (including damage awards, settlement amounts, and reasonable legal fees), brought against any Indemnified Person(s), arising out of, related to or which may arise from your use of the Advertising Program, your Web site, and/or your breach of any term of this Agreement. Customer understands and agrees that each Partner, as defined herein, has the right to assert and enforce its rights under this Section directly on its own behalf as a third party beneficiary.<br /><br /></div><div align="justify"><strong>Information Rights:</strong> [sitename] may retain and use for its own purposes all information you provide, including but not limited to Targets, URLs, the content of ads, and contact and billing information. [sitename] may share this information about you with business partners and/or sponsors. [sitename] will not sell your information. Your name, web site&rsquo;s URL and related graphics shall be used by [sitename] in its own web site at any time as a sample to the public, even if your Advertising Campaign has been finished.<br /><br /></div><div align="justify"><strong>Miscellaneous:</strong> Any decision made by [sitename] under this Agreement shall be final. [sitename] shall have no liability for any such decision. You will be responsible for all reasonable expenses (including attorneys&rsquo; fees) incurred by [sitename] in collecting unpaid amounts under this Agreement. This Agreement shall be governed by the laws of [country]. Any dispute or claim arising out of or in connection with this Agreement shall be adjudicated in [country]. This constitutes the entire agreement between the parties with respect to the subject matter hereof. Advertiser may not resell, assign, or transfer any of its rights hereunder. Any such attempt may result in termination of this Agreement, without liability to [sitename] and without any refund. The relationship(s) between [sitename] and the &quot;Partners&quot;" is not one of a legal partnership relationship, but is one of independent contractors. This Agreement shall be construed as if both parties jointly wrote it.</div>\', "")';
@@ -529,7 +529,7 @@ function rn20202() {
 			}
 		}
 	} else {
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_categories` (cid int(11) NOT NULL auto_increment,ctitle varchar(50) NOT NULL default '',cdescription text NOT NULL,cblocklimit int(4) NOT NULL default '10',PRIMARY KEY (cid)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_categories` (cid int(11) NOT NULL auto_increment,ctitle varchar(50) NOT NULL default '',cdescription text NOT NULL,cblocklimit int(4) NOT NULL default '10',PRIMARY KEY (cid)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_hnl_categories` (cid, ctitle, cdescription, cblocklimit) VALUES (1, '*Unassigned*', 'This is a catch-all category where newsletters can default to or if all other categories are removed.  Do NOT remove this category!  This category of newsletters are only shown to the Admins.  ', 5)";
 		sqlexec($sql);
@@ -537,14 +537,14 @@ function rn20202() {
 		$sql = "INSERT INTO `".$prefix."_hnl_categories` (cid, ctitle, cdescription, cblocklimit) VALUES (3, 'Archived Mass Mails', 'This category is used for mass mails.', 5)";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_newsletters` (nid int(11) NOT NULL auto_increment,cid int(11) NOT NULL default '1',topic varchar(100) NOT NULL default '',sender varchar(20) NOT NULL default '',filename varchar(32) NOT NULL default '',datesent date default NULL,view int(1) NOT NULL default '0',groups text NOT NULL,hits int(11) NOT NULL default '0',PRIMARY KEY  (nid),KEY cid (cid)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_newsletters` (nid int(11) NOT NULL auto_increment,cid int(11) NOT NULL default '1',topic varchar(100) NOT NULL default '',sender varchar(20) NOT NULL default '',filename varchar(32) NOT NULL default '',datesent date default NULL,view int(1) NOT NULL default '0',groups text NOT NULL,hits int(11) NOT NULL default '0',PRIMARY KEY  (nid),KEY cid (cid)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_hnl_newsletters` (nid, cid, topic, sender, filename, datesent, view, groups, hits) VALUES (1, 1, 'PREVIEW Newsletter File', 'Admin', 'tmp.php', '0000-00-00', 99, '', 0)";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_hnl_newsletters` (nid, cid, topic, sender, filename, datesent, view, groups, hits) VALUES (2, 1, 'Tested Email Temporary File', 'Admin', 'testemail.php', '0000-00-00', 99, '', 0)";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_cfg` (`cfg_nm` varchar(255) NOT NULL default '', `cfg_val` longtext NOT NULL, PRIMARY KEY (`cfg_nm`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_hnl_cfg` (`cfg_nm` varchar(255) NOT NULL default '', `cfg_val` longtext NOT NULL, PRIMARY KEY (`cfg_nm`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_hnl_cfg` VALUES ('blk_lmt', '10')";
 		sqlexec($sql);
@@ -630,7 +630,7 @@ function rn21001() {
 	sqlexec($sql);
 	// Ok, now re-create the headlines table
 	$sql = "
-	 CREATE TABLE IF NOT EXISTS `".$prefix."_headlines` ( `hid` int(11) NOT NULL auto_increment, `sitename` varchar(30) NOT NULL default '', `headlinesurl` varchar(200) NOT NULL default '', PRIMARY KEY  (`hid`) ) TYPE=MyISAM";
+	 CREATE TABLE IF NOT EXISTS `".$prefix."_headlines` ( `hid` int(11) NOT NULL auto_increment, `sitename` varchar(30) NOT NULL default '', `headlinesurl` varchar(200) NOT NULL default '', PRIMARY KEY  (`hid`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 	sqlexec($sql);
 	$sql = "
 	INSERT INTO `".$prefix."_headlines` VALUES (NULL, 'RavenPHPScripts', 'http://www.ravenphpscripts.com/backend.php')";
@@ -739,7 +739,7 @@ function rn21001() {
 			sqlexec($sql);
 		}
 	} else {
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_config` (`config_type` varchar(150) NOT NULL, `config_name` varchar(150) NOT NULL, `config_value` text NOT NULL, PRIMARY KEY  (`config_type`,`config_name`) ) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_config` (`config_type` varchar(150) NOT NULL, `config_name` varchar(150) NOT NULL, `config_value` text NOT NULL, PRIMARY KEY  (`config_type`,`config_name`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_seo_config` VALUES ('Feeds', 'use_fb', '1');";
 		sqlexec($sql);
@@ -764,17 +764,17 @@ function rn21001() {
 		$sql = "INSERT INTO `".$prefix."_seo_config` VALUES ('Feeds', 'feedcount_text', '000000');";
 		sqlexec($sql);
 		// seo disabled modules
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_disabled_modules` (`title` varchar(100) NOT NULL, `seo_module` varchar(100) NOT NULL, PRIMARY KEY  (`title`,`seo_module`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_disabled_modules` (`title` varchar(100) NOT NULL, `seo_module` varchar(100) NOT NULL, PRIMARY KEY  (`title`,`seo_module`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		// Feeds
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_feed` (`fid` int(6) NOT NULL auto_increment, `content` varchar(20) NOT NULL, `name` varchar(20) NOT NULL, `level` varchar(20) NOT NULL, `lid` int(6) NOT NULL, `title` varchar(50) NOT NULL, `desc` text NOT NULL, `order` varchar(20) NOT NULL, `howmany` char(3) NOT NULL, `active` int(1) NOT NULL, `desclimit` varchar(5) NOT NULL, `securitycode` varchar(50) NOT NULL, `cachetime` varchar(6) NOT NULL, `feedburner_address` varchar(100) NOT NULL, PRIMARY KEY  (`fid`), KEY `content` (`content`,`title`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_feed` (`fid` int(6) NOT NULL auto_increment, `content` varchar(20) NOT NULL, `name` varchar(20) NOT NULL, `level` varchar(20) NOT NULL, `lid` int(6) NOT NULL, `title` varchar(50) NOT NULL, `desc` text NOT NULL, `order` varchar(20) NOT NULL, `howmany` char(3) NOT NULL, `active` int(1) NOT NULL, `desclimit` varchar(5) NOT NULL, `securitycode` varchar(50) NOT NULL, `cachetime` varchar(6) NOT NULL, `feedburner_address` varchar(100) NOT NULL, PRIMARY KEY  (`fid`), KEY `content` (`content`,`title`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_seo_feed` VALUES (1, 'News', 'News', 'module', 0, '".$sitename." Forums', '', 'recent', '10', 1, '', '', '', '');";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_seo_feed` VALUES (2, 'Forums', 'Forums', 'module', 0, '".$sitename." News', '', 'recent', '10', 1, '', '', '', '');";
 		sqlexec($sql);
 		// Subscriptions
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_subscriptions` ( `sid` int(6) NOT NULL auto_increment, `type` varchar(255) NOT NULL, `name` varchar(60) NOT NULL, `tagline` varchar(60) NOT NULL, `image` varchar(255) NOT NULL, `icon` varchar(255) NOT NULL, `url` varchar(255) NOT NULL, `active` int(1) NOT NULL, PRIMARY KEY  (`sid`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_subscriptions` ( `sid` int(6) NOT NULL auto_increment, `type` varchar(255) NOT NULL, `name` varchar(60) NOT NULL, `tagline` varchar(60) NOT NULL, `image` varchar(255) NOT NULL, `icon` varchar(255) NOT NULL, `url` varchar(255) NOT NULL, `active` int(1) NOT NULL, PRIMARY KEY  (`sid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_seo_subscriptions` VALUES (1, 'aggregator', '01 Google Reader', 'Add to Google', 'images/nukeFEED/subscribe/add-to-google-plus.gif', '', 'http://fusion.google.com/add?feedurl={URL}', 1);";
 		sqlexec($sql);
@@ -845,13 +845,13 @@ function rn22001() {
 		$legal_old_exists = true;
 	}
 	if ($db->sql_query('SELECT 1 FROM ' . $prefix . '_legal_cfg LIMIT 0')) $legal_exists = true; else $legal_exists = false;
-	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_cfg` (`contact_email` varchar(255) NOT NULL default \'legal@MySite.com\', `contact_subject` varchar(255) NOT NULL default \'Legal Notice Inquiry\', `country` varchar(255) NOT NULL default \'United States of America\') TYPE=MyISAM';
+	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_cfg` (`contact_email` varchar(255) NOT NULL default \'legal@MySite.com\', `contact_subject` varchar(255) NOT NULL default \'Legal Notice Inquiry\', `country` varchar(255) NOT NULL default \'United States of America\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	sqlexec($sql);
 	if (!$legal_exists) {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_cfg` VALUES(\'legal@MySite.com\', \'Legal Notice Inquiry\', \'United States of America\')';
 		sqlexec($sql);
 	}
-	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_docs` (`did` int(11) NOT NULL auto_increment, `doc_name` varchar(32) NOT NULL, `doc_status` tinyint(4) NOT NULL default \'0\', PRIMARY KEY  (`did`)) TYPE=MyISAM';
+	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_docs` (`did` int(11) NOT NULL auto_increment, `doc_name` varchar(32) NOT NULL, `doc_status` tinyint(4) NOT NULL default \'0\', PRIMARY KEY  (`did`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	sqlexec($sql);
 	if (!$legal_exists) {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_docs` VALUES(1, \'notice\', 1)';
@@ -861,7 +861,7 @@ function rn22001() {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_docs` VALUES(3, \'terms\', 1)';
 		sqlexec($sql);
 	}
-	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_text` (`tid` int(11) NOT NULL auto_increment, `doc_text` text NOT NULL,   PRIMARY KEY  (`tid`)) TYPE=MyISAM';
+	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_text` (`tid` int(11) NOT NULL auto_increment, `doc_text` text NOT NULL,   PRIMARY KEY  (`tid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	sqlexec($sql);
 	if (!$legal_exists) {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_text` VALUES(1, \'<p>[sitename] authorizes you to view, download, and interact with materials, services, and forums on this website. Unless otherwise specified, the services and downloads provided by [sitename] are for your personal and or commercial use, provided that you retain all copyright and other proprietary notices contained in the original materials.</p>\r\n<p>The materials at [sitename] are copyrighted and any unauthorized use of these materials may violate copyrights and or trademarks of [country], headquarters of the owner of [sitename].</p>\r\n<p>These legal notices are for our protection and yours as well. Please read them carefully.</p>\r\n<p align="right">[date]</p>\')';
@@ -877,7 +877,7 @@ function rn22001() {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_text` VALUES(6, \'Terms of Use\')';
 		sqlexec($sql);
 	}
-	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_text_map` (`mid` mediumint(9) NOT NULL, `did` int(11) NOT NULL, `tid` int(11) NOT NULL, `language` varchar(32) NOT NULL default \'english\', UNIQUE KEY `mid` (`mid`,`did`,`tid`)) TYPE=MyISAM';
+	$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_legal_text_map` (`mid` mediumint(9) NOT NULL, `did` int(11) NOT NULL, `tid` int(11) NOT NULL, `language` varchar(32) NOT NULL default \'english\', UNIQUE KEY `mid` (`mid`,`did`,`tid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	sqlexec($sql);
 	if (!$legal_exists) {
 		$sql = 'INSERT INTO `'.$prefix.'_legal_text_map` VALUES(1, 1, 1, \'english\')';
@@ -914,7 +914,7 @@ function rn22001() {
 	sqlexec($sql);
 	$sql = 'ALTER TABLE `'.$user_prefix.'_users_temp` ADD `name` VARCHAR(255) NOT NULL AFTER username';
 	sqlexec($sql);
-	$sql = 'CREATE TABLE IF NOT EXISTS `'.$user_prefix.'_users_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` longtext, UNIQUE KEY config_name (config_name)) TYPE=MyISAM';
+	$sql = 'CREATE TABLE IF NOT EXISTS `'.$user_prefix.'_users_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` longtext, UNIQUE KEY config_name (config_name)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	sqlexec($sql);
 
 	$sql = "INSERT INTO ".$user_prefix."_users_config VALUES ('allowmailchange', '0')";
@@ -1024,11 +1024,11 @@ function rn22001() {
 	$sql = "INSERT INTO ".$user_prefix."_users_config VALUES ('version', '2.30.00')";
 	sqlexec($sql);
 
-	$sql = "CREATE TABLE ".$user_prefix."_users_fields (fid int(10) NOT NULL auto_increment, name varchar(255) NOT NULL default 'field', value varchar(255), size int(3), need int(1) NOT NULL default '1', pos int(3), public int(1) NOT NULL default '1', PRIMARY KEY  (fid) ) TYPE=MyISAM AUTO_INCREMENT=1";
+	$sql = "CREATE TABLE ".$user_prefix."_users_fields (fid int(10) NOT NULL auto_increment, name varchar(255) NOT NULL default 'field', value varchar(255), size int(3), need int(1) NOT NULL default '1', pos int(3), public int(1) NOT NULL default '1', PRIMARY KEY  (fid) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1";
 	sqlexec($sql);
-	$sql = "CREATE TABLE ".$user_prefix."_users_field_values (vid int(10) NOT NULL auto_increment, uid int(10) NOT NULL, fid int(10) NOT NULL, value varchar(255), PRIMARY KEY  (vid)) TYPE=MyISAM AUTO_INCREMENT=1";
+	$sql = "CREATE TABLE ".$user_prefix."_users_field_values (vid int(10) NOT NULL auto_increment, uid int(10) NOT NULL, fid int(10) NOT NULL, value varchar(255), PRIMARY KEY  (vid)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1";
 	sqlexec($sql);
-	$sql = "CREATE TABLE ".$user_prefix."_users_temp_field_values (vid int(10) NOT NULL auto_increment, uid int(10) NOT NULL, fid int(10) NOT NULL, value varchar(255), PRIMARY KEY (vid)) TYPE=MyISAM AUTO_INCREMENT=1";
+	$sql = "CREATE TABLE ".$user_prefix."_users_temp_field_values (vid int(10) NOT NULL auto_increment, uid int(10) NOT NULL, fid int(10) NOT NULL, value varchar(255), PRIMARY KEY (vid)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1";
 	sqlexec($sql);
 	/*
 	 * Add/Delete indexes per Mantis 0001086
@@ -1114,7 +1114,7 @@ function rn22001() {
 	 * phpBB Attachment Mod has now become core, so add the necessary tables and data here
 	 */
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbattachments_config LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments_config` (`config_name` varchar(255) NOT NULL, `config_value` varchar(255) NOT NULL, PRIMARY KEY (`config_name`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments_config` (`config_name` varchar(255) NOT NULL, `config_value` varchar(255) NOT NULL, PRIMARY KEY (`config_name`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		sqlexec('INSERT INTO `' . $prefix . '_bbattachments_config` (`config_name`, `config_value`) VALUES (\'upload_dir\',\'modules/Forums/files\')');
 		sqlexec('INSERT INTO `' . $prefix . '_bbattachments_config` (`config_name`, `config_value`) VALUES (\'upload_img\',\'modules/Forums/images/icon_clip.gif\')');
@@ -1152,7 +1152,7 @@ function rn22001() {
 		sqlexec('INSERT INTO `' . $prefix . '_bbattachments_config` (`config_name`, `config_value`) VALUES (\'flash_autoplay\',\'0\')');
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbforbidden_extensions LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbforbidden_extensions` (`ext_id` mediumint(8) UNSIGNED NOT NULL auto_increment, extension varchar(100) NOT NULL, PRIMARY KEY (`ext_id`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbforbidden_extensions` (`ext_id` mediumint(8) UNSIGNED NOT NULL auto_increment, extension varchar(100) NOT NULL, PRIMARY KEY (`ext_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		sqlexec('INSERT INTO `' . $prefix . '_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (1,\'php\')');
 		sqlexec('INSERT INTO `' . $prefix . '_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (2,\'php3\')');
@@ -1165,7 +1165,7 @@ function rn22001() {
 		sqlexec('INSERT INTO `' . $prefix . '_bbforbidden_extensions` (`ext_id`, `extension`) VALUES (9,\'php6\')');
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbextension_groups LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbextension_groups` (`group_id` mediumint(8) NOT NULL auto_increment, `group_name` char(20) NOT NULL, `cat_id` tinyint(2) DEFAULT \'0\' NOT NULL, `allow_group` tinyint(1) DEFAULT \'0\' NOT NULL,  `download_mode` tinyint(1) UNSIGNED DEFAULT \'1\' NOT NULL, `upload_icon` varchar(100) DEFAULT \'\', `max_filesize` int(20) DEFAULT \'0\' NOT NULL, `forum_permissions` varchar(255) default \'\' NOT NULL, PRIMARY KEY `group_id` (`group_id`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbextension_groups` (`group_id` mediumint(8) NOT NULL auto_increment, `group_name` char(20) NOT NULL, `cat_id` tinyint(2) DEFAULT \'0\' NOT NULL, `allow_group` tinyint(1) DEFAULT \'0\' NOT NULL,  `download_mode` tinyint(1) UNSIGNED DEFAULT \'1\' NOT NULL, `upload_icon` varchar(100) DEFAULT \'\', `max_filesize` int(20) DEFAULT \'0\' NOT NULL, `forum_permissions` varchar(255) default \'\' NOT NULL, PRIMARY KEY `group_id` (`group_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		sqlexec('INSERT INTO `' . $prefix . '_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (1,\'Images\',1,1,1,\'\',0,\'\')');
 		sqlexec('INSERT INTO `' . $prefix . '_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (2,\'Archives\',0,1,1,\'\',0,\'\')');
@@ -1176,7 +1176,7 @@ function rn22001() {
 		sqlexec('INSERT INTO `' . $prefix . '_bbextension_groups` (`group_id`, `group_name`, `cat_id`, `allow_group`, `download_mode`, `upload_icon`, `max_filesize`, `forum_permissions`) VALUES (7,\'Flash Files\',3,0,1,\'\',0,\'\')');
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbextensions LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbextensions` ( `ext_id` mediumint(8) UNSIGNED NOT NULL auto_increment,  `group_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL,  `extension` varchar(100) NOT NULL,  `comment` varchar(100),  PRIMARY KEY `ext_id` (`ext_id`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbextensions` ( `ext_id` mediumint(8) UNSIGNED NOT NULL auto_increment,  `group_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL,  `extension` varchar(100) NOT NULL,  `comment` varchar(100),  PRIMARY KEY `ext_id` (`ext_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		sqlexec('INSERT INTO `' . $prefix . '_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (1, 1,\'gif\', \'\')');
 		sqlexec('INSERT INTO `' . $prefix . '_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (2, 1,\'png\', \'\')');
@@ -1208,22 +1208,22 @@ function rn22001() {
 		sqlexec('INSERT INTO `' . $prefix . '_bbextensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (28, 7,\'swf\', \'\')');
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbattachments_desc LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments_desc` ( `attach_id` mediumint(8) UNSIGNED NOT NULL auto_increment,  `physical_filename` varchar(255) NOT NULL,  `real_filename` varchar(255) NOT NULL,  `download_count` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL,  `comment` varchar(255),  `extension` varchar(100),  `mimetype` varchar(100),  `filesize` int(20) NOT NULL,  `filetime` int(11) DEFAULT \'0\' NOT NULL,  `thumbnail` tinyint(1) DEFAULT \'0\' NOT NULL,  PRIMARY KEY (`attach_id`),  KEY `filetime` (`filetime`),  KEY `physical_filename` (`physical_filename`(10)),  KEY `filesize` (`filesize`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments_desc` ( `attach_id` mediumint(8) UNSIGNED NOT NULL auto_increment,  `physical_filename` varchar(255) NOT NULL,  `real_filename` varchar(255) NOT NULL,  `download_count` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL,  `comment` varchar(255),  `extension` varchar(100),  `mimetype` varchar(100),  `filesize` int(20) NOT NULL,  `filetime` int(11) DEFAULT \'0\' NOT NULL,  `thumbnail` tinyint(1) DEFAULT \'0\' NOT NULL,  PRIMARY KEY (`attach_id`),  KEY `filetime` (`filetime`),  KEY `physical_filename` (`physical_filename`(10)),  KEY `filesize` (`filesize`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbattachments LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments` (`attach_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `post_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `privmsgs_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `user_id_1` mediumint(8) NOT NULL, `user_id_2` mediumint(8) NOT NULL, KEY `attach_id_post_id` (`attach_id`, `post_id`), KEY `attach_id_privmsgs_id` (`attach_id`, `privmsgs_id`), KEY `post_id` (`post_id`), KEY `privmsgs_id` (`privmsgs_id`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbattachments` (`attach_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `post_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `privmsgs_id` mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL, `user_id_1` mediumint(8) NOT NULL, `user_id_2` mediumint(8) NOT NULL, KEY `attach_id_post_id` (`attach_id`, `post_id`), KEY `attach_id_privmsgs_id` (`attach_id`, `privmsgs_id`), KEY `post_id` (`post_id`), KEY `privmsgs_id` (`privmsgs_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbquota_limits LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbquota_limits` (`quota_limit_id` mediumint(8) unsigned NOT NULL auto_increment, `quota_desc` varchar(20) NOT NULL default \'\', `quota_limit` bigint(20) unsigned NOT NULL default \'0\', PRIMARY KEY (`quota_limit_id`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbquota_limits` (`quota_limit_id` mediumint(8) unsigned NOT NULL auto_increment, `quota_desc` varchar(20) NOT NULL default \'\', `quota_limit` bigint(20) unsigned NOT NULL default \'0\', PRIMARY KEY (`quota_limit_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		sqlexec('INSERT INTO `' . $prefix . '_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (1, \'Low\', 262144)');
 		sqlexec('INSERT INTO `' . $prefix . '_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (2, \'Medium\', 2097152)');
 		sqlexec('INSERT INTO `' . $prefix . '_bbquota_limits` (`quota_limit_id`, `quota_desc`, `quota_limit`) VALUES (3, \'High\', 5242880)');
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_bbattach_quota LIMIT 0')) {
-		$sql = 'CREATE TABLE `' . $prefix . '_bbattach_quota` (`user_id` mediumint(8) unsigned NOT NULL default \'0\', `group_id` mediumint(8) unsigned NOT NULL default \'0\', `quota_type` smallint(2) NOT NULL default \'0\', `quota_limit_id` mediumint(8) unsigned NOT NULL default \'0\', KEY `quota_type` (`quota_type`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `' . $prefix . '_bbattach_quota` (`user_id` mediumint(8) unsigned NOT NULL default \'0\', `group_id` mediumint(8) unsigned NOT NULL default \'0\', `quota_type` smallint(2) NOT NULL default \'0\', `quota_limit_id` mediumint(8) unsigned NOT NULL default \'0\', KEY `quota_type` (`quota_type`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 	$sql = 'ALTER TABLE `' . $prefix . '_bbforums` ADD `auth_download` TINYINT(2) DEFAULT \'0\' NOT NULL';
@@ -1250,7 +1250,7 @@ function rn22001() {
 			echo '  Your version appears current.';
 		}
 	} else {
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_category` (`id` int(11) NOT NULL auto_increment,`name` varchar(128) NOT NULL default '', PRIMARY KEY  (`id`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_category` (`id` int(11) NOT NULL auto_increment,`name` varchar(128) NOT NULL default '', PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_gcal_category` VALUES (1, 'Unfiled')";
 		sqlexec($sql);
@@ -1265,21 +1265,21 @@ function rn22001() {
 		$sql = "INSERT INTO `".$prefix."_gcal_category` VALUES (6, 'Site Event')";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_config` (`id` int(11) NOT NULL auto_increment,`title` varchar(128) NOT NULL default 'Calendar of Events',`image` varchar(255) NOT NULL default '',`min_year` int(10) unsigned NOT NULL default '2006',`max_year` int(10) unsigned NOT NULL default '2037',`user_submit` enum('off','members','anyone','groups') NOT NULL default 'off',`req_approval` tinyint(1) NOT NULL default '1',`allowed_tags` text NOT NULL,`allowed_attrs` text NOT NULL,`version` varchar(16) NOT NULL default '',`time_in_24` tinyint(1) NOT NULL default '0',`short_date_format` varchar(16) NOT NULL default '',`reg_date_format` varchar(16) NOT NULL default '',`long_date_format` varchar(16) NOT NULL default '', `first_day_of_week` tinyint(1) NOT NULL default '0',`auto_link` tinyint(1) NOT NULL default '0',`location_required` tinyint(1) NOT NULL default '0',`details_required` tinyint(1) NOT NULL default '0',`email_notify` tinyint(1) NOT NULL default '0',`email_to` varchar(255) NOT NULL default '',`email_subject` varchar(255) NOT NULL default '',`email_msg` varchar(255) NOT NULL default '',`email_from` varchar(255) NOT NULL default '',`show_cat_legend` tinyint(1) NOT NULL default '1',`wysiwyg` tinyint(1) NOT NULL default '0',`user_update` tinyint(1) NOT NULL default '0',`weekends` SET( '0', '1', '2', '3', '4', '5', '6' ) NOT NULL DEFAULT '0,6',`rsvp` ENUM( 'off', 'on', 'email' ) NOT NULL DEFAULT 'off',`rsvp_email_subject` VARCHAR( 255 ) NOT NULL DEFAULT 'Event RSVP Notification', `groups_submit` TEXT NOT NULL , `groups_no_approval` TEXT NOT NULL, PRIMARY KEY  (`id`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_config` (`id` int(11) NOT NULL auto_increment,`title` varchar(128) NOT NULL default 'Calendar of Events',`image` varchar(255) NOT NULL default '',`min_year` int(10) unsigned NOT NULL default '2006',`max_year` int(10) unsigned NOT NULL default '2037',`user_submit` enum('off','members','anyone','groups') NOT NULL default 'off',`req_approval` tinyint(1) NOT NULL default '1',`allowed_tags` text NOT NULL,`allowed_attrs` text NOT NULL,`version` varchar(16) NOT NULL default '',`time_in_24` tinyint(1) NOT NULL default '0',`short_date_format` varchar(16) NOT NULL default '',`reg_date_format` varchar(16) NOT NULL default '',`long_date_format` varchar(16) NOT NULL default '', `first_day_of_week` tinyint(1) NOT NULL default '0',`auto_link` tinyint(1) NOT NULL default '0',`location_required` tinyint(1) NOT NULL default '0',`details_required` tinyint(1) NOT NULL default '0',`email_notify` tinyint(1) NOT NULL default '0',`email_to` varchar(255) NOT NULL default '',`email_subject` varchar(255) NOT NULL default '',`email_msg` varchar(255) NOT NULL default '',`email_from` varchar(255) NOT NULL default '',`show_cat_legend` tinyint(1) NOT NULL default '1',`wysiwyg` tinyint(1) NOT NULL default '0',`user_update` tinyint(1) NOT NULL default '0',`weekends` SET( '0', '1', '2', '3', '4', '5', '6' ) NOT NULL DEFAULT '0,6',`rsvp` ENUM( 'off', 'on', 'email' ) NOT NULL DEFAULT 'off',`rsvp_email_subject` VARCHAR( 255 ) NOT NULL DEFAULT 'Event RSVP Notification', `groups_submit` TEXT NOT NULL , `groups_no_approval` TEXT NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_gcal_config` VALUES (1, 'Calendar of Events', 'images/admin/gcalendar.gif', 2006, 2037,'members', 1, 'a,b,i,img','href,src,border,alt,title', '1.7.0', 0, '%m/%d', '%B %d, %Y', '%A, %B %d, %Y', 0, 1, 0,0, 0, 'admin@yoursite.com', 'New GCalendar Event', 'A new GCalendar event was submitted.', 'admin@yoursite.com', 1, 1, 1, '0,6', 'off', 'Event RSVP Notification', '', '')";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_event` (`id` int(11) NOT NULL auto_increment,`title` varchar(255) NOT NULL default '',`no_time` tinyint(1) NOT NULL default '1',`start_time` time NOT NULL default '00:00:00',`end_time` time NOT NULL default '00:00:00',`location` text NOT NULL,`category` int(11) NOT NULL default '0',`repeat_type` enum('none','daily','weekly','monthly','yearly') NOT NULL default 'none',`details` text NOT NULL,`interval_val` int(11) NOT NULL default '0',`no_end_date` tinyint(1) NOT NULL default '1',`start_date` date NOT NULL default '0000-00-00',`end_date` date NOT NULL default '0000-00-00',`weekly_days` set('0','1','2','3','4','5','6') NOT NULL default '',`monthly_by_day` tinyint(1) NOT NULL default '0',`submitted_by` varchar(25) NOT NULL default '',`approved` tinyint(1) NOT NULL default '0',`rsvp` ENUM( 'off', 'on', 'email' ) NOT NULL DEFAULT 'off',PRIMARY KEY  (`id`),KEY `approved` (`approved`),KEY `start_date` (`start_date`),KEY `repeat_type` (`repeat_type`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_event` (`id` int(11) NOT NULL auto_increment,`title` varchar(255) NOT NULL default '',`no_time` tinyint(1) NOT NULL default '1',`start_time` time NOT NULL default '00:00:00',`end_time` time NOT NULL default '00:00:00',`location` text NOT NULL,`category` int(11) NOT NULL default '0',`repeat_type` enum('none','daily','weekly','monthly','yearly') NOT NULL default 'none',`details` text NOT NULL,`interval_val` int(11) NOT NULL default '0',`no_end_date` tinyint(1) NOT NULL default '1',`start_date` date NOT NULL default '0000-00-00',`end_date` date NOT NULL default '0000-00-00',`weekly_days` set('0','1','2','3','4','5','6') NOT NULL default '',`monthly_by_day` tinyint(1) NOT NULL default '0',`submitted_by` varchar(25) NOT NULL default '',`approved` tinyint(1) NOT NULL default '0',`rsvp` ENUM( 'off', 'on', 'email' ) NOT NULL DEFAULT 'off',PRIMARY KEY  (`id`),KEY `approved` (`approved`),KEY `start_date` (`start_date`),KEY `repeat_type` (`repeat_type`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_rsvp` (`id` int(11) NOT NULL auto_increment,`event_id` int(11) NOT NULL,`user_id` int(11) NOT NULL,PRIMARY KEY  (`id`), KEY `event_id` (`event_id`,`user_id`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_rsvp` (`id` int(11) NOT NULL auto_increment,`event_id` int(11) NOT NULL,`user_id` int(11) NOT NULL,PRIMARY KEY  (`id`), KEY `event_id` (`event_id`,`user_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_exception` (`id` int(11) NOT NULL auto_increment, `event_id` int(11) NOT NULL, `date` date NOT NULL default '0000-00-00', PRIMARY KEY (`id`), KEY `event_id` (`event_id`), KEY `date` (`date`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_exception` (`id` int(11) NOT NULL auto_increment, `event_id` int(11) NOT NULL, `date` date NOT NULL default '0000-00-00', PRIMARY KEY (`id`), KEY `event_id` (`event_id`), KEY `date` (`date`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 
-		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_cat_group` (`id` int(11) NOT NULL auto_increment, `cat_id` int(11) NOT NULL, `group_id` int(11) NOT NULL, PRIMARY KEY (`id`), KEY `cat_id` (`cat_id`), KEY `group_id` (`group_id`)) TYPE=MyISAM";
+		$sql = "CREATE TABLE IF NOT EXISTS `".$prefix."_gcal_cat_group` (`id` int(11) NOT NULL auto_increment, `cat_id` int(11) NOT NULL, `group_id` int(11) NOT NULL, PRIMARY KEY (`id`), KEY `cat_id` (`cat_id`), KEY `group_id` (`group_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 		sqlexec($sql);
 		$sql = "INSERT INTO `".$prefix."_gcal_cat_group` VALUES (NULL, 1, -1)";
 		sqlexec($sql);
@@ -1306,7 +1306,7 @@ function rn22001() {
 	 */
 	// First check the NSN GR Tables - if they already exist, we'll just assume that they are the latest
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_nsngr_config LIMIT 0')) {
-		$sql = 'CREATE TABLE `'.$prefix.'_nsngr_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` text NOT NULL, PRIMARY KEY (`config_name`)) TYPE=MyISAM';
+		$sql = 'CREATE TABLE `'.$prefix.'_nsngr_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` text NOT NULL, PRIMARY KEY (`config_name`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsngr_config` VALUES (\'perpage\', \'50\')';
 		sqlexec($sql);
@@ -1318,13 +1318,13 @@ function rn22001() {
 		sqlexec($sql);
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_nsngr_groups LIMIT 0')) {
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_nsngr_groups` ( `gid` int(11) NOT NULL auto_increment, `gname` varchar(32) NOT NULL default \'\', `gdesc` text NOT NULL, `gpublic` tinyint(1) NOT NULL default \'0\', `glimit` int(11) NOT NULL default \'0\', `phpBB` int(11) NOT NULL default \'0\', `muid` int(11) NOT NULL default \'0\', PRIMARY KEY  (`gid`) ) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_nsngr_groups` ( `gid` int(11) NOT NULL auto_increment, `gname` varchar(32) NOT NULL default \'\', `gdesc` text NOT NULL, `gpublic` tinyint(1) NOT NULL default \'0\', `glimit` int(11) NOT NULL default \'0\', `phpBB` int(11) NOT NULL default \'0\', `muid` int(11) NOT NULL default \'0\', PRIMARY KEY  (`gid`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsngr_groups` VALUES (1, \'Moderators\', \'Moderators of this Forum\', 0, 0, 3, 2)';
 		sqlexec($sql);
 	}
 	if (!$db->sql_query('SELECT 1 FROM ' . $prefix . '_nsngr_users LIMIT 0')) {
-		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_nsngr_users` (`gid` int(11) NOT NULL default \'0\', `uid` int(11) NOT NULL default \'0\', `uname` varchar(25) NOT NULL default \'\', `trial` tinyint(1) NOT NULL default \'0\', `notice` tinyint(1) NOT NULL default \'0\', `sdate` int(14) NOT NULL default \'0\', `edate` int(14) NOT NULL default \'0\', PRIMARY KEY (`gid`,`uid`,`uname`) ) TYPE=MyISAM';
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_nsngr_users` (`gid` int(11) NOT NULL default \'0\', `uid` int(11) NOT NULL default \'0\', `uname` varchar(25) NOT NULL default \'\', `trial` tinyint(1) NOT NULL default \'0\', `notice` tinyint(1) NOT NULL default \'0\', `sdate` int(14) NOT NULL default \'0\', `edate` int(14) NOT NULL default \'0\', PRIMARY KEY (`gid`,`uid`,`uname`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsngr_users` VALUES (1, 2, \'\', 0, 0, 2005, 0)';
 		sqlexec($sql);
@@ -1357,7 +1357,7 @@ function rn22001() {
 		. 'smtp_helo varchar(255) NOT NULL default \'\', smtp_port INT(10) NOT NULL default \'25\', '
 		. 'smtp_auth TINYINT(1) NOT NULL default \'0\', smtp_uname varchar(255) NOT NULL default \'\', '
 		. 'smtp_passw varchar(255) NOT NULL default \'\', sendmail_path varchar(255) NOT NULL default \'/usr/sbin/sendmail\', '
-		. 'qmail_path varchar(255) NOT NULL default \'/var/qmail/bin/sendmail\', PRIMARY KEY  (mailer)) TYPE=MyISAM'
+		. 'qmail_path varchar(255) NOT NULL default \'/var/qmail/bin/sendmail\', PRIMARY KEY  (mailer)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci'
 		;
 		sqlexec($sql);
 		$sql = 'INSERT INTO '.$prefix.'_mail_config VALUES (\'0\', \'1\', \'smtp.yourdomain.tld\', '
@@ -1473,7 +1473,7 @@ function rn23002() {
 	$sql = 'SHOW TABLES LIKE \''.$prefix.'_nsnpj_config\'';
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
-		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` text NOT NULL) TYPE=MyISAM AUTO_INCREMENT=1';
+		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_config` (`config_name` varchar(255) NOT NULL default \'\', `config_value` text NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_config` (`config_name`, `config_value`) VALUES (\'admin_report_email\', \'webmaster@mysite.com\'), '
 		.'(\'admin_request_email\', \'webmaster@mysite.com\'), (\'new_project_position\', \'1\'), (\'new_project_priority\', \'3\'), (\'new_project_status\', \'1\'), '
@@ -1488,7 +1488,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_members` (`member_id` int(11) NOT NULL auto_increment, `member_name` varchar(255) NOT NULL default \'\', '
-		.'`member_email` varchar(255) NOT NULL default \'\', PRIMARY KEY (`member_id`), KEY `member_id` (`member_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`member_email` varchar(255) NOT NULL default \'\', PRIMARY KEY (`member_id`), KEY `member_id` (`member_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1496,7 +1496,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_members_positions` (`position_id` int(11) NOT NULL auto_increment, `position_name` varchar(255) NOT NULL default \'\', '
-		.'`position_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`position_id`), KEY `position_id` (`position_id`)) TYPE=MyISAM AUTO_INCREMENT=5';
+		.'`position_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`position_id`), KEY `position_id` (`position_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=5';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_members_positions` (`position_id`, `position_name`, `position_weight`) VALUES (-1, \'N/A\', 0), (1, \'Manager\', 1), (2, \'Developer\', 2), '
 		.'(3, \'Tester\', 3), (4, \'Sponsor\', 4)';
@@ -1510,7 +1510,7 @@ function rn23002() {
 		.'`project_site` varchar(255) NOT NULL default \'\', `priority_id` int(11) NOT NULL default \'0\', `status_id` int(11) NOT NULL default \'0\', '
 		.'`project_percent` float NOT NULL default \'0\', `weight` int(11) NOT NULL default \'0\', `featured` tinyint(2) NOT NULL default \'0\', '
 		.'`allowreports` tinyint(2) NOT NULL default \'0\', `allowrequests` tinyint(2) NOT NULL default \'0\', `date_created` int(14) NOT NULL default \'0\', '
-		.'`date_started` int(14) NOT NULL default \'0\', `date_finished` int(14) NOT NULL default \'0\', PRIMARY KEY (`project_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`date_started` int(14) NOT NULL default \'0\', `date_finished` int(14) NOT NULL default \'0\', PRIMARY KEY (`project_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1518,7 +1518,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_projects_members` (`project_id` int(11) NOT NULL default \'0\', `member_id` int(11) NOT NULL default \'0\', '
-		.'`position_id` int(11) NOT NULL default \'0\', KEY `project_id` (`project_id`), KEY `member_id` (`member_id`)) TYPE=MyISAM';
+		.'`position_id` int(11) NOT NULL default \'0\', KEY `project_id` (`project_id`), KEY `member_id` (`member_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 
@@ -1526,7 +1526,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_projects_priorities` (`priority_id` int(11) NOT NULL auto_increment, `priority_name` varchar(30) NOT NULL default \'\', '
-		.'`priority_weight` int(11) NOT NULL default \'1\', PRIMARY KEY (`priority_id`)) TYPE=MyISAM AUTO_INCREMENT=6';
+		.'`priority_weight` int(11) NOT NULL default \'1\', PRIMARY KEY (`priority_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=6';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_projects_priorities` (`priority_id`, `priority_name`, `priority_weight`) '
 		.'VALUES (-1, \'N/A\', 0), (1, \'Low\', 1), (2, \'Low-Med\', 2), (3, \'Medium\', 3), (4, \'High-Med\', 4), (5, \'High\', 5)';
@@ -1537,7 +1537,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_projects_status` (`status_id` int(11) NOT NULL auto_increment, `status_name` varchar(255) NOT NULL default \'\', '
-		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) TYPE=MyISAM AUTO_INCREMENT=6';
+		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=6';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_projects_status` (`status_id`, `status_name`, `status_weight`) '
 		.'VALUES (-1, \'N/A\', 0), (1, \'Pending\', 1), (2, \'Completed\', 2), (3, \'Active\', 3), (4, \'Inactive\', 4), (5, \'Released\', 5)';
@@ -1551,7 +1551,7 @@ function rn23002() {
 		.'`type_id` int(11) NOT NULL default \'0\', `status_id` int(11) NOT NULL default \'0\', `report_name` varchar(255) NOT NULL default \'\', '
 		.'`report_description` text NOT NULL, `submitter_name` varchar(32) NOT NULL default \'\', `submitter_email` varchar(255) NOT NULL default \'\', '
 		.'`submitter_ip` varchar(20) NOT NULL default \'0.0.0.0\', `date_submitted` int(14) NOT NULL default \'0\', `date_commented` int(14) NOT NULL default \'0\', '
-		.'`date_modified` int(14) NOT NULL default \'0\', PRIMARY KEY (`report_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`date_modified` int(14) NOT NULL default \'0\', PRIMARY KEY (`report_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1560,7 +1560,7 @@ function rn23002() {
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_reports_comments` (`comment_id` int(11) NOT NULL auto_increment, `report_id` int(11) NOT NULL default \'0\', '
 		.'`commenter_name` varchar(32) NOT NULL default \'\', `commenter_email` varchar(255) NOT NULL default \'\', `commenter_ip` varchar(20) NOT NULL default \'0.0.0.0\', '
-		.'`comment_description` text NOT NULL, `date_commented` int(14) NOT NULL default \'0\', PRIMARY KEY (`comment_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`comment_description` text NOT NULL, `date_commented` int(14) NOT NULL default \'0\', PRIMARY KEY (`comment_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1568,7 +1568,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_reports_members` (`report_id` int(11) NOT NULL default \'0\', `member_id` int(11) NOT NULL default \'0\', '
-		.'`position_id` int(11) NOT NULL default \'0\', KEY `report_id` (`report_id`), KEY `member_id` (`member_id`)) TYPE=MyISAM';
+		.'`position_id` int(11) NOT NULL default \'0\', KEY `report_id` (`report_id`), KEY `member_id` (`member_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 
@@ -1576,7 +1576,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_reports_status` (`status_id` int(11) NOT NULL auto_increment, `status_name` varchar(255) NOT NULL default \'\', '
-		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY  (`status_id`)) TYPE=MyISAM AUTO_INCREMENT=10';
+		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY  (`status_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=10';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_reports_status` (`status_id`, `status_name`, `status_weight`) VALUES (-1, \'N/A\', 0), (1, \'Open\', 1), (2, \'Closed\', 2), (3, \'Duplicate\', 3), '
 		.'(4, \'Feedback\', 4), (5, \'Submitted\', 5), (6, \'Suspended\', 6), (7, \'Assigned\', 7), (8, \'Info Needed\', 8), (9, \'Unverifiable\', 9)';
@@ -1587,7 +1587,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_reports_types` (`type_id` int(11) NOT NULL auto_increment, `type_name` varchar(255) NOT NULL default \'\', '
-		.'`type_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`type_id`)) TYPE=MyISAM AUTO_INCREMENT=2';
+		.'`type_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`type_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=2';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_reports_types` (`type_id`, `type_name`, `type_weight`) VALUES (-1, \'N/A\', 0), (1, \'General\', 1)';
 		sqlexec($sql);
@@ -1600,7 +1600,7 @@ function rn23002() {
 		.'`status_id` int(11) NOT NULL default \'0\', `request_name` varchar(255) NOT NULL default \'\', `request_description` text NOT NULL, '
 		.'`submitter_name` varchar(32) NOT NULL default \'\', `submitter_email` varchar(255) NOT NULL default \'\', `submitter_ip` varchar(20) NOT NULL default \'0.0.0.0\', '
 		.'`date_submitted` int(14) NOT NULL default \'0\', `date_commented` int(14) NOT NULL default \'0\', `date_modified` int(14) NOT NULL default \'0\', '
-		.'PRIMARY KEY (`request_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'PRIMARY KEY (`request_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1609,7 +1609,7 @@ function rn23002() {
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_requests_comments` (`comment_id` int(11) NOT NULL auto_increment, `request_id` int(11) NOT NULL default \'0\', '
 		.'`commenter_name` varchar(32) NOT NULL default \'\', `commenter_email` varchar(255) NOT NULL default \'\', `commenter_ip` varchar(20) NOT NULL default \'0.0.0.0\', '
-		.'`comment_description` text NOT NULL, `date_commented` int(14) NOT NULL default \'0\', PRIMARY KEY (`comment_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`comment_description` text NOT NULL, `date_commented` int(14) NOT NULL default \'0\', PRIMARY KEY (`comment_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1617,7 +1617,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_requests_members` (`request_id` int(11) NOT NULL default \'0\', `member_id` int(11) NOT NULL default \'0\', '
-		.'`position_id` int(11) NOT NULL default \'0\', KEY `request_id` (`request_id`), KEY `member_id` (`member_id`)) TYPE=MyISAM';
+		.'`position_id` int(11) NOT NULL default \'0\', KEY `request_id` (`request_id`), KEY `member_id` (`member_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 
@@ -1625,7 +1625,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_requests_status` (`status_id` int(11) NOT NULL auto_increment, `status_name` varchar(255) NOT NULL default \'\', '
-		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) TYPE=MyISAM AUTO_INCREMENT=9';
+		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=9';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_requests_status` (`status_id`, `status_name`, `status_weight`) VALUES (-1, \'N/A\', 0), (1, \'Duplicate\', 1), '
 		.'(2, \'Closed\', 2), (3, \'Inclusion\', 3), (4, \'Open\', 4), (5, \'Feedback\', 5), (6, \'Submitted\', 6), (7, \'Discarded\', 7), (8, \'Assigned\', 8)';
@@ -1636,7 +1636,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_requests_types` (`type_id` int(11) NOT NULL auto_increment, `type_name` varchar(255) NOT NULL default \'\', '
-		.'`type_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`type_id`)) TYPE=MyISAM AUTO_INCREMENT=2';
+		.'`type_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`type_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=2';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_requests_types` (`type_id`, `type_name`, `type_weight`) VALUES (-1, \'N/A\', 0), (1, \'General\', 1)';
 		sqlexec($sql);
@@ -1649,7 +1649,7 @@ function rn23002() {
 		.'`task_name` varchar(255) NOT NULL default \'\', `task_description` text NOT NULL, `priority_id` int(11) NOT NULL default \'1\', '
 		.'`status_id` int(11) NOT NULL default \'0\', `task_percent` float NOT NULL default \'0\', `date_created` int(14) NOT NULL default \'0\', '
 		.'`date_started` int(14) NOT NULL default \'0\', `date_finished` int(14) NOT NULL default \'0\', '
-		.'PRIMARY KEY (`task_id`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'PRIMARY KEY (`task_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 	}
 
@@ -1657,7 +1657,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_tasks_members` (`task_id` int(11) NOT NULL default \'0\', `member_id` int(11) NOT NULL default \'0\', '
-		.'`position_id` int(11) NOT NULL default \'0\', KEY `task_id` (`task_id`), KEY `member_id` (`member_id`)) TYPE=MyISAM';
+		.'`position_id` int(11) NOT NULL default \'0\', KEY `task_id` (`task_id`), KEY `member_id` (`member_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		sqlexec($sql);
 	}
 
@@ -1665,7 +1665,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_tasks_priorities` (`priority_id` int(11) NOT NULL auto_increment, `priority_name` varchar(30) NOT NULL default \'\', '
-		.'`priority_weight` int(11) NOT NULL default \'1\', PRIMARY KEY (`priority_id`)) TYPE=MyISAM AUTO_INCREMENT=6';
+		.'`priority_weight` int(11) NOT NULL default \'1\', PRIMARY KEY (`priority_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=6';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_tasks_priorities` (`priority_id`, `priority_name`, `priority_weight`) VALUES (-1, \'N/A\', 0), (1, \'Low\', 1), '
 		.'(2, \'Low-Med\', 2), (3, \'Medium\', 3), (4, \'High-Med\', 4), (5, \'High\', 5)';
@@ -1676,7 +1676,7 @@ function rn23002() {
 	$result1 = sqlexec($sql);
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_nsnpj_tasks_status` (`status_id` int(11) NOT NULL auto_increment, `status_name` varchar(255) NOT NULL default \'\', '
-		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) TYPE=MyISAM AUTO_INCREMENT=8';
+		.'`status_weight` int(11) NOT NULL default \'0\', PRIMARY KEY (`status_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=8';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_nsnpj_tasks_status` (`status_id`, `status_name`, `status_weight`) VALUES (-1, \'N/A\', 0), (1, \'Inactive\', 1), '
 		.'(2, \'On Going\', 2), (3, \'Holding\', 3), (4, \'Open\', 4), (5, \'Completed\', 5), (6, \'Discontinued\', 6), (7, \'Active\', 7)';
@@ -1748,7 +1748,7 @@ function rn23002() {
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_seo_dh` (`dhid` int(11) NOT NULL auto_increment, `levelsort` int(1) NOT NULL, `title` varchar(255) NOT NULL, '
 		.'`id` int(11) NOT NULL, `mid` int(11) NOT NULL, `lang` varchar(30) NOT NULL, `active` int(1) NOT NULL, '
-		.'`metavalue` text NOT NULL, PRIMARY KEY (`dhid`), KEY `levelsort` (`levelsort`,`title`,`id`,`mid`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'`metavalue` text NOT NULL, PRIMARY KEY (`dhid`), KEY `levelsort` (`levelsort`,`title`,`id`,`mid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_seo_dh` (`dhid`, `levelsort`, `title`, `id`, `mid`, `lang`, `active`, `metavalue`) VALUES '
 		.'(1, 0, \'\', 0, 1, \'\', 1, \'%slogan% - %sitename%\'), '
@@ -1774,7 +1774,7 @@ function rn23002() {
 	if ($db->sql_numrows($result1) == 0) {
 		$sql = 'CREATE TABLE `'.$prefix.'_seo_dh_master` (`mid` int(11) NOT NULL auto_increment, `order` int(5) NOT NULL, `type` varchar(50) NOT NULL, '
 		.'`name` varchar(50) NOT NULL, `default` varchar(255) NOT NULL, `active` int(1) NOT NULL, '
-		.'PRIMARY KEY (`mid`), KEY `order` (`order`)) TYPE=MyISAM AUTO_INCREMENT=1';
+		.'PRIMARY KEY (`mid`), KEY `order` (`order`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1';
 		sqlexec($sql);
 		$sql = 'INSERT INTO `'.$prefix.'_seo_dh_master` (`mid`, `order`, `type`, `name`, `default`, `active`) VALUES '
 		.'(1, 0, \'title\', \'title\', \'$slogan\', 1), '
@@ -1947,7 +1947,7 @@ function rn24001() {
 				. '`collapsibleblocks` tinyint(1) NOT NULL default "0",'
 				. '`compatible` tinyint(1) NOT NULL default "0",'
 				. 'PRIMARY KEY (`theme`)'
-			. ') ENGINE=MyISAM;';
+			. ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 	sqlexec($sql);
 
 	/**
@@ -1995,14 +1995,14 @@ function rn24001() {
 		. '`tag` varchar(25) NOT NULL,'
 		. '`cid` int(10) NOT NULL default "0",'
 		. '`whr` int(1) NOT NULL default "0"'
-		. ') ENGINE=MyISAM;';
+		. ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 	sqlexec($sql);
 
 	$sql = 'CREATE TABLE IF NOT EXISTS `' . $prefix . '_tags_temp` ('
 		. '`tag` varchar(25) NOT NULL,'
 		. '`cid` int(10) NOT NULL default "0",'
 		. '`whr` int(1) NOT NULL default "0"'
-		. ') ENGINE=MyISAM;';
+		. ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 	sqlexec($sql);
 
 	$sql = 'SHOW TABLES LIKE \''. $prefix . '_ton\'';
@@ -2031,7 +2031,7 @@ function rn24001() {
 		. '`googlapi` varchar(44) NULL,'
 		. '`usegooglsb` int(1) NOT NULL default "0",'
 		. '`usegooglart` int(1) NOT NULL default "0"'
-		. ') ENGINE=MyISAM;';
+		. ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;';
 		sqlexec($sql);
 
 		$sql = 'INSERT INTO `' . $prefix . '_ton` ( `newsrows`, `bookmark`, `rblocks`, `linklocation`, `articlelink`, `artview`, `TON_useTitleLink`, `TON_usePDF`, `TON_useRating`,'

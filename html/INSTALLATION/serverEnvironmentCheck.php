@@ -19,7 +19,7 @@ if (!file_exists($nukeConfigFile)) {
 	die();
 }
 @require_once $nukeConfigFile;
-$conn = @mysqli_connect($dbhost,$dbuname,$dbpass) or die('No Connection to MySQL Server');
+$conn = mysqli_connect($dbhost,$dbuname,$dbpass) or die('No Connection to MySQL Server');
 include_once('functions/phpGetSetting.func.php');
 include_once('functions/mysqlTest.func.php');
 include_once('functions/chkFileExists.func.php');
@@ -102,15 +102,15 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 							<table class="content2">
 								<tr>
 									<td class="item">
-										PHP version >= 5.2.0
+										PHP version >= 8.2.0
 									</td>
 									<td align="left">
-										<?php echo phpversion() < '5.2' ? '<span class="redbold">No : Version '.phpversion().'</span>' : '<span class="greenbold">Yes : Version '.phpversion().'</span>';?>
+										<?php echo phpversion() < '8.0' ? '<span class="redbold">No : Version '.phpversion().'</span>' : '<span class="greenbold">Yes : Version '.phpversion().'</span>';?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - zlib compression support
+										- zlib compression support
 									</td>
 									<td align="left">
 										<?php echo extension_loaded('zlib') ? '<span class="greenbold">Available</span>' : '<span class="redbold">Unavailable</span>';?>
@@ -118,7 +118,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - GD graphics support
+										- GD graphics support
 									</td>
 									<td align="left">
 										<?php echo extension_loaded('gd')||extension_loaded('gd2') ? '<span class="greenbold">Available : Version '.getGDInfo($type='GD Version').'</span>' : '<span class="redbold">Unavailable</span>';?>
@@ -126,7 +126,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - Freetype support
+										- Freetype support
 									</td>
 									<td align="left">
 										<?php echo ((extension_loaded('gd')||extension_loaded('gd2')) && getGDInfo($type='FreeType Support')) ? '<span class="greenbold">Available : Version '.getGDInfo($type='FreeType Version').'</span>' : '<span class="redbold">Unavailable</span>';?>
@@ -134,7 +134,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - MySQLi support
+										- MySQLi support
 									</td>
 									<td align="left">
 								<?php echo function_exists( 'mysqli_connect' ) ? '<span class="greenbold">Available</span>' : '<span class="redbold">Unavailable</span>';?>
@@ -143,7 +143,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 						<?php if (function_exists( 'mysqli_connect' )) { ?>
 							<tr>
 								<td>
-									&nbsp;&nbsp;&nbsp; - MySQL Server API Version
+									- MySQLi Server API Version
 								</td>
 								<td align="left">
 									<?php echo '<span class="greenbold">'.mysqli_get_server_info($conn).'</span>';?>
@@ -151,7 +151,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 							</tr>
 							<tr>
 								<td>
-									&nbsp;&nbsp;&nbsp; - MySQL Client API Version
+									- MySQL Client API Version
 								</td>
 								<td align="left">
 									<?php echo '<span class="greenbold">'.mysqli_get_client_info().'</span>';?>
@@ -160,7 +160,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 						<?php if (function_exists( 'mysqli_connect' )) { mysqli_close($conn); }} ?>
 								<tr>
 									<td>
-										&nbsp; - Server API
+										- Server API
 									</td>
 									<td align="left">
 										<?php echo '<span class="greenbold">'.php_sapi_name().'</span>'; ?>
@@ -168,7 +168,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - Allow Short Open Tags
+										- Allow Short Open Tags
 									</td>
 									<td align="left">
 										<?php echo (phpGetSetting('short_open_tag')=='ON'||phpGetSetting('short_open_tag')==true||phpGetSetting('short_open_tag')==1) ? '<span class="greenbold">Yes</span>' : '<span class="redbold">No</span>';?>
@@ -176,7 +176,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 								</tr>
 								<tr>
 									<td>
-										&nbsp; - Mbstring Extension
+										- Mbstring Extension
 									</td>
 									<td align="left">
 										<?php echo (extension_loaded('mbstring') == true) ? '<span class="greenbold">Yes</span>' : '<span class="redbold">No</span>';?>
@@ -227,7 +227,7 @@ $version = "RavenNuke&trade; $version_number - Scheduled Release Date: $filedate
 									$php_recommended_settings = array(array ('Safe Mode','safe_mode','OFF'),
 									array ('Display Errors','display_errors','ON'),
 									array ('File Uploads','file_uploads','ON'),
-									array ('Magic Quotes GPC','magic_quotes_gpc','ON'),
+									array ('Magic Quotes GPC','magic_quotes_gpc','OFF'),
 									array ('Magic Quotes Runtime','magic_quotes_runtime','OFF'),
 									array ('Register Globals','register_globals','OFF'),
 									array ('Output Buffering','output_buffering','ON'),

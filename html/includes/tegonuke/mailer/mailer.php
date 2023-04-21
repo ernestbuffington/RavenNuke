@@ -411,7 +411,7 @@ function tnmlTableCheck() {
 			. '`smtp_passw` varchar(255) NOT NULL default \'\', `sendmail_path` varchar(255) NOT NULL default \'/usr/sbin/sendmail\', '
 			. '`smtp_encrypt` tinyint(4) NOT NULL default \'0\', `smtp_encrypt_method` tinyint(4) NOT NULL default \'0\', '
 			. '`reply_to` varchar(255) NOT NULL, `debug_level` tinyint(4) NOT NULL default \'0\', PRIMARY KEY (`mailer`)) '
-			. 'TYPE=MyISAM';
+			. 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 		$result = $db->sql_query($sql);
 		$sql = 'INSERT INTO `' . $prefix . '_mail_config` (`active`, `mailer`, `smtp_host`, `smtp_helo`, `smtp_port`, `smtp_auth`, '
 			. '`smtp_uname`, `smtp_passw`, `sendmail_path`, `smtp_encrypt`, `smtp_encrypt_method`, `reply_to`, `debug_level`) VALUES '

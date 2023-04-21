@@ -16,7 +16,7 @@ CREATE TABLE `nuke_pages` (
   `uname` varchar(40) NOT NULL default '',
   PRIMARY KEY  (`pid`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `nuke_pages_categories`;
 CREATE TABLE `nuke_pages_categories` (
@@ -25,13 +25,13 @@ CREATE TABLE `nuke_pages_categories` (
   `title` varchar(255) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`cid`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `nuke_pages_feat`;
 CREATE TABLE `nuke_pages_feat` (
   `cid` int(10) NOT NULL default '0',
   `pid` int(10) NOT NULL default '0'
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `nuke_newpages`;
 CREATE TABLE `nuke_newpages` (
@@ -50,4 +50,4 @@ CREATE TABLE `nuke_newpages` (
   PRIMARY KEY  (`pid`),
   KEY `pid` (`pid`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
