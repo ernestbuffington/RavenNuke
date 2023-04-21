@@ -17,6 +17,10 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:35 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Remove STFU Operators
  ***************************************************************************/
 
 define('SMTP_INCLUDED', 1);
@@ -46,6 +50,8 @@ function server_parse($socket, $response, $line = __LINE__)
 // Replacement or substitute for PHP's mail command
 function smtpmail($mail_to, $subject, $message, $headers = '')
 {
+        $cc = null;
+        $bcc = null;
         global $board_config;
 
         // Fix any bare linefeeds in the message to make it RFC821 Compliant.
@@ -73,21 +79,20 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
                 // but we have to grab bcc and cc headers and treat them differently
                 // Something we really didn't take into consideration originally
                 $header_array = explode("\r\n", $headers);
-                @reset($header_array);
+                reset($header_array);
 
                 $headers = '';
-                while(list(, $header) = each($header_array))
-                {
-                        if (preg_match('#^cc:#si', $header))
-                        {
-                                $cc = preg_replace('#^cc:(.*)#si', '\1', $header);
-                        }
-                        else if (preg_match('#^bcc:#si', $header))
-                        {
-                                $bcc = preg_replace('#^bcc:(.*)#si', '\1', $header);
-                                $header = '';
-                        }
-                        $headers .= ($header != '') ? $header . "\r\n" : '';
+                foreach ($header_array as $header) {
+                    if (preg_match('#^cc:#si', $header))
+                    {
+                            $cc = preg_replace('#^cc:(.*)#si', '\1', $header);
+                    }
+                    else if (preg_match('#^bcc:#si', $header))
+                    {
+                            $bcc = preg_replace('#^bcc:(.*)#si', '\1', $header);
+                            $header = '';
+                    }
+                    $headers .= ($header != '') ? $header . "\r\n" : '';
                 }
 
                 $headers = chop($headers);
@@ -108,7 +113,7 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 
         // Ok we have error checked as much as we can to this point let's get on
         // it already.
-        if( !$socket = @fsockopen($board_config['smtp_host'], 25, $errno, $errstr, 20) )
+        if( !$socket = fsockopen($board_config['smtp_host'], 25, $errno, $errstr, 20) )
         {
                 message_die(GENERAL_ERROR, "Could not connect to smtp host : $errno : $errstr", "", __LINE__, __FILE__);
         }
@@ -155,28 +160,26 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 	}
 
         // Ok now do the CC and BCC fields...
-        @reset($bcc);
-        while(list(, $bcc_address) = each($bcc))
-        {
-                // Add an additional bit of error checking to bcc header...
-                $bcc_address = trim($bcc_address);
-                if (preg_match('#[^ ]+\@[^ ]+#', $bcc_address))
-                {
-                        fputs($socket, "RCPT TO: <$bcc_address>\r\n");
-                        server_parse($socket, "250", __LINE__);
-                }
+        reset($bcc);
+        foreach ($bcc as $bcc_address) {
+            // Add an additional bit of error checking to bcc header...
+            $bcc_address = trim($bcc_address);
+            if (preg_match('#[^ ]+\@[^ ]+#', $bcc_address))
+            {
+                    fputs($socket, "RCPT TO: <$bcc_address>\r\n");
+                    server_parse($socket, "250", __LINE__);
+            }
         }
 
-        @reset($cc);
-        while(list(, $cc_address) = each($cc))
-        {
-                // Add an additional bit of error checking to cc header
-                $cc_address = trim($cc_address);
-                if (preg_match('#[^ ]+\@[^ ]+#', $cc_address))
-                {
-                        fputs($socket, "RCPT TO: <$cc_address>\r\n");
-                        server_parse($socket, "250", __LINE__);
-                }
+        reset($cc);
+        foreach ($cc as $cc_address) {
+            // Add an additional bit of error checking to cc header
+            $cc_address = trim($cc_address);
+            if (preg_match('#[^ ]+\@[^ ]+#', $cc_address))
+            {
+                    fputs($socket, "RCPT TO: <$cc_address>\r\n");
+                    server_parse($socket, "250", __LINE__);
+            }
         }
 
         // Ok now we tell the server we are ready to start sending data
