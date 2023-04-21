@@ -54,16 +54,17 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	exit('Access Denied');
 }
 
-if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && @extension_loaded('zlib') && !headers_sent()) {
+if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && extension_loaded('zlib') && !headers_sent()) {
+    ob_end_clean(); // do a clean before invoking the handler
 	ob_start('ob_gzhandler');
 	ob_implicit_flush(0);
 }
 
-if (@ini_get('date.timezone') == '') {
+if (ini_get('date.timezone') == '') {
 	date_default_timezone_set("America/New_York");
 }
 
-if (!@ini_get('register_globals')) {
+if (!ini_get('register_globals')) {
 	extract($_GET, EXTR_OVERWRITE);
 	extract($_POST, EXTR_OVERWRITE);
 	extract($_COOKIE, EXTR_OVERWRITE);
@@ -146,9 +147,9 @@ require_once dirname(__FILE__) . '/config.php';
 */
 error_reporting($error_reporting);
 if ($display_errors) {
-	@ini_set('display_errors', 1);
+	ini_set('display_errors', 1);
 } else {
-	@ini_set('display_errors', 0);
+	ini_set('display_errors', 0);
 }
 
 /**
