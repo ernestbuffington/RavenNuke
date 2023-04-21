@@ -38,6 +38,12 @@ Last Updated:  18th April 2006                               */
 
 Documentation is available at http://www.ejeliot.com/pages/2
 
+ Applied rules:
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * ArraySpreadInsteadOfArrayMergeRector (https://wiki.php.net/rfc/spread_operator_for_array)
+ 
 */
 /************************ Default Options **********************/
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
@@ -71,23 +77,23 @@ define('CAPTCHA_AUDIO_PATH', '/tmp/'); // must be writeable by PHP process
 // don't edit below this line (unless you want to change the class!)
 
 class PhpCaptcha {
-	var $oImage;
-	var $aFonts;
-	var $iWidth;
-	var $iHeight;
-	var $iNumChars;
-	var $iNumLines;
-	var $iSpacing;
-	var $bCharShadow;
-	var $sOwnerText;
-	var $aCharSet;
-	var $bCaseInsensitive;
-	var $vBackgroundImages;
-	var $iMinFontSize;
-	var $iMaxFontSize;
-	var $bUseColour;
-	var $sFileType;
-	var $sCode = '';
+	public $oImage;
+	public $aFonts;
+	public $iWidth;
+	public $iHeight;
+	public $iNumChars;
+	public $iNumLines;
+	public $iSpacing;
+	public $bCharShadow;
+	public $sOwnerText;
+	public $aCharSet;
+	public $bCaseInsensitive;
+	public $vBackgroundImages;
+	public $iMinFontSize;
+	public $iMaxFontSize;
+	public $bUseColour;
+	public $sFileType;
+	public $sCode = '';
 
 	function __construct(
 		$aFonts, // array of TrueType fonts to use - specify full path
@@ -168,7 +174,7 @@ class PhpCaptcha {
 							$aRange = range($aRange[0], $aRange[1]);
 
 							// add to charset array
-							$this->aCharSet = array_merge($this->aCharSet, $aRange);
+							$this->aCharSet = [...$this->aCharSet, ...$aRange];
 						}
 					} else {
 						$this->aCharSet[] = $sCurrentItem;
@@ -211,14 +217,14 @@ class PhpCaptcha {
 		for ($i = 0; $i < $this->iNumLines; $i++) {
 			// allocate colour
 			if ($this->bUseColour) {
-				$iLineColour = imagecolorallocate($this->oImage, rand(100, 250), rand(100, 250), rand(100, 250));
+				$iLineColour = imagecolorallocate($this->oImage, random_int(100, 250), random_int(100, 250), random_int(100, 250));
 			} else {
-				$iRandColour = rand(100, 250);
+				$iRandColour = random_int(100, 250);
 				$iLineColour = imagecolorallocate($this->oImage, $iRandColour, $iRandColour, $iRandColour);
 			}
 
 			// draw line
-			imageline($this->oImage, rand(0, $this->iWidth), rand(0, $this->iHeight), rand(0, $this->iWidth), rand(0, $this->iHeight), $iLineColour);
+			imageline($this->oImage, random_int(0, $this->iWidth), random_int(0, $this->iHeight), random_int(0, $this->iWidth), random_int(0, $this->iHeight), $iLineColour);
 		}
 	}
 
@@ -251,7 +257,7 @@ class PhpCaptcha {
 				$this->sCode .= $this->aCharSet[array_rand($this->aCharSet)];
 			} else {
 				// select random character and add to code string
-				$this->sCode .= chr(rand(65, 90));
+				$this->sCode .= chr(random_int(65, 90));
 			}
 		}
 
@@ -264,35 +270,36 @@ class PhpCaptcha {
 	}
 
 	function DrawCharacters() {
-		// loop through and write out selected number of characters
+		$iShadowColour = null;
+  // loop through and write out selected number of characters
 		for ($i = 0; $i < strlen($this->sCode); $i++) {
 			// select random font
 			$sCurrentFont = $this->aFonts[array_rand($this->aFonts)];
 
 			// select random colour
 			if ($this->bUseColour) {
-				$iTextColour = imagecolorallocate($this->oImage, rand(0, 100), rand(0, 100), rand(0, 100));
+				$iTextColour = imagecolorallocate($this->oImage, random_int(0, 100), random_int(0, 100), random_int(0, 100));
 
 				if ($this->bCharShadow) {
 					// shadow colour
-					$iShadowColour = imagecolorallocate($this->oImage, rand(0, 100), rand(0, 100), rand(0, 100));
+					$iShadowColour = imagecolorallocate($this->oImage, random_int(0, 100), random_int(0, 100), random_int(0, 100));
 				}
 			} else {
-				$iRandColour = rand(0, 100);
+				$iRandColour = random_int(0, 100);
 				$iTextColour = imagecolorallocate($this->oImage, $iRandColour, $iRandColour, $iRandColour);
 
 				if ($this->bCharShadow) {
 					// shadow colour
-					$iRandColour = rand(0, 100);
+					$iRandColour = random_int(0, 100);
 					$iShadowColour = imagecolorallocate($this->oImage, $iRandColour, $iRandColour, $iRandColour);
 				}
 			}
 
 			// select random font size
-			$iFontSize = rand($this->iMinFontSize, $this->iMaxFontSize);
+			$iFontSize = random_int($this->iMinFontSize, $this->iMaxFontSize);
 
 			// select random angle
-			$iAngle = rand(-30, 30);
+			$iAngle = random_int(-30, 30);
 
 			// get dimensions of character in selected font and text size
 			$aCharDetails = imageftbbox($iFontSize, $iAngle, $sCurrentFont, $this->sCode[$i], array());
@@ -306,10 +313,10 @@ class PhpCaptcha {
 			imagefttext($this->oImage, $iFontSize, $iAngle, $iX, $iY, $iTextColour, $sCurrentFont, $this->sCode[$i], array());
 
 			if ($this->bCharShadow) {
-				$iOffsetAngle = rand(-30, 30);
+				$iOffsetAngle = random_int(-30, 30);
 
-				$iRandOffsetX = rand(-5, 5);
-				$iRandOffsetY = rand(-5, 5);
+				$iRandOffsetX = random_int(-5, 5);
+				$iRandOffsetY = random_int(-5, 5);
 
 				imagefttext($this->oImage, $iFontSize, $iOffsetAngle, $iX + $iRandOffsetX, $iY + $iRandOffsetY, $iShadowColour, $sCurrentFont, $this->sCode[$i], array());
 			}
@@ -414,9 +421,9 @@ class PhpCaptcha {
 
 // this class will only work correctly if a visual CAPTCHA has been created first using PhpCaptcha
 class AudioPhpCaptcha {
-	var $sFlitePath;
-	var $sAudioPath;
-	var $sCode;
+	public $sFlitePath;
+	public $sAudioPath;
+	public $sCode;
 
 	function __construct(
 	$sFlitePath = CAPTCHA_FLITE_PATH, // path to flite binary
@@ -490,7 +497,7 @@ class AudioPhpCaptcha {
 class PhpCaptchaColour extends PhpCaptcha {
 	function __construct($aFonts, $iWidth = CAPTCHA_WIDTH, $iHeight = CAPTCHA_HEIGHT) {
 		// call parent constructor
-		parent::PhpCaptcha($aFonts, $iWidth, $iHeight);
+		parent::__construct($aFonts, $iWidth, $iHeight);
 
 		// set options
 		$this->UseColour(true);
