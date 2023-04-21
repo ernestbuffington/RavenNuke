@@ -1,6 +1,7 @@
 <?php
 require_once('classes/dbMysql.class.php');
-$dbMysql = new dbMysql();
+global $dbhost, $dbname, $dbuname, $dbpass, $dbMysql;
+$dbMysql = new dbMysql($dbhost, $dbname, $dbuname, $dbpass);
 $dbMysql->addDefaultXhtmlTemplate('head');
 $dbMysql->dbServerConnect();
 $dbMysql->dbSelectDb();
