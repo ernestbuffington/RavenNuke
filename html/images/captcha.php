@@ -17,7 +17,7 @@ if ($handle = opendir(FONTS)) {
     }
 }
 
-$size = (isset($_GET['size'])) ? $_GET['size'] : 'normal';
+$size = $_GET['size'] ?? 'normal';
 
 switch ($size) {
     case 'normal':
@@ -39,7 +39,7 @@ switch ($size) {
 }
 
 //If there is a filename to use as a background
-$file = (isset($_GET['file'])) ? $_GET['file'] : '';
+$file = $_GET['file'] ?? '';
 
 //Look for invalid crap
 if (preg_match("/[^\w_\-]/i",$file)) {
