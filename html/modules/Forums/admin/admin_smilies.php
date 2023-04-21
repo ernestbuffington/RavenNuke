@@ -17,6 +17,9 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2024 4:32 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 
 /**************************************************************************
@@ -64,7 +67,7 @@ $board_config['smilies_path'] = str_replace("modules/Forums/", "", "$smilie_tmp"
 //
 if( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
 {
-	$mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+	$mode = $HTTP_POST_VARS['mode'] ?? $HTTP_GET_VARS['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
@@ -106,9 +109,9 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 	//
 	// Import a list a "Smiley Pack"
 	//
-	$smile_pak = ( isset($HTTP_POST_VARS['smile_pak']) ) ? $HTTP_POST_VARS['smile_pak'] : $HTTP_GET_VARS['smile_pak'];
-	$clear_current = ( isset($HTTP_POST_VARS['clear_current']) ) ? $HTTP_POST_VARS['clear_current'] : $HTTP_GET_VARS['clear_current'];
-	$replace_existing = ( isset($HTTP_POST_VARS['replace']) ) ? $HTTP_POST_VARS['replace'] : $HTTP_GET_VARS['replace'];
+	$smile_pak = $HTTP_POST_VARS['smile_pak'] ?? $HTTP_GET_VARS['smile_pak'];
+	$clear_current = $HTTP_POST_VARS['clear_current'] ?? $HTTP_GET_VARS['clear_current'];
+	$replace_existing = $HTTP_POST_VARS['replace'] ?? $HTTP_GET_VARS['replace'];
 
 	if ( !empty($smile_pak) )
 	{
@@ -135,7 +138,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 
 			$cur_smilies = $db->sql_fetchrowset($result);
 
-			for( $i = 0; $i < count($cur_smilies); $i++ )
+			for( $i = 0; $i < (is_countable($cur_smilies) ? count($cur_smilies) : 0); $i++ )
 			{
 				$k = $cur_smilies[$i]['code'];
 				$smiles[$k] = 1;
@@ -149,7 +152,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 			message_die(GENERAL_ERROR, "Couldn't read smiley pak file", "", __LINE__, __FILE__, $sql);
 		}
 
-		for( $i = 0; $i < count($fcontents); $i++ )
+		for( $i = 0; $i < (is_countable($fcontents) ? count($fcontents) : 0); $i++ )
 		{
 			$smile_data = explode($delimeter, trim(addslashes($fcontents[$i])));
 
@@ -254,7 +257,7 @@ else if( isset($HTTP_POST_VARS['export_pack']) || isset($HTTP_GET_VARS['export_p
 		$resultset = $db->sql_fetchrowset($result);
 
 		$smile_pak = "";
-		for($i = 0; $i < count($resultset); $i++ )
+		for($i = 0; $i < (is_countable($resultset) ? count($resultset) : 0); $i++ )
 		{
 			$smile_pak .= $resultset[$i]['smile_url'] . $delimeter;
 			$smile_pak .= $resultset[$i]['emoticon'] . $delimeter;
@@ -285,7 +288,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
 	);
 
 	$filename_list = "";
-	for( $i = 0; $i < count($smiley_images); $i++ )
+	for( $i = 0; $i < (is_countable($smiley_images) ? count($smiley_images) : 0); $i++ )
 	{
 		$filename_list .= '<option value="' . $smiley_images[$i] . '">' . $smiley_images[$i] . '</option>';
 	}
@@ -382,7 +385,7 @@ else if ( $mode != "" )
 			$smile_data = $db->sql_fetchrow($result);
 
 			$filename_list = "";
-			for( $i = 0; $i < count($smiley_images); $i++ )
+			for( $i = 0; $i < (is_countable($smiley_images) ? count($smiley_images) : 0); $i++ )
 			{
 				if( $smiley_images[$i] == $smile_data['smile_url'] )
 				{
@@ -481,8 +484,8 @@ else if ( $mode != "" )
 			// Get the submitted data being careful to ensure the the data
 			// we recieve and process is only the data we are looking for.
 			//
-			$smile_code = ( isset($HTTP_POST_VARS['smile_code']) ) ? $HTTP_POST_VARS['smile_code'] : '';
-			$smile_url = ( isset($HTTP_POST_VARS['smile_url']) ) ? $HTTP_POST_VARS['smile_url'] : '';
+			$smile_code = $HTTP_POST_VARS['smile_code'] ?? '';
+			$smile_url = $HTTP_POST_VARS['smile_url'] ?? '';
 			$smile_url = phpbb_ltrim(basename($smile_url), "'");
 			$smile_emotion = ( isset($HTTP_POST_VARS['smile_emotion']) ) ? htmlspecialchars(trim($HTTP_POST_VARS['smile_emotion'])) : '';
 			$smile_code = trim($smile_code);
@@ -558,7 +561,7 @@ else
 	//
 	// Loop throuh the rows of smilies setting block vars for the template.
 	//
-	for($i = 0; $i < count($smilies); $i++)
+	for($i = 0; $i < (is_countable($smilies) ? count($smilies) : 0); $i++)
 	{
 		//
 		// Replace htmlentites for < and > with actual character.
