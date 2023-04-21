@@ -19,6 +19,12 @@
  *   (at your option) any later version.
  *
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:44 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * ListEachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
 function check_image_type(&$type, &$error, &$error_msg)
@@ -93,7 +99,8 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 
 function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 {
-	global $lang, $board_config;
+	$avatar_filesize = [];
+ global $lang, $board_config;
 
 	if ( !preg_match('#^(http)|(ftp):\/\/#i', $avatar_filename) )
 	{
@@ -161,7 +168,10 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 
 function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
 {
-	global $board_config, $db, $lang;
+	$avatar_data = null;
+ $tmp_filename = null;
+ $avatar_sql = null;
+ global $board_config, $db, $lang;
 
 	$ini_val = ( @phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
 
@@ -213,7 +223,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			$avatar_data = substr($avatar_data, strlen($avatar_data) - $avatar_filesize, $avatar_filesize);
 
 			$tmp_path = ( !@$ini_val('safe_mode') ) ? '/tmp' : './' . $board_config['avatar_path'] . '/tmp';
-			$tmp_filename = tempnam($tmp_path, uniqid(rand()) . '-');
+			$tmp_filename = tempnam($tmp_path, uniqid(random_int(0, mt_getrandmax())) . '-');
 
 			$fptr = @fopen($tmp_filename, 'wb');
 			$bytes_written = @fwrite($fptr, $avatar_data, $avatar_filesize);
@@ -300,7 +310,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 
 	if ( $width > 0 && $height > 0 && $width <= $board_config['avatar_max_width'] && $height <= $board_config['avatar_max_height'] )
 	{
-		$new_filename = uniqid(rand()) . $imgtype;
+		$new_filename = uniqid(random_int(0, mt_getrandmax())) . $imgtype;
 
 		if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && $current_avatar != '' )
 		{
@@ -352,7 +362,8 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 
 function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$website, &$location, &$occupation, &$interests, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$dateformat, &$session_id)
 {
-	global $board_config, $db, $template, $lang, $images, $theme;
+	$avatar_name = [];
+ global $board_config, $db, $template, $lang, $images, $theme;
 	global $phpbb_root_path, $phpEx;
 
 	$dir = @opendir($board_config['avatar_gallery_path']);
@@ -391,19 +402,18 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 
 	if( empty($category) )
 	{
-		list($category, ) = each($avatar_images);
+		$category = key($avatar_images);
 	}
 	@reset($avatar_images);
 
 	$s_categories = '<select name="avatarcategory">';
-	while( list($key) = each($avatar_images) )
-	{
-		$selected = ( $key == $category ) ? ' selected="selected"' : '';
-		if( count($avatar_images[$key]) )
-		{
-			$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-		}
-	}
+	foreach (array_keys($avatar_images) as $key) {
+     $selected = ( $key == $category ) ? ' selected="selected"' : '';
+     if( count($avatar_images[$key]) )
+   		{
+   			$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
+   		}
+ }
 	$s_categories .= '</select>';
 
 	$s_colspan = 0;
@@ -432,7 +442,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 
 	for($i = 0; $i < count($params); $i++)
 	{
-		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
+		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', ${$params}[$i]) . '" />';
 	}
 	
 	$template->assign_vars(array(
