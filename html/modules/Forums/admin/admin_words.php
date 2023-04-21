@@ -18,6 +18,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:08 PM
+ * TernaryToNullCoalescingRector
  ***************************************************************************/
 
 if( !empty($setmodules) )
@@ -47,7 +49,7 @@ if ($cancel)
 
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
-	$mode = (isset($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : $HTTP_POST_VARS['mode'];
+	$mode = $HTTP_GET_VARS['mode'] ?? $HTTP_POST_VARS['mode'];
         $mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
@@ -163,7 +165,7 @@ if( $mode != "" )
         {
                 if( isset($HTTP_POST_VARS['id']) ||  isset($HTTP_GET_VARS['id']) )
                 {
-                        $word_id = ( isset($HTTP_POST_VARS['id']) ) ? $HTTP_POST_VARS['id'] : $HTTP_GET_VARS['id'];
+                        $word_id = $HTTP_POST_VARS['id'] ?? $HTTP_GET_VARS['id'];
                         $word_id = intval($word_id);
                 }
                 else
