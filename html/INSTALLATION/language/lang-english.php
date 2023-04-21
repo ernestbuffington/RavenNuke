@@ -1,20 +1,20 @@
 <?php
-define('_rnMYSQL_TABLE_INSTALLER','MySQL Table Installer');
+define('_rnMYSQL_TABLE_INSTALLER','MySQLi Table Installer');
 define('_rnWARNING','This installer is for <span class="underline">NEW</span> installs and will <span class="underline">REPLACE</span> your tables and data each time it is run. This is <span class="underline">NOT</span> recoverable.');
-define('_rnTITLE_1','MySQL Database Connectivity Test Results');
+define('_rnTITLE_1','MySQLi Database Connectivity Test Results');
 define('_rnCONFIG_FILE_FOUND','config.php file found!');
 define('_rnSUCCESS_CONNECT_HOST','<span style="font-weight:bold;">Successfully connected to <span class="c3">'.$dbhost.'</span> as user <span class="c3">'.$dbuname.'</span> and assigned password!</span><br />');
 define('_rnFOUND_DB','<span style="font-weight:bold;">Database <span class="c3">'.$dbname.'</span> found!</span><br />');
 define('_rnTABLE_PREFIX','<span style="font-weight:bold;">Tables will be installed with a prefix of <span class="c3">'.$prefix.'</span>. <br />User Tables will be installed with a prefix of <span class="c3">'.$user_prefix.'</span>.<br />If this is not correct, edit your config.php file and correct the <span class="c2">$prefix</span> or the <span class="c2">$user_prefix</span> settings.</span><br />');
 define('_rnINSTALLER_INTENT','      For detailed help consult the forums at http://www.ravenphpscripts.com and the included documentation.  These steps must be completed in the order shown. The first 2 steps are required. Step 3 is optional, but highly recommended as it will facilitate your IP Tracking through NukeSentinel&trade;.');
 define('_rnERR1','<span class="c2">It appears that your nuke config.php file is either missing or the permissions are not allowing it to be accessed.  Please verify the config.php is in your root folder where your mainfile.php is located and has permissions of at least 644.  Then try running the Install script again.</span>');
-define('_rnERR2','<span class="c2">I was unable to reach your MySQL server using the MySQL connection settings in your nuke config.php file.  The exact error that MySQL reported is:</span>');
-define('_rnERR3','<span class="c2">I was able to reach your MySQL server using the MySQL connection settings in your nuke config.php file, but I was unable to reach/locate the database <span style="font-weight:bold;">'.$dbname.'</span>. The exact error message that your MySQL server reported is:</span>');
-define('_rnERR4','<span class="c2">The exact error message that your MySQL server reported is:</span>');
+define('_rnERR2','<span class="c2">I was unable to reach your MySQLi server using the MySQLi connection settings in your nuke config.php file.  The exact error that MySQLi reported is:</span>');
+define('_rnERR3','<span class="c2">I was able to reach your MySQLi server using the MySQLi connection settings in your nuke config.php file, but I was unable to reach/locate the database <span style="font-weight:bold;">'.$dbname.'</span>. The exact error message that your MySQLi server reported is:</span>');
+define('_rnERR4','<span class="c2">The exact error message that your MySQLi server reported is:</span>');
 define('_rnERR90','<span class="c2">You have attempted to crack the Installer Script.  All pertinent information for this session has been saved and will be reviewed by the System Administrator and appropriate action will be taken.</span>');
-define('_rnERR91','<span class="c2">It does not appear that there are any tables to be loaded.  Installation stopped.  The exact error message that your MySQL server reported is:</span>');
-define('_rnERR80','<span class="c2">Unable to update AUTHORS table with random password.  Installation stopped.  The exact error message that your MySQL server reported is:</span>');
-define('_rnERR81','<span class="c2">Unable to update NukeSentinel&trade; Admin table with random password.  Installation stopped.  The exact error message that your MySQL server reported is:</span>');
+define('_rnERR91','<span class="c2">It does not appear that there are any tables to be loaded.  Installation stopped.  The exact error message that your MySQLi server reported is:</span>');
+define('_rnERR80','<span class="c2">Unable to update AUTHORS table with random password.  Installation stopped.  The exact error message that your MySQLi server reported is:</span>');
+define('_rnERR81','<span class="c2">Unable to update NukeSentinel&trade; Admin table with random password.  Installation stopped.  The exact error message that your MySQLi server reported is:</span>');
 define('_rnSTEP1','Step 1');
 define('_rnSTEP2','Step 2');
 define('_rnSTEP3','Step 3');
