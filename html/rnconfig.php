@@ -28,6 +28,7 @@ if (!defined('NUKE_BASE_FOLDER')) {
 //Absolute Nuke directory
 if (!defined('NUKE_BASE_DIR')) define('NUKE_BASE_DIR', dirname(__FILE__) . '/');
 //Absolute Nuke directory + includes
+if (!defined('NUKE_DB_DIR')) define('NUKE_DB_DIR', NUKE_BASE_DIR . 'db/');
 if (!defined('NUKE_BLOCKS_DIR')) define('NUKE_BLOCKS_DIR', NUKE_BASE_DIR . 'blocks/');
 if (!defined('NUKE_IMAGES_DIR')) define('NUKE_IMAGES_DIR', NUKE_BASE_DIR . 'images/');
 if (!defined('NUKE_INCLUDE_DIR')) define('NUKE_INCLUDE_DIR', NUKE_BASE_DIR . 'includes/');
