@@ -6,6 +6,9 @@
 * @copyright (c) 2002 Meik Sievertsen
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:23 PM
+* CountOnNullRector (https://3v4l.org/Bndc9)
+*
 */
 
 /**
@@ -269,7 +272,7 @@ if ($submit_change && $view == 'attachments')
 	// Generate correct Change List
 	$attachments = array();
 
-	for ($i = 0; $i < count($attach_change_list); $i++)
+	for ($i = 0; $i < (is_countable($attach_change_list) ? count($attach_change_list) : 0); $i++)
 	{
 		$attachments['_' . $attach_change_list[$i]]['comment'] = $attach_comment_list[$i];
 		$attachments['_' . $attach_change_list[$i]]['download_count'] = $attach_download_count_list[$i];
@@ -574,7 +577,7 @@ if ($view == 'username')
 			$members = limit_array($members, $start, $board_config['topics_per_page']);
 		}
 		
-		for ($i = 0; $i < count($members); $i++)
+		for ($i = 0; $i < (is_countable($members) ? count($members) : 0); $i++)
 		{
 			$username = $members[$i]['username'];
 			$total_attachments = $members[$i]['total_attachments'];
@@ -733,7 +736,7 @@ if ($view == 'attachments')
 		{
 			$delete_box = '<input type="checkbox" name="delete_id_list[]" value="' . intval($attachments[$i]['attach_id']) . '" />';
 
-			for ($j = 0; $j < count($delete_id_list); $j++)
+			for ($j = 0; $j < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $j++)
 			{
 				if ($delete_id_list[$j] == $attachments[$i]['attach_id'])
 				{
