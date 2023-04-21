@@ -19,6 +19,8 @@
  *   (at your option) any later version.
  *
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:47 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
  ***************************************************************************/
 
 if (!defined('IN_PHPBB')) {
@@ -27,6 +29,8 @@ if (!defined('IN_PHPBB')) {
 
 function topic_review($topic_id, $is_inline_review)
 {
+        $nukeuser = null;
+        $is_auth = [];
         global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
 
         if ( !$is_inline_review )
