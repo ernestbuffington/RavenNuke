@@ -17,6 +17,10 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:06 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * Remove STFU Operators
  ***************************************************************************/
 
 if (!defined('IN_PHPBB')) {
@@ -66,7 +70,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
         if ( !empty($stopword_list) )
         {
-                for ($j = 0; $j < count($stopword_list); $j++)
+                for ($j = 0; $j < (is_countable($stopword_list) ? count($stopword_list) : 0); $j++)
                 {
                         $stopword = trim($stopword_list[$j]);
 
@@ -79,7 +83,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
         if ( !empty($synonym_list) )
         {
-                for ($j = 0; $j < count($synonym_list); $j++)
+                for ($j = 0; $j < (is_countable($synonym_list) ? count($synonym_list) : 0); $j++)
                 {
                         list($replace_synonym, $match_synonym) = preg_split('/ /', trim(strtolower($synonym_list[$j])));
                         if ( $mode == 'post' || ( $match_synonym != 'not' && $match_synonym != 'and' && $match_synonym != 'or' ) )
@@ -107,15 +111,16 @@ function split_words($entry, $mode = 'post')
 
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
+        $sql = null;
         global $db, $phpbb_root_path, $board_config, $lang;
 
-        $stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-        $synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+        $stopword_array = file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+        $synonym_array = file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
 
         $search_raw_words = array();
         $search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
         $search_raw_words['title'] = split_words(clean_words('post', $post_title, $stopword_array, $synonym_array));
-	@set_time_limit(0);
+	set_time_limit(0);
         $word = array();
         $word_insert_sql = array();
         foreach($search_raw_words as $word_in => $search_matches)
@@ -123,7 +128,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
                 $word_insert_sql[$word_in] = '';
                 if ( !empty($search_matches) )
                 {
-                        for ($i = 0; $i < count($search_matches); $i++)
+                        for ($i = 0; $i < (is_countable($search_matches) ? count($search_matches) : 0); $i++)
                         {
                                 $search_matches[$i] = trim($search_matches[$i]);
 
@@ -284,10 +289,10 @@ function remove_common($mode, $fraction, $word_id_list = array())
         {
                 $common_threshold = floor($row['total_posts'] * $fraction);
 
-                if ( $mode == 'single' && count($word_id_list) )
+                if ( $mode == 'single' && (is_countable($word_id_list) ? count($word_id_list) : 0) )
                 {
                         $word_id_sql = '';
-                        for($i = 0; $i < count($word_id_list); $i++)
+                        for($i = 0; $i < (is_countable($word_id_list) ? count($word_id_list) : 0); $i++)
                         {
                                 $word_id_sql .= ( ( $word_id_sql != '' ) ? ', ' : '' ) . "'" . $word_id_list[$i] . "'";
                         }
