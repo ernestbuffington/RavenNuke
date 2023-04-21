@@ -26,6 +26,16 @@
 *
 *        Some functions are adapted from the upgrade_20.php script and others
 *        adapted from the unoficial phpMyAdmin 2.2.0.
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:43 PM
+* AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+* TernaryToNullCoalescingRector
+* CountOnNullRector (https://3v4l.org/Bndc9)
+* WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+* StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+* Remove STFU OPerator
+* Fix Magic Quotes
+* 
 ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -35,9 +45,9 @@ if( !empty($setmodules) )
         $filename = basename(__FILE__);
         $module['General']['Backup_DB'] = $filename . "?perform=backup";
 
-        $file_uploads = (@phpversion() >= '4.0.0') ? @ini_get('file_uploads') : @get_cfg_var('file_uploads');
+        $file_uploads = (phpversion() >= '4.0.0') ? ini_get('file_uploads') : get_cfg_var('file_uploads');
 
-        if( (empty($file_uploads) || $file_uploads != 0) && (strtolower($file_uploads) != 'off') && (@phpversion() != '4.0.4pl1') )
+        if( (empty($file_uploads) || $file_uploads != 0) && (strtolower($file_uploads) != 'off') && (phpversion() != '4.0.4pl1') )
         {
                 $module['General']['Restore_DB'] = $filename . "?perform=restore";
         }
@@ -64,13 +74,14 @@ define('VERBOSE', 0);
 // Increase maximum execution time, but don't complain about it if it isn't
 // allowed.
 //
-@set_time_limit(1200);
+set_time_limit(1200);
 
 // -----------------------
 // The following functions are adapted from phpMyAdmin and upgrade_20.php
 //
 function gzip_PrintFourChars($Val)
 {
+        $return = null;
         for ($i = 0; $i < 4; $i ++)
         {
                 $return .= chr($Val % 256);
@@ -86,6 +97,7 @@ function gzip_PrintFourChars($Val)
 //
 function pg_get_sequences($crlf, $backup_type)
 {
+        $returnval = null;
         global $db;
 
         $get_seq_sql = "SELECT relname FROM pg_class WHERE NOT relname ~ 'pg_.*'
@@ -149,6 +161,9 @@ function pg_get_sequences($crlf, $backup_type)
 //
 function get_table_def_postgresql($table, $crlf)
 {
+        $index_rows = [];
+        $index_create = null;
+        $primary_key_name = null;
         global $drop, $db;
 
         $schema_create = "";
@@ -199,7 +214,7 @@ function get_table_def_postgresql($table, $crlf)
                 }
                 else
                 {
-                        $row['rowdefault'] = @pg_result($def_res, 0, 'rowdefault');
+                        $row['rowdefault'] = pg_result($def_res, 0, 'rowdefault');
                 }
 
                 if ($row['type'] == 'bpchar')
@@ -286,10 +301,9 @@ function get_table_def_postgresql($table, $crlf)
 
         if (!empty($index_rows))
         {
-                while(list($idx_name, $props) = each($index_rows))
-                {
-                        $props['column_names'] = str_replace(", $", "" , $props['column_names']);
-                        $index_create .= 'CREATE ' . $props['unique'] . " INDEX $idx_name ON $table (" . $props['column_names'] . ");$crlf";
+                foreach ($index_rows as $idx_name => $props) {
+                    $props['column_names'] = str_replace(", $", "" , $props['column_names']);
+                    $index_create .= 'CREATE ' . $props['unique'] . " INDEX $idx_name ON $table (" . $props['column_names'] . ");$crlf";
                 }
         }
 
@@ -350,6 +364,7 @@ function get_table_def_postgresql($table, $crlf)
 //
 function get_table_def_mysql($table, $crlf)
 {
+        $index = [];
         global $drop, $db;
 
         $schema_create = "";
@@ -428,27 +443,25 @@ function get_table_def_mysql($table, $crlf)
                 $index[$kname][] = $row['Column_name'];
         }
 
-        while(list($x, $columns) = @each($index))
-        {
-                $schema_create .= ", $crlf";
-
-                if($x == 'PRIMARY')
-                {
-                        $schema_create .= '        PRIMARY KEY (' . implode($columns, ', ') . ')';
-                }
-                elseif (substr($x,0,6) == 'UNIQUE')
-                {
-                        $schema_create .= '        UNIQUE ' . substr($x,7) . ' (' . implode($columns, ', ') . ')';
-                }
-                else
-                {
-                        $schema_create .= "        KEY $x (" . implode($columns, ', ') . ')';
-                }
+        foreach ($index as $x => $columns) {
+         $schema_create .= ", $crlf";
+         if($x == 'PRIMARY')
+         {
+            $schema_create .= ' PRIMARY KEY (' . implode($columns, ', ') . ')';
+         }
+         elseif (str_starts_with((string) $x, 'UNIQUE'))
+         {
+            $schema_create .= ' UNIQUE ' . substr((string) $x,7) . ' (' . implode($columns, ', ') . ')';
+         }
+         else
+         {
+            $schema_create .= " KEY $x (" . implode($columns, ', ') . ')';
+         }
         }
 
         $schema_create .= "$crlf);";
 
-        if(@get_magic_quotes_runtime())
+        if (function_exists('get_magic_quotes_runtime'))
         {
                 return(stripslashes($schema_create));
         }
@@ -475,6 +488,8 @@ function get_table_def_mysql($table, $crlf)
 //
 function get_table_content_postgresql($table, $handler)
 {
+        $aryType = [];
+        $aryName = [];
         global $db;
 
         //
@@ -652,7 +667,7 @@ function output_table_content($content)
 //
 if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
 {
-        $perform = (isset($HTTP_POST_VARS['perform'])) ? $HTTP_POST_VARS['perform'] : $HTTP_GET_VARS['perform'];
+        $perform = $HTTP_POST_VARS['perform'] ?? $HTTP_GET_VARS['perform'];
 
         switch($perform)
         {
@@ -696,9 +711,9 @@ if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
 
 			$tables = array('auth_access', 'banlist', 'categories', 'config', 'disallow', 'forums', 'forum_prune', 'groups', 'posts', 'posts_text', 'privmsgs', 'privmsgs_text', 'ranks', 'search_results', 'search_wordlist', 'search_wordmatch', 'sessions', 'smilies', 'themes', 'themes_name', 'topics', 'topics_watch', 'user_group', 'users', 'vote_desc', 'vote_results', 'vote_voters', 'words', 'confirm', 'sessions_keys');
 
-                        $additional_tables = (isset($HTTP_POST_VARS['additional_tables'])) ? $HTTP_POST_VARS['additional_tables'] : ( (isset($HTTP_GET_VARS['additional_tables'])) ? $HTTP_GET_VARS['additional_tables'] : "" );
+                        $additional_tables = $HTTP_POST_VARS['additional_tables'] ?? $HTTP_GET_VARS['additional_tables'] ?? "";
 
-                        $backup_type = (isset($HTTP_POST_VARS['backup_type'])) ? $HTTP_POST_VARS['backup_type'] : ( (isset($HTTP_GET_VARS['backup_type'])) ? $HTTP_GET_VARS['backup_type'] : "" );
+                        $backup_type = $HTTP_POST_VARS['backup_type'] ?? $HTTP_GET_VARS['backup_type'] ?? "";
 
                         $gzipcompress = (!empty($HTTP_POST_VARS['gzipcompress'])) ? $HTTP_POST_VARS['gzipcompress'] : ( (!empty($HTTP_GET_VARS['gzipcompress'])) ? $HTTP_GET_VARS['gzipcompress'] : 0 );
 
@@ -710,7 +725,7 @@ if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
                                 {
                                         $additional_tables = preg_split('/,/', $additional_tables);
 
-                                        for($i = 0; $i < count($additional_tables); $i++)
+                                        for($i = 0; $i < (is_countable($additional_tables) ? count($additional_tables) : 0); $i++)
                                         {
                                                 $tables[] = trim($additional_tables[$i]);
                                         }
@@ -792,8 +807,8 @@ if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
                         }
                         if($do_gzip_compress)
                         {
-                                @ob_start();
-                                @ob_implicit_flush(0);
+                                ob_start();
+                                ob_implicit_flush(0);
                                 header("Content-Type: application/x-gzip; name=\"phpbb_db_backup.sql.gz\"");
                                 header("Content-disposition: attachment; filename=phpbb_db_backup.sql.gz");
                         }
@@ -962,7 +977,7 @@ if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
                                         $sql_query = remove_remarks($sql_query);
                                         $pieces = split_sql_file($sql_query, ";");
 
-                                        $sql_count = count($pieces);
+                                        $sql_count = is_countable($pieces) ? count($pieces) : 0;
                                         for($i = 0; $i < $sql_count; $i++)
                                         {
                                                 $sql = trim($pieces[$i]);
