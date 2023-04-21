@@ -305,7 +305,7 @@ require_once NUKE_INCLUDE_DIR . 'csrf-magic.php';
 /**
  * Needed for installation script
  */
-if (isset($bypassInstallationFolderCheck) && !$bypassInstallationFolderCheck && file_exists('INSTALLATION/')) die(_RNINSTALLFILESFOUND);
+if (isset($bypassInstallationFolderCheck) && !$bypassInstallationFolderCheck && file_exists('INSTALLATION/')) {} //die(_RNINSTALLFILESFOUND); 
 
 if(!function_exists('themepreview')) {
 	function themepreview($title, $hometext, $bodytext = '', $notes = '') {
