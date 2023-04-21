@@ -6,6 +6,9 @@
 * @copyright (c) 2002 Meik Sievertsen
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:28 PM
+* TernaryToNullCoalescingRector
+*
 */
 
 /**
@@ -1026,7 +1029,7 @@ if ($mode == 'sync')
 	$info = '';
 	@set_time_limit(0);
 
-	echo (isset($lang['Sync_topics'])) ? $lang['Sync_topics'] : 'Sync Topics';
+	echo $lang['Sync_topics'] ?? 'Sync Topics';
 
 	$sql = "SELECT topic_id	FROM " . TOPICS_TABLE;
 	if (!($result = $db->sql_query($sql)))
@@ -1051,7 +1054,7 @@ if ($mode == 'sync')
 	$db->sql_freeresult($result);
 
 	echo '<br /><br />';
-	echo (isset($lang['Sync_posts'])) ? $lang['Sync_posts'] : 'Sync Posts';
+	echo $lang['Sync_posts'] ?? 'Sync Posts';
 
 	// Reassign Attachments to the Poster ID
 	$sql = 'SELECT a.attach_id, a.post_id, a.user_id_1, p.poster_id
@@ -1087,7 +1090,7 @@ if ($mode == 'sync')
 	}
 
 	echo '<br /><br />';
-	echo (isset($lang['Sync_thumbnails'])) ? $lang['Sync_thumbnails'] : 'Sync Thumbnails';
+	echo $lang['Sync_thumbnails'] ?? 'Sync Thumbnails';
 
 	// Sync Thumbnails (if a thumbnail is no longer there, delete it)
 	// Get all Posts/PM's with the Thumbnail Flag set
