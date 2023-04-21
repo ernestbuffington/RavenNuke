@@ -18,6 +18,10 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 2:09 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * Remove STFU Operators
  ***************************************************************************/
 
 define('IN_PHPBB', 1);
@@ -183,7 +187,7 @@ if( empty($forum_id) )
         );
 
         $select_list = '<select name="' . POST_FORUM_URL . '">';
-        for($i = 0; $i < count($forum_rows); $i++)
+        for($i = 0; $i < (is_countable($forum_rows) ? count($forum_rows) : 0); $i++)
         {
                 $select_list .= '<option value="' . $forum_rows[$i]['forum_id'] . '">' . $forum_rows[$i]['forum_name'] . '</option>';
         }
@@ -212,24 +216,22 @@ else
 
         $forum_name = $forum_rows[0]['forum_name'];
 
-        @reset($simple_auth_ary);
-        while( list($key, $auth_levels) = each($simple_auth_ary))
-        {
-                $matched = 1;
-                for($k = 0; $k < count($auth_levels); $k++)
-                {
-                        $matched_type = $key;
+        reset($simple_auth_ary);
+        foreach ($simple_auth_ary as $key => $auth_levels) {
+            $matched = 1;
+            for($k = 0; $k < (is_countable($auth_levels) ? count($auth_levels) : 0); $k++)
+            {
+                    $matched_type = $key;
 
-                        if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
-                        {
-                                $matched = 0;
-                        }
-                }
-
-                if ( $matched )
-                {
-                        break;
-                }
+                    if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
+                    {
+                            $matched = 0;
+                    }
+            }
+            if ( $matched )
+            {
+                    break;
+            }
         }
 
         //
