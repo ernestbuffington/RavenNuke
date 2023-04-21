@@ -36,6 +36,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:28 PM
+ * TernaryToNullCoalescingRector
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -55,7 +57,7 @@ $template->set_filenames(array(
 
 $template->assign_vars(array(
 	'PHPBB_VERSION' => '2' . $board_config['version'],
-	'TRANSLATION_INFO' => ( isset($lang['TRANSLATION_INFO']) ) ? $lang['TRANSLATION_INFO'] : '',
+	'TRANSLATION_INFO' => $lang['TRANSLATION_INFO'] ?? '',
 	'ADMIN_LINK' => $admin_link)
 );
 $template->pparse('overall_footer');
