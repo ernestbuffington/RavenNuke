@@ -1,7 +1,7 @@
 <?php
 /*******************************************************************************/
 /* English translation - Courtesy of Gaylen Fraley (aka - Raven)               */
-/* http://www.ravenphpscripts.com                                              */
+/* https://www.ravenphpscripts.com                                              */
 /* http://www.ravenwebhosting.com                                              */
 /*******************************************************************************/
 if (!defined('_ACCESSDENIED')) define('_ACCESSDENIED','Accesso vietato');

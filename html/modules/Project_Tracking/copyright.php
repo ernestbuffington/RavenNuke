@@ -16,8 +16,8 @@
 
 $module_name = basename(dirname(__FILE__));
 $author_email = '<a href="mailto:matt@phpnuke-clan.org">Palbin</a>';
-$author_name = '<a href="http://www.ravenphpscripts.com" target="new">RavenNuke(tm)</a>';
-$download_location = 'http://www.ravenphpscripts.com/modules.php?name=Downloads';
+$author_name = '<a href="https://www.ravenphpscripts.com" target="new">RavenNuke(tm)</a>';
+$download_location = 'https://www.ravenphpscripts.com/modules.php?name=Downloads';
 $license = 'Copyright &copy; 2013 RavenNuke™';
 $module_description = 'Advanced Project Management System.  Based on NukeProject™.  Made XHTML compliant and fixed several bugs and other issues';
 $module_version = '';

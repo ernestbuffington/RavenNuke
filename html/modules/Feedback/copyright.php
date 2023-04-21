@@ -19,11 +19,11 @@
 /* Some code cleansing by VinDSL http://www.lenon.com/                  */
 /*                                                                      */
 /* Present code is now the product of the RavenNuke(tm) Team            */
-/*       http://www.ravenphpscripts.com  http://www.ravenwebhosting.com         */
+/*       https://www.ravenphpscripts.com  http://www.ravenwebhosting.com         */
 /************************************************************************/
 $author_name = 'RavenNuke(tm)';
 $author_email = 'raven@ravenphpscripts.com';
-$author_homepage = 'http://www.ravenphpscripts.com';
+$author_homepage = 'https://www.ravenphpscripts.com';
 $license = 'GNU/GPL';
 $download_location = '';
 $module_version = '2.0';
@@ -61,7 +61,7 @@ function show_copyright() {
 		, '<div style="text-align:center;">'
 		, '<span style="font-size:x-small; color:#363636; font-family:Verdana, Helvetica;">'
 		, '<span style="font-weight:bold;">Module Copyright &copy; Information</span><br />'
-		,  $module_description , ' for <a href="http://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
+		,  $module_description , ' for <a href="https://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
 		, '</span>'
 		, '</div>'
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Module\'s Name:</span> ' , $module_name , '<br />'

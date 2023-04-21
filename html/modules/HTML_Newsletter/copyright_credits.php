@@ -87,7 +87,7 @@ $msnl_sTranslations = 'The following translations were done for version 1.3:<br 
 	. 'update and download as well as included in the main download pack.';
 $msnl_sOther = 'Additional thanks go to the following people for their help along the '
 	. 'way:<br /><br />'
-	. '<span class="thick">Raven</span> from <a href="http://www.ravenphpscripts.com" '
+	. '<span class="thick">Raven</span> from <a href="https://www.ravenphpscripts.com" '
 	. 'title="PHP Web Host - Quality Web Hosting and Scripts">'
 	. 'http://ravenphpscripts.com</a> for his excellent support '
 	. 'site, excellent web hosting and encouragement along the way.<br /><br />'

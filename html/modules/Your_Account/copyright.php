@@ -3,7 +3,7 @@
 /* RN Your Account: Advanced User Management for RavenNuke
 /* =======================================================================*/
 /*
-/* Copyright (c) 2008-2013, RavenPHPScripts.com	http://www.ravenphpscripts.com
+/* Copyright (c) 2008-2013, RavenPHPScripts.com	https://www.ravenphpscripts.com
 /*
 /* This program is free software. You can redistribute it and/or modify it
 /* under the terms of the GNU General Public License as published by the
@@ -17,7 +17,7 @@
 $module_name = basename(dirname(__FILE__));
 $mod_name = 'RN Your Account';
 $author_email = '';
-$author_homepage = 'http://www.ravenphpscripts.com';
+$author_homepage = 'https://www.ravenphpscripts.com';
 $author_name = '<a href="http://rnwiki.ravennuke.com/wiki/RavenNuke2:Credits" target="_blank">RavenNuke Team</a>';
 $license = 'GNU/GPL Copyright &copy; 2008-2013';
 $download_location = '';

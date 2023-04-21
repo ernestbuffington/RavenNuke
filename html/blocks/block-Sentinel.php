@@ -33,6 +33,6 @@ $numrows = $db->sql_numrows($result);
 	  $content .= '</li>'."\n";
 	}
 	  $content .= '</ul></div>'."\n";
-	$content .= '<hr /><div class="text-center"><a href="http://www.ravenphpscripts.com">'._AB_NUKESENTINEL.'</a></div>'."\n";
+	$content .= '<hr /><div class="text-center"><a href="https://www.ravenphpscripts.com">'._AB_NUKESENTINEL.'</a></div>'."\n";
 }
 ?>

@@ -17,9 +17,9 @@ $orig_author_email = '';
 $orig_author_homepage = 'http://phpnuke.org';
 $curr_author_name = 'Gaylen Fraley (aka Raven)';
 $curr_author_email = 'raven@ravenphpscripts.com';
-$curr_author_homepage = 'http://www.ravenphpscripts.com';
+$curr_author_homepage = 'https://www.ravenphpscripts.com';
 $license = 'GNU/GPL';
-$download_location = 'http://www.ravenphpscripts.com';
+$download_location = 'https://www.ravenphpscripts.com';
 $module_version = '2.0';
 $module_description = 'All topics are shown in this module with some useful information. This topics module is an edited version of the PHP-Nuke 6.5 topics module. Edits were made by VJ Demsky and Gaylen Fraley (Raven).  It appears that VJ Demsky\'s support site is no longer available.  Ravenphpscripts will continue to support this in the RavenNuke&trade; distros.';
 
@@ -55,7 +55,7 @@ function show_copyright() {
 		, '<div style="text-align:center;">'
 		, '<span style="font-size:x-small; color:#363636; font-family:Verdana, Helvetica;">'
 		, '<span style="font-weight:bold;">Module Copyright &copy; Information</span><br />'
-		,  $module_name , ' for <a href="http://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
+		,  $module_name , ' for <a href="https://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
 		, '</span>'
 		, '</div>'
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Module\'s Name:</span> ' , $module_name , '<br />'
@@ -68,7 +68,7 @@ function show_copyright() {
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Current Author\'s Name:</span> ' , $curr_author_name , '<br />'
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Current Author\'s Email:</span> ' , $curr_author_email , '<br />'
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Current Author\'s HomePage:</span>'
-		, ' <a href="' , $curr_author_homepage , '" target="_blank">http://www.ravenphpscripts.com</a><br /><br />'
+		, ' <a href="' , $curr_author_homepage , '" target="_blank">https://www.ravenphpscripts.com</a><br /><br />'
 		, '<div style="text-align:center;">'
 		, '<span style="font-size:x-small; color:#363636; font-family:Verdana, Helvetica;">'
 		, '[ <a href="' , $curr_author_homepage , '" target="_blank">Author\'s HomePage</a> | '

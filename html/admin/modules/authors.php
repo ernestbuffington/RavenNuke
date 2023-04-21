@@ -18,7 +18,7 @@
 /************************************************************************/
 /*         Portions of program rewritten for efficiency and xhtml       */
 /*      compliance by fkelly August 2007 and montego December 2007      */
-/*      http://www.ravenphpscripts.com                                  /*
+/*      https://www.ravenphpscripts.com                                  /*
 /************************************************************************/
 
 if (!defined('ADMIN_FILE')) {

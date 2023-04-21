@@ -116,7 +116,7 @@ if ($phpok && $db->connectionError) {
 		$error[] = '<h2>Error in Configuration Value</h2><br />The valid values of the configuration field for updating by this program are ' . $content . '.'
 			. '  Your system does not have one of those values.  This program cannot be used to upgrade other versions.'
 			. '  The configuration field is stored in the config table in your MYSQL database in a field called Version_Num.  Your system is reporting a value of ' . $rnConfig_value .  '.<br /><br />'
-			. 'Please direct any questions to the forums at <a href="http://www.ravenphpscripts.com">RavenPHPScripts</a><br />';
+			. 'Please direct any questions to the forums at <a href="https://www.ravenphpscripts.com">RavenPHPScripts</a><br />';
 	}
 } else {
 	$error[] = 'RavenNuke&trade; version ' . RAVENNUKE_VERSION_FRIENDLY . ' requires PHP version 5.2 or greater.  It appears that your version of PHP is ' . PHP_VERSION . '.  Please upgrade your version of PHP before continuing.';
@@ -125,7 +125,7 @@ if ($phpok && $db->connectionError) {
 require_once INCLUDE_PATH . 'includes/mimetype.php';
 
 echo '<meta name="rating" content="general" />' , "\n"
-	, '<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2018 by http://www.ravenphpscripts.com" />' , "\n"
+	, '<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2018 by https://www.ravenphpscripts.com" />' , "\n"
 	, '<link rel="StyleSheet" href="css/ravenstaller.css" type="text/css" />' , "\n"
 	, '<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />' , "\n"
 	, '<link rel="stylesheet" href="modalfiles/modal.css" type="text/css" />' , "\n"
@@ -164,7 +164,7 @@ echo '
 <span class="msg">' , _rnSUCCESS_CONNECT_HOST , '</span>
 <span class="msg">' , _rnFOUND_DB , '</span>
 <hr />
-<p class="msg">For detailed help consult the RavenNuke&trade; wiki at <a href="http://www.rnwiki.ravennuke.com">http://www.rnwiki.ravennuke.com</a> or the support forums at <a href="http://www.ravenphpscripts.com">http://www.ravenphpscripts.com</a>.</p>
+<p class="msg">For detailed help consult the RavenNuke&trade; wiki at <a href="http://www.rnwiki.ravennuke.com">http://www.rnwiki.ravennuke.com</a> or the support forums at <a href="https://www.ravenphpscripts.com">https://www.ravenphpscripts.com</a>.</p>
 <hr />
 <br />';
 
@@ -633,7 +633,7 @@ function rn21001() {
 	 CREATE TABLE IF NOT EXISTS `".$prefix."_headlines` ( `hid` int(11) NOT NULL auto_increment, `sitename` varchar(30) NOT NULL default '', `headlinesurl` varchar(200) NOT NULL default '', PRIMARY KEY  (`hid`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 	sqlexec($sql);
 	$sql = "
-	INSERT INTO `".$prefix."_headlines` VALUES (NULL, 'RavenPHPScripts', 'http://www.ravenphpscripts.com/backend.php')";
+	INSERT INTO `".$prefix."_headlines` VALUES (NULL, 'RavenPHPScripts', 'https://www.ravenphpscripts.com/backend.php')";
 	sqlexec($sql);
 	$sql = "
 	INSERT INTO `".$prefix."_headlines` VALUES (NULL, 'Montego Scripts', 'http://montegoscripts.com/modules.php?name=Feeds&fid=1&type=RSS20')";
@@ -1765,7 +1765,7 @@ function rn23002() {
 		.'(12, 0, \'\', 0, 23, \'\', 1, \'1 DAY\'), '
 		.'(13, 0, \'\', 0, 24, \'\', 1, \'GENERAL\'), '
 		.'(14, 0, \'\', 0, 25, \'\', 1, \'RavenNuke(tm) Copyright (c) 2002-2018 by Gaylen Fraley. This is free software, and you may redistribute it under the GPL '
-		.'(http://www.gnu.org/licenses/gpl-2.0.txt). RavenNuke(tm) is supported by the RavenNuke(tm) Team at http://www.ravenphpscripts.com .\')';
+		.'(http://www.gnu.org/licenses/gpl-2.0.txt). RavenNuke(tm) is supported by the RavenNuke(tm) Team at https://www.ravenphpscripts.com .\')';
 		sqlexec($sql);
 	}
 
@@ -1802,7 +1802,7 @@ function rn23002() {
 		.'(23, 2200, \'name\', \'REVISIT-AFTER\', \'1 DAY\', 1), '
 		.'(24, 2300, \'name\', \'RATING\', \'GENERAL\', 1), '
 		.'(25, 2400, \'name\', \'GENERATOR\', \'RavenNuke(tm) Copyright (c) 2002-2018 by Gaylen Fraley. This is free software, and you may redistribute it under the GPL '
-		.'(http://www.gnu.org/licenses/gpl-2.0.txt). RavenNuke(tm) is supported by the RavenNuke(tm) Team at http://www.ravenphpscripts.com .\', 1)';
+		.'(http://www.gnu.org/licenses/gpl-2.0.txt). RavenNuke(tm) is supported by the RavenNuke(tm) Team at https://www.ravenphpscripts.com .\', 1)';
 		sqlexec($sql);
 	}
 	//Insert or update the nukeNAV _modules DB data to ensure the module is "active", which is required for proper operation.

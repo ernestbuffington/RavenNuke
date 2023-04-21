@@ -4,7 +4,7 @@
 // Copyright (C) 2007 Brian Neal
 // Author: Brian Neal bgneal@gmail.com
 // Based on ideas and code from John Haywood (aka: Guardian) of Code-Authors.com
-// Developed for use in RavenNuke http://www.ravenphpscripts.com/
+// Developed for use in RavenNuke https://www.ravenphpscripts.com/
 //
 // index.php - This file is part of Comments
 ///////////////////////////////////////////////////////////////////////

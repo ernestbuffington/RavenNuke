@@ -1,7 +1,7 @@
 <?php
 /*******************************************************************************/
 /* Spanish translation - Courtesy of Jonathan Estrella (aka - Slaytanic)               */
-/* http://www.ravenphpscripts.com                                                  */
+/* https://www.ravenphpscripts.com                                                  */
 /* http://slaytanic.sourceforge.net                                                  */
 /*******************************************************************************/
 if (!defined('_ACCESSDENIED')) define('_ACCESSDENIED','Acceso Denegado');

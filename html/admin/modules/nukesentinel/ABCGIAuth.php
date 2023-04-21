@@ -4,7 +4,7 @@
 /* HTTP Authentication Using PHP CGI and Apache         */
 /* CGIAdminAuth.php                                     */
 /* By: Raven PHP Scripts                                */
-/* http://www.ravenphpscripts.com                       */
+/* https://www.ravenphpscripts.com                       */
 /* Copyright © 2004 by Raven PHP Scripts                */
 /********************************************************/
 

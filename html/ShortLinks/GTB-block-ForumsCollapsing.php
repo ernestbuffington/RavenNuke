@@ -14,7 +14,7 @@
  * @category    SEO
  * @category    Usability
  * @author      Rob Herder (aka: montego) <montego@montegoscripts.com>
- * @author      Block itself: Raven from http://www.ravenphpscripts.com
+ * @author      Block itself: Raven from https://www.ravenphpscripts.com
  * @copyright   2006 - 2011 by Montego Scripts
  * @license     http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt GNU/GPL 2
  * @version     1.3.1_398

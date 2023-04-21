@@ -4,7 +4,7 @@
  * ===========================
  *
 * Copyright (c) 2008-2013 by Raven Web Services LLC
-* http://www.ravenphpscripts.com
+* https://www.ravenphpscripts.com
 * http://www.ravennuke.com
 *
 * This program is free software. You can redistribute it and/or modify
@@ -13,7 +13,7 @@
 *
 *
 * Module by Gaylen Fraley
-* http://www.ravenphpscripts.com
+* https://www.ravenphpscripts.com
 * http://www.ravenwebhosting.com
 * For use with nuke 6.5+
 * Change History
@@ -23,7 +23,7 @@
 *              from www.dnsstuff.com/tools/whois.ch/?ip=
 *              to   www.dnsstuff.com/tools/whois/?ip=
 *              Credit Warren-The-Ape & SexyCoder
-*              http://www.ravenphpscripts.com/postx17793-0-0.html
+*              https://www.ravenphpscripts.com/postx17793-0-0.html
 * 02/16/2009 - Version 2.1.1
 *            - Security fix for extract() function
 *            - This module is depricated as RNYA now covers most if not all of the functionality

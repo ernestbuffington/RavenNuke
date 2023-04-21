@@ -31,7 +31,7 @@
  * @copyright   2007 by RavenPHPScripts and Montego Scripts
  * @license     http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt GNU/GPL 2
  * @version     1.0.1
- * @link        http://www.ravenphpscripts.com and http://montegoscripts.com
+ * @link        https://www.ravenphpscripts.com and http://montegoscripts.com
  * @since       2.20.00
 */
 class Paginator {

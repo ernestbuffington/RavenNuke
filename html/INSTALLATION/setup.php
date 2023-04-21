@@ -30,7 +30,7 @@ if ($debugSetupScriptShowAllErors) {
 }
 ?>
 <meta name="rating" content="general" />
-<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2013 by http://www.ravenphpscripts.com" />
+<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2013 by https://www.ravenphpscripts.com" />
 <link rel="StyleSheet" href="css/ravenstaller.css" type="text/css" />
 <link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />
 <link rel="stylesheet" href="modalfiles/modal.css" type="text/css" />
@@ -92,7 +92,7 @@ $_POST['config_nukeurl'] = trim($_POST['config_nukeurl'],'\\');
 ?>
 <hr />
 	<p class="msg">
-		For detailed help consult the forums at http://www.ravenphpscripts.com and the included documentation.  All fields need to be filled in as some fields will be populated based on other field values, but can be over-written. <?php if (_rnMINIMUM_PASSWORD_LENGTH>0 || _rnMAXIMUM_PASSWORD_LENGTH>0) {?><span class="c2">All passwords must be between <span style="color:#0000ff;"><?php echo _rnMINIMUM_PASSWORD_LENGTH . ' and ' . _rnMAXIMUM_PASSWORD_LENGTH;?></span> long.</span><?php }?>
+		For detailed help consult the forums at https://www.ravenphpscripts.com and the included documentation.  All fields need to be filled in as some fields will be populated based on other field values, but can be over-written. <?php if (_rnMINIMUM_PASSWORD_LENGTH>0 || _rnMAXIMUM_PASSWORD_LENGTH>0) {?><span class="c2">All passwords must be between <span style="color:#0000ff;"><?php echo _rnMINIMUM_PASSWORD_LENGTH . ' and ' . _rnMAXIMUM_PASSWORD_LENGTH;?></span> long.</span><?php }?>
 	</p>
 	<hr />
 	<table width="100%">

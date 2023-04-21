@@ -22,7 +22,7 @@
 */
 //GT-NExtGEn 0.4/0.5 by Bill Murrin (Audioslaved) http://gt.audioslaved.com (c) 2004
 //Original Nukecops GoogleTap done by NukeCops (http://www.nukecops.com)
-//Bug fix by Brujo - http://www.ravenphpscripts.com/postx15073-0-0.html
+//Bug fix by Brujo - https://www.ravenphpscripts.com/postx15073-0-0.html
 
 $urlin = array(
 '"(?<!/)modules.php\?name=News&amp;file=categories&amp;op=newindex&amp;catid=([0-9]*)"',

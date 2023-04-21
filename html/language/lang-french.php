@@ -9,7 +9,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  * This is the language module with all the system messages
- * If you make a translation, please go to: http://www.ravenphpscripts.com and post your translation in our forums
+ * If you make a translation, please go to: https://www.ravenphpscripts.com and post your translation in our forums
  *
  * You need to change the second quoted phrase, not the capitalised one!
  *
@@ -19,7 +19,7 @@
 */
 
 // Used in mainfile.php for RavenNuke(tm)
-if(!defined('_RNINSTALLFILESFOUND')) { define('_RNINSTALLFILESFOUND','<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><title>RavenNuke&trade; Setup/Configuration Tool</title><meta name="rating" content="general"><meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2013 by http://www.ravenphpscripts.com"></head><body><br /><br /><div class="text-center"><a href="http://www.ravenphpscripts.com" title="Raven Web Service: Quality Web Hosting And Web Support"><img src="images/RavenWebServices_Banner.gif" border="0" alt="" /></a>&trade;<br /><br /><table width="75%" border="1"><tr><td align="center" style="color:blue;font-weight:bold;">INSTALLATION folder detected - To continue would expose your site to damage.<br /><br />Either delete the INSTALLATION folder or rename it in order to proceed.</td></tr></table></div>'); }
+if(!defined('_RNINSTALLFILESFOUND')) { define('_RNINSTALLFILESFOUND','<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><title>RavenNuke&trade; Setup/Configuration Tool</title><meta name="rating" content="general"><meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2013 by https://www.ravenphpscripts.com"></head><body><br /><br /><div class="text-center"><a href="https://www.ravenphpscripts.com" title="Raven Web Service: Quality Web Hosting And Web Support"><img src="images/RavenWebServices_Banner.gif" border="0" alt="" /></a>&trade;<br /><br /><table width="75%" border="1"><tr><td align="center" style="color:blue;font-weight:bold;">INSTALLATION folder detected - To continue would expose your site to damage.<br /><br />Either delete the INSTALLATION folder or rename it in order to proceed.</td></tr></table></div>'); }
 // for Anagram, Milo and Karate theme support (header)
 if(!defined('_TOPICS')) { define('_TOPICS','Topics'); }
 if(!defined('_ALLTOPICS')) { define('_ALLTOPICS','All Topics'); }

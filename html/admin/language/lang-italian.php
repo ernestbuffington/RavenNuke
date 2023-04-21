@@ -9,7 +9,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  * This is the language module with all the system messages
- * If you make a translation, please go to: http://www.ravenphpscripts.com and post your translation in our forums
+ * If you make a translation, please go to: https://www.ravenphpscripts.com and post your translation in our forums
  *
  * You need to change the second quoted phrase, not the capitalised one!
  *

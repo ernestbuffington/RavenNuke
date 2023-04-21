@@ -9,7 +9,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  * This is the language module with all the system messages
- * If you make a translation, please go to: http://www.ravenphpscripts.com and post your translation in our forums
+ * If you make a translation, please go to: https://www.ravenphpscripts.com and post your translation in our forums
  *
  * You need to change the second quoted phrase, not the capitalised one!
  *
@@ -19,7 +19,7 @@
 */
 
 // Used in mainfile.php for RavenNuke(tm)
-if(!defined('_RNINSTALLFILESFOUND')) { define('_RNINSTALLFILESFOUND','<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//HU"><html><head><title>RavenNuke&trade; Telep&iacute;t&eacute;s/Be&aacute;ll&iacute;t&aacute;s </title><meta name="rating" content="general"><meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2008 by http://www.ravenphpscripts.com"></head><body><br /><br /><div class="text-center"><a href="http://www.ravenphpscripts.com" title="Raven Web Service: Min&otilde;s&eacute;gi webhoszting &eacute;s t&aacute;mogat&aacute;s"><img src="images/RavenWebServices_Banner.gif" border="0" alt="" /></a>&trade;<br /><br /><table width="75%" border="1"><tr><td align="center" style="color:blue;font-weight:bold;">INSTALLATION mappa fel van t&ouml;ltve a szerverre - Ha folytatja, a weboldal&aacute;t vesz&eacute;lynek teszi ki.<br /><br />Vagy t&ouml;r&ouml;lje vagy nevezze &aacute;t az INSTALLATION mapp&aacute;t a folytat&aacute;shoz.</td></tr></table></div>'); }
+if(!defined('_RNINSTALLFILESFOUND')) { define('_RNINSTALLFILESFOUND','<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//HU"><html><head><title>RavenNuke&trade; Telep&iacute;t&eacute;s/Be&aacute;ll&iacute;t&aacute;s </title><meta name="rating" content="general"><meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2008 by https://www.ravenphpscripts.com"></head><body><br /><br /><div class="text-center"><a href="https://www.ravenphpscripts.com" title="Raven Web Service: Min&otilde;s&eacute;gi webhoszting &eacute;s t&aacute;mogat&aacute;s"><img src="images/RavenWebServices_Banner.gif" border="0" alt="" /></a>&trade;<br /><br /><table width="75%" border="1"><tr><td align="center" style="color:blue;font-weight:bold;">INSTALLATION mappa fel van t&ouml;ltve a szerverre - Ha folytatja, a weboldal&aacute;t vesz&eacute;lynek teszi ki.<br /><br />Vagy t&ouml;r&ouml;lje vagy nevezze &aacute;t az INSTALLATION mapp&aacute;t a folytat&aacute;shoz.</td></tr></table></div>'); }
 // for Anagram, Milo and Karate theme support (header)
 if(!defined('_TOPICS')) { define('_TOPICS','Rovatok'); }
 if(!defined('_ALLTOPICS')) { define('_ALLTOPICS','&Ouml;sszes rovat'); }

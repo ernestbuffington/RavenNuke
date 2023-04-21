@@ -13,7 +13,7 @@
 /*********************************************************************/
 /* WhoIsWhere by Gaylen Fraley (aka Raven) 						*/
 /* http://www.ravenwebhosting.com								*/
-/* http://www.ravenphpscripts.com								*/
+/* https://www.ravenphpscripts.com								*/
 /*********************************************************************/
 
 global $db, $name, $prefix, $user, $userInfo, $user_prefix;

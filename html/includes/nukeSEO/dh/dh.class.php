@@ -13,7 +13,7 @@
  *
  * Additional code changes for integration with RavenNuke, code
  * clean-up, security and speed improvements, etc. by Montego and
- * Raven http://www.ravenphpscripts.com  http://www.ravenwebhosting.com
+ * Raven https://www.ravenphpscripts.com  http://www.ravenwebhosting.com
  * http://montegoscripts.com
  */
 /************************************************************************/

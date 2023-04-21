@@ -25,7 +25,7 @@
  * @copyright   2013 by RavenPHPScripts and Montego Scripts
  * @license     http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt GNU/GPL 2
  * @version     1.0.0
- * @link        http://www.ravenphpscripts.com and http://montegoscripts.com
+ * @link        https://www.ravenphpscripts.com and http://montegoscripts.com
  * @since       2.40.00
  */
 // CONFIGURATION:

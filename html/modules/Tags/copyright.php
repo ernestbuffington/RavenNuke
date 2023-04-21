@@ -41,7 +41,7 @@ function show_copyright() {
 		, '<div style="text-align:center;">'
 		, '<span style="font-size:x-small; color:#363636; font-family:Verdana, Helvetica;">'
 		, '<span style="font-weight:bold;">Module Copyright &copy; Information</span><br />'
-		,  $module_description , ' for <a href="http://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
+		,  $module_description , ' for <a href="https://www.ravenphpscripts.com" target="_blank">RavenNuke(tm)</a><br /><br />'
 		, '</span>'
 		, '</div>'
 		, '<img src="../../images/arrow.gif" border="0" alt="" />&nbsp;<span style="font-weight:bold;">Module\'s Name:</span> ' , $module_name , '<br />'

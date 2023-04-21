@@ -80,7 +80,7 @@ if(!isset($_SESSION['noip2c'])) $_SESSION['noip2c'] = false;
 if(!isset($_GET['setup'])) $_GET['setup'] = '';
 ?>
 <meta name="rating" content="general" />
-<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2018 by http://www.ravenphpscripts.com" />
+<meta name="generator" content="PHP Web Host - Quality Web Hosting For All PHP Applications - Copyright (c) 2002-2018 by https://www.ravenphpscripts.com" />
 <link rel="StyleSheet" href="css/ravenstaller.css" type="text/css" />
 <link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />
 <link rel="stylesheet" href="modalfiles/modal.css" type="text/css" />

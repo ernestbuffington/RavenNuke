@@ -3,7 +3,7 @@
 /* RN Your Account: Advanced User Management for RavenNuke
  /* =======================================================================*/
 /*
- /* Copyright (c) 2008-2013, RavenPHPScripts.com	http://www.ravenphpscripts.com
+ /* Copyright (c) 2008-2013, RavenPHPScripts.com	https://www.ravenphpscripts.com
  /*
  /* This program is free software. You can redistribute it and/or modify it
  /* under the terms of the GNU General Public License as published by the

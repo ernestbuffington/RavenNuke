@@ -448,12 +448,12 @@ function OpenMenu($adsection="") {
   echo '<table summary="" width="100%" border="0" cellspacing="1" cellpadding="4">'."\n";
   $nsnstcopy  = "<strong>Module's Name:</strong> NukeSentinel(tm)<br />";
   $nsnstcopy .= "<strong>License:</strong> Copyright &#169; 2000-2013 NukeSentinel(tm) Team<br />";
-  $nsnstcopy .= "<strong>Author's Name:</strong> <a href='http://www.ravenphpscripts.com' title='NukeSentinel(tm) available at Raven PhpScripts(tm)' target='_blank'>Raven PhpScripts(tm)</a><br />";
+  $nsnstcopy .= "<strong>Author's Name:</strong> <a href='https://www.ravenphpscripts.com' title='NukeSentinel(tm) available at Raven PhpScripts(tm)' target='_blank'>Raven PhpScripts(tm)</a><br />";
   $nsnstcopy .= "<strong>Module's Description:</strong> Advanced site security proudly produced by: Raven PHPScripts(tm), NukeScripts(tm), &amp; NukeResources.";
   if($ab_config['disable_switch'] == 1) { $nsnststatus = _AB_DISABLED; } else { $nsnststatus = _AB_ENABLED; }
   if(!empty($adsection)) { $adsection = ": ".$adsection; }
   echo '<tr>'."\n";
-  echo '<td align="center" colspan="2"><a href="http://www.ravenphpscripts.com/modules.php?name=Downloads" target="_blank"><span class="title"><strong>'._AB_NUKESENTINEL.'</strong></span></a><span class="title"><strong> '.$ab_config['version_number'].': '.$nsnststatus.$adsection.'</strong></span> ';
+  echo '<td align="center" colspan="2"><a href="https://www.ravenphpscripts.com/modules.php?name=Downloads" target="_blank"><span class="title"><strong>'._AB_NUKESENTINEL.'</strong></span></a><span class="title"><strong> '.$ab_config['version_number'].': '.$nsnststatus.$adsection.'</strong></span> ';
   if($ab_config['help_switch'] > 0) {
 	 echo "<a href=\"javascript:void(0);\" onclick=\"return overlib('".addslashes($nsnstcopy)."', STICKY, CENTERPOPUP, CAPTION, 'Module Copyright &#169; Information', STATUS, 'NukeSentinel(tm): Copyright Information', WIDTH, 400, FGCOLOR, '#ffffff', BGCOLOR, '#000000', TEXTCOLOR, '#000000', CAPCOLOR, '#ffffff', CLOSECOLOR, '#ffffff', CAPICON, 'images/nukesentinel/copyicon.png', BORDER, '2', TEXTFONT, 'Lucida Sans, Arial', TEXTSIZE, '12px', CLOSEFONT, 'Lucida Sans, Arial', CLOSESIZE, '12px', CAPTIONFONT, 'Lucida Sans, Arial', CAPTIONSIZE, '12px');\"><img src='images/nukesentinel/copyicon.png' border='0' height='16' width='16' alt='' title='' /></a>";
   } else {
@@ -461,9 +461,9 @@ function OpenMenu($adsection="") {
   }
   echo '</td>'."\n";
   echo '</tr>'."\n";
-  //echo '<tr><td align="center" colspan="3"><strong><a href="http://www.ravenphpscripts.com/versions/nsnst.txt" target="new">'._AB_NEWVER.'</a></strong></td></tr>'."\n";
+  //echo '<tr><td align="center" colspan="3"><strong><a href="https://www.ravenphpscripts.com/versions/nsnst.txt" target="new">'._AB_NEWVER.'</a></strong></td></tr>'."\n";
   $nva = '';
-  $nva = '<div class=\'text-center\'><p>'.@file_get_contents('http://www.ravenphpscripts.com/versions/nsnst.txt').'</p></div>';
+  $nva = '<div class=\'text-center\'><p>'.@file_get_contents('https://www.ravenphpscripts.com/versions/nsnst.txt').'</p></div>';
   echo "<tr><td align=\"center\" colspan=\"3\"><a href=\"javascript:void(0);\" onclick=\"this.blur();return overlib('".addslashes($nva)."', STICKY, CENTERPOPUP, CAPTION, 'Latest Version', STATUS, 'NukeSentinel(tm): Copyright Information', WIDTH, 400, FGCOLOR, '#ffffff', BGCOLOR, '#000000', TEXTCOLOR, '#000000', CAPCOLOR, '#ffffff', CLOSECOLOR, '#ffffff', CAPICON, 'images/nukesentinel/copyicon.png', BORDER, '2', TEXTFONT, 'Lucida Sans, Arial', TEXTSIZE, '12px', CLOSEFONT, 'Lucida Sans, Arial', CLOSESIZE, '12px', CAPTIONFONT, 'Lucida Sans, Arial', CAPTIONSIZE, '12px');\"><img src='images/nukesentinel/copyicon.png' border='0' height='16' width='16' alt='' title='' /><strong>"._AB_NEWVER."</strong></a></td></tr>\n";
 
   echo '<tr><td align="center" valign="top" width="66%">'."\n";

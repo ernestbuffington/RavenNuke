@@ -34,7 +34,7 @@
  * @copyright   2008 by Montego Scripts
  * @license     http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt GNU/GPL 2
  * @version     1.0.0
- * @link        http://www.ravenphpscripts.com
+ * @link        https://www.ravenphpscripts.com
  * @link        http://montegoscripts.com
  * @since       2.30.00
  */
@@ -46,7 +46,7 @@
 
 $author_name = 'RavenNuke(tm)';
 $license = 'GNU/GPL';
-$author_homepage = 'http://www.ravenphpscripts.com';
+$author_homepage = 'https://www.ravenphpscripts.com';
 $module_name = basename(dirname(__FILE__));
 $module_version = '1.0.0';
 $module_description = 'Legal Documents was completely re-coded by montego'
@@ -92,7 +92,7 @@ echo '</style>'."\n";
 echo '</head>'."\n";
 	echo '<body bgcolor="#FFFFFF" link="#363636" alink="#363636" vlink="#363636">'
 		.'<div style="text-align:center;"><span style="font-weight:bold;">Module Copyright &copy; Information</span><br />'
-		.$module_name.' Module for <a href="http://www.ravenphpscripts.com" target="new">RavenNuke(tm)</a><br /><br /></div>'
+		.$module_name.' Module for <a href="https://www.ravenphpscripts.com" target="new">RavenNuke(tm)</a><br /><br /></div>'
 		.'<img src="../../images/arrow.gif" alt="" border="0" />&nbsp;<span style="font-weight:bold;">Module&#39;s Name:</span> '.$module_name.'<br />'
 		.'<img src="../../images/arrow.gif" alt="" border="0" />&nbsp;<span style="font-weight:bold;">Module&#39;s Version:</span> '.$module_version.'<br />'
 		.'<img src="../../images/arrow.gif" alt="" border="0" />&nbsp;<span style="font-weight:bold;">Module&#39;s Description:</span> '.$module_description.'<br />'

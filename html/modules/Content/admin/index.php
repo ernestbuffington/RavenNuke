@@ -1103,7 +1103,7 @@ the Free Software Foundation; either version 2 of the License, or (at your optio
 * <span class="thick">Vecchio Joe</span>: Heavy testing, bugfixing, brainstorming and italian translation (<a href="http://vecchiojoe.it">http://vecchiojoe.it</a>)<br />
 * <span class="thick">GANYANCI</span>: Heavy testing, bugfixing and turkish translation (<a href="http://alberbalci.com">http://alperbalci.com</a>)<br />
 * <span class="thick">Function Design &amp; Development Studio</span>: Creators of the new icon theme (<a href="http://www.wefunction.com">http://www.wefunction.com</a>)<br />
-* <span class="thick">RavenNuke Team</span>: For including the module as part of your distro and for your feedback and bug reporting/fixing (<a href="http://www.ravenphpscripts.com">www.ravenphpscripts.com</a>)<br />
+* <span class="thick">RavenNuke Team</span>: For including the module as part of your distro and for your feedback and bug reporting/fixing (<a href="https://www.ravenphpscripts.com">www.ravenphpscripts.com</a>)<br />
 * <span class="thick">All Nukers around the world</span>: you are who made this possible</p>
 <p style="text-align: center;"><span class="thick">'._CP_GOBACK.'</span></p>';
 CloseTable();

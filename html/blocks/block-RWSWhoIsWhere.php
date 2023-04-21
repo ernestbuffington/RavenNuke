@@ -13,7 +13,7 @@
 /*********************************************************************/
 /* WhoIsWhere Block by Gaylen Fraley (aka Raven) 					*/
 /* http://www.ravenwebhosting.com								*/
-/* http://www.ravenphpscripts.com								*/
+/* https://www.ravenphpscripts.com								*/
 /*********************************************************************/
 
 if ( !defined('BLOCK_FILE') ) {

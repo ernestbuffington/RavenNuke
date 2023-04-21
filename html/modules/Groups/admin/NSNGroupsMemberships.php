@@ -2,7 +2,7 @@
 /*
  * NSNGroups: Memberships addon
  * 2018.01.07 neralex
- * http://www.ravenphpscripts.com/ftopicp-165692.html#165692
+ * https://www.ravenphpscripts.com/ftopicp-165692.html#165692
 */
 if (!defined('ADMIN_FILE') || !defined('RN_GROUPS')) {
 	die ('Access Denied');
