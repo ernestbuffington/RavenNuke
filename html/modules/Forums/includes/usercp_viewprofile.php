@@ -19,6 +19,9 @@
  *   (at your option) any later version.
  *
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 7:58 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
  ***************************************************************************/
 
 if ( !defined('IN_PHPBB') )
@@ -144,7 +147,7 @@ else
 if (( $profiledata['user-website'] == "http:///") || ( $profiledata['user_website'] == "http://")){
     $profiledata['user_website'] =  "";
 }
-if (($profiledata['user_website'] != "" ) && (substr($profiledata['user_website'],0, 7) != "http://")) {
+if (($profiledata['user_website'] != "" ) && (!str_starts_with($profiledata['user_website'], "http://"))) {
     $profiledata['user_website'] = "http://".$profiledata['user_website'];
 }
 
@@ -167,7 +170,7 @@ else
 $aim_img = ( $profiledata['user_aim'] ) ? '<a href="aim:goim?screenname=' . $profiledata['user_aim'] . '&amp;message=Hello+Are+you+there?"><img src="' . $images['icon_aim'] . '" alt="' . $lang['AIM'] . '" title="' . $lang['AIM'] . '" border="0" /></a>' : '&nbsp;';
 $aim = ( $profiledata['user_aim'] ) ? '<a href="aim:goim?screenname=' . $profiledata['user_aim'] . '&amp;message=Hello+Are+you+there?">' . $lang['AIM'] . '</a>' : '&nbsp;';
 
-$msn_img = ( $profiledata['user_msnm'] ) ? $profiledata['user_msnm'] : '&nbsp;';
+$msn_img = $profiledata['user_msnm'] ?: '&nbsp;';
 $msn = $msn_img;
 
 $yim_img = ( $profiledata['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $profiledata['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" border="0" /></a>' : '';
@@ -222,9 +225,9 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yim_img,
 	'YIM' => $yim,
 
-	'LOCATION' => ( $profiledata['user_from'] ) ? $profiledata['user_from'] : '&nbsp;',
-	'OCCUPATION' => ( $profiledata['user_occ'] ) ? $profiledata['user_occ'] : '&nbsp;',
-	'INTERESTS' => ( $profiledata['user_interests'] ) ? $profiledata['user_interests'] : '&nbsp;',
+	'LOCATION' => $profiledata['user_from'] ?: '&nbsp;',
+	'OCCUPATION' => $profiledata['user_occ'] ?: '&nbsp;',
+	'INTERESTS' => $profiledata['user_interests'] ?: '&nbsp;',
 	'AVATAR_IMG' => $avatar_img,
 
         'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $profiledata['username']),
