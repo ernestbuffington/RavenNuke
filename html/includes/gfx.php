@@ -84,7 +84,8 @@ if(GDSUPPORT) {
 
     //If we are using a background image
     if (GFX_USE_IMAGE) {
-        //Get it
+        global $ThemeSel;
+		//Get it
         if (file_exists('themes/'.$ThemeSel.'/images/code_bg.jpg')) {
             $image = ImageCreateFromJPEG('themes/'.$ThemeSel.'/images/code_bg.jpg');
         } else if (file_exists('themes/'.$ThemeSel.'/images/code_bg.png')) {

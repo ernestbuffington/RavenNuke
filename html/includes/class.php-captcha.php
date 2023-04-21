@@ -347,60 +347,67 @@ class PhpCaptcha {
 				$sFilename != '' ? imagejpeg($this->oImage, $sFilename) : imagejpeg($this->oImage);
 		}
 	}
+	
+/**
+     * @param string $sFilename
+     *
+     * @return bool
+     */
+    public function Create($sFilename = '')
+    {
+        // check for required gd functions
+        if (!function_exists('imagecreate') || !function_exists("image$this->sFileType")
+            || ('' != $this->vBackgroundImages && !function_exists('imagecreatetruecolor'))) {
+            return false;
+        }
 
-	function Create($sFilename = '') {
-		// check for required gd functions
-		if (!function_exists('imagecreate') || !function_exists("image$this->sFileType") || ($this->vBackgroundImages != '' && !function_exists('imagecreatetruecolor'))) {
-			return false;
-		}
+        // get background image if specified and copy to CAPTCHA
+        if (is_array($this->vBackgroundImages) || '' != $this->vBackgroundImages) {
+            // create new image
+            $this->oImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
 
-		// get background image if specified and copy to CAPTCHA
-		if (is_array($this->vBackgroundImages) || $this->vBackgroundImages != '') {
-			// create new image
-			$this->oImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
+            // create background image
+            if (is_array($this->vBackgroundImages)) {
+                $iRandImage       = array_rand($this->vBackgroundImages);
+                $oBackgroundImage = imagecreatefromjpeg($this->vBackgroundImages[$iRandImage]);
+            } else {
+                $oBackgroundImage = imagecreatefromjpeg($this->vBackgroundImages);
+            }
 
-			// create background image
-			if (is_array($this->vBackgroundImages)) {
-				$iRandImage = array_rand($this->vBackgroundImages);
-				$oBackgroundImage = imagecreatefromjpeg($this->vBackgroundImages[$iRandImage]);
-			} else {
-				$oBackgroundImage = imagecreatefromjpeg($this->vBackgroundImages);
-			}
+            // copy background image
+            imagecopy($this->oImage, $oBackgroundImage, 0, 0, 0, 0, $this->iWidth, $this->iHeight);
 
-			// copy background image
-			imagecopy($this->oImage, $oBackgroundImage, 0, 0, 0, 0, $this->iWidth, $this->iHeight);
+            // free memory used to create background image
+            imagedestroy($oBackgroundImage);
+        } else {
+            // create new image
+            $this->oImage = imagecreate($this->iWidth, $this->iHeight);
+        }
 
-			// free memory used to create background image
-			imagedestroy($oBackgroundImage);
-		} else {
-			// create new image
-			$this->oImage = imagecreate($this->iWidth, $this->iHeight);
-		}
+        // allocate white background colour
+        imagecolorallocate($this->oImage, 255, 255, 255);
 
-		// allocate white background colour
-		imagecolorallocate($this->oImage, 255, 255, 255);
+        // check for owner text
+        if ('' != $this->sOwnerText) {
+            $this->DrawOwnerText();
+        }
 
-		// check for owner text
-		if ($this->sOwnerText != '') {
-			$this->DrawOwnerText();
-		}
+        // check for background image before drawing lines
+        if (!is_array($this->vBackgroundImages) && '' == $this->vBackgroundImages) {
+            $this->DrawLines();
+        }
 
-		// check for background image before drawing lines
-		if (!is_array($this->vBackgroundImages) && $this->vBackgroundImages == '') {
-			$this->DrawLines();
-		}
+        $this->GenerateCode();
+        $this->DrawCharacters();
 
-		$this->GenerateCode();
-		$this->DrawCharacters();
+        // write out image to file or browser
+        $this->WriteFile($sFilename);
 
-		// write out image to file or browser
-		$this->WriteFile($sFilename);
+        // free memory used in creating image
+        imagedestroy($this->oImage);
 
-		// free memory used in creating image
-		imagedestroy($this->oImage);
-
-		return true;
-	}
+        return true;
+    }
 
 	// call this method statically
 	function Validate($sUserCode, $bCaseInsensitive = true) {
@@ -489,7 +496,7 @@ class AudioPhpCaptcha {
 		echo file_get_contents("$this->sAudioPath$sFile.wav");
 
 		// delete temporary file
-		@unlink("$this->sAudioPath$sFile.wav");
+		unlink("$this->sAudioPath$sFile.wav");
 	}
 }
 

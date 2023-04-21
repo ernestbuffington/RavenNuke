@@ -4,6 +4,7 @@ if(defined('VISUAL_CAPTCHA')) return;
 define('NO_DISABLE', true);
 
 define('ROOT', dirname(dirname(__FILE__)) . '/');
+require_once(ROOT.'mainfile.php');
 define('INCLUDES', ROOT.'includes/');
 require_once(INCLUDES.'class.php-captcha.php');
 define('FONTS', INCLUDES.'fonts/');
