@@ -5,6 +5,7 @@
  *   begin                : Thursday, Apr 25, 2002
  *
  ***************************************************************************/
+ 
 /***************************************************************************
 * phpbb2 forums port version 2.1 (c) 2003 - Nuke Cops (http://nukecops.com)
 *
@@ -28,6 +29,7 @@
 * now reflecting phpbb2 standalone 2.0.4 that fixes some major SQL
 * injection exploits.
 ***************************************************************************/
+
 /***************************************************************************
  *   This file is part of the phpBB2 port to Nuke 6.0 (c) copyright 2002
  *   by Tom Nitzschner (tom@toms-home.com)
@@ -57,6 +59,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 1:35 PM
+ * TernaryToNullCoalescingRector
+ * Remove STFU Operators
+ */
+ 
 define('IN_PHPBB', 1);
 if( !empty($setmodules) )
 {
@@ -64,7 +72,6 @@ if( !empty($setmodules) )
         $module['General']['Avatar_Management'] = "$file";
         return;
 }
-
 
 $root_path = "./../";
 $phpbb_root_path = './../';
@@ -75,16 +82,15 @@ require_once('pagestart.' . $phpEx);
 //include_once($root_path . 'includes/constants.'.$phpEx);
 //include_once($root_path . 'includes/db.'.$phpEx);
 
-
 // Any mode passed?
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
-        $mode = ( isset($HTTP_GET_VARS['mode']) ) ? $HTTP_GET_VARS['mode'] : $HTTP_POST_VARS['mode'];
-	$target = ( isset($HTTP_GET_VARS['target']) ) ? $HTTP_GET_VARS['target'] : $HTTP_POST_VARS['target'];
+   $mode = $HTTP_GET_VARS['mode'] ?? $HTTP_POST_VARS['mode'];
+   $target = $HTTP_GET_VARS['target'] ?? $HTTP_POST_VARS['target'];
 }
 else
 {
-        $mode = "";
+   $mode = "";
 }
 
 // Read in the board config to maintain dynamic
@@ -159,9 +165,9 @@ switch( $mode )
 
 		// This is where we go through the avatar directory and report whether they are not
 		// used or if they are used, by who.
-		if ($avatar_dir = @opendir($real_avatar_dir))
+		if ($avatar_dir = opendir($real_avatar_dir))
 		{
-			while( $file = @readdir($avatar_dir) )
+			while( $file = readdir($avatar_dir) )
 			{
 				// This is where the script will filter out any file that doesn't match the patterns
 				if( $file != "." && $file != ".." && preg_match("/\.(gif|jpg|jpeg|png)$/", $file) )
