@@ -1,4 +1,5 @@
 <?php
+
 class dbMysql {
 /* First release is in RavenNuke(tm) v2.3
  * This code is NOT GPL
@@ -7,58 +8,114 @@ class dbMysql {
  * There is also code that may have not been tested and may not work.
  * Code is added as needed and as ideas strike.
  */
-/*   var $dbhost;
-   var $dbname;
-   var $dbuser;
-   var $dbpass;
-   var $dbtype;
-   var $link;
-*/
-//   function dbMysql($_dbhost='localhost', $_dbuser='', $_dbpass='', $_dbname='', $_dbtype='MySQL') {
-   function dbMysql() {
-      error_reporting( E_ALL );
-      if (!defined('INCLUDE_PATH')) {
+    public $dbhost;
+    public $dbname;
+    public $dbuser;
+    public $dbpass;
+    public $dbtype;
+    public $link;
+	public $db_connect_id;
+	public $persistency;
+	public $user;
+	public $password;
+	public $server;
+	public $error;
+	public $prefix;
+	public $table;
+	
+	# Constructor
+	function __construct($dbhost, $dbuname, $dbpass, $dbname, $persistency = true)
+	{
+		global $dbhost, $dbname, $dbuname, $dbpass;
+
+        error_reporting(E_ALL);
+        
+		if (!defined('INCLUDE_PATH')) {
          define('INCLUDE_PATH','../'.'/');
-      }
+        }
    
-      if (file_exists(INCLUDE_PATH.'config.php')) {
+        if (file_exists(INCLUDE_PATH.'config.php')) {
          include_once(INCLUDE_PATH.'config.php');
-         $this->dbhost        = $dbhost;
-         $this->dbname        = $dbname;
-         $this->dbuser        = $dbuname;
-         $this->dbpass        = $dbpass;
-         $this->dbtype        = $dbtype;
-         $this->prefix        = $prefix;
-         $this->user_prefix   = $user_prefix;
-      }
-      else {
-         $_msg = 'Unable to locate config.php';
-         $this->xhtmlMsgWrapper($_msg);
-         die();
-      }
+        }
+		
+		$this->persistency = $persistency =  false;
+		$this->user = $dbuname;
+		$this->password = $dbpass;
+		$this->server = $dbhost;
+		$this->dbname = $dbname;
+
+		if ($this->dbname != '') 
+		{
+			$this->db_connect_id = mysqli_connect($this->server, $this->user, $this->password, $this->dbname);
+
+			if ($this->db_connect_id)
+			{
+				return $this->db_connect_id;
+	        }
+            else 
+	           {
+                 $_msg = 'Unable to locate config.php';
+                 $this->xhtmlMsgWrapper($_msg);
+                 die();
+               }
+	    }
    }
 
    function destroy() {
-      settype(&$this, 'null');
+      settype($this, 'null');
    }
 
    function dbServerConnect() {
-      $_link = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpass);
-      if (!$_link) {
-         $_msg = 'MySQL Server Not Connected: ' . mysql_error();
+
+		global $dbhost, $dbname, $dbuname, $dbpass;
+
+		if (!defined('INCLUDE_PATH')) {
+         define('INCLUDE_PATH','../'.'/');
+        }
+   
+        if (file_exists(INCLUDE_PATH.'config.php')) {
+         include_once(INCLUDE_PATH.'config.php');
+        }
+
+		$this->persistency = $persistency = false;
+		$this->user = $dbuname;
+		$this->password = $dbpass;
+		$this->server = $dbhost;
+		$this->dbname = $dbname;
+
+      $_link = mysqli_connect($this->server, $this->user, $this->password, $this->dbname);
+      
+	  if (!$_link) {
+         $_msg = 'MySQLi Server Not Connected: ' . mysql_error();
          $this->xhtmlMsgWrapper($_msg,'error');
          $this->addDefaultXhtmlTemplate('foot');
          die();
       }
-      $_msg = 'MySQL Server Connected';
-      $this->link=$_link;
+      
+	  $_msg = 'MySQLi Server Connected';
+      $this->link = $_link;
       $this->xhtmlMsgWrapper($_msg);
    }
 
    function dbServerDisconnect($_link='') {
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
       if (empty($_link)) $_link=$this->link;
-      $_result = @mysql_close($_link);
-      if (!$_result) {
+      $_result = mysqli_close($link);
+      
+	  if (!$_result) {
          $_msg = 'Link To Server Not Active' . mysql_error();
          $this->xhtmlMsgWrapper($_msg,'error');
          $this->addDefaultXhtmlTemplate('foot');
@@ -70,24 +127,62 @@ class dbMysql {
    }
 
    function dbSelectDb($_db='') {
-      if (empty($_db)) $_db=$this->dbname;
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
+	  $this->persistency = $persistency = false;
+	  $this->user = $dbuname;
+	  $this->password = $dbpass;
+	  $this->server = $dbhost;
+	  $this->dbname = $dbname;
+
+      if (empty($_db)) $_db = $this->dbname;
       $this->error=false;
-      $_result = @mysql_select_db($_db,$this->link);
-      if (!$_result) {
+
+      $result = mysqli_query($link, "SELECT DATABASE()");
+      $_result = mysqli_select_db($link, $dbname);
+      
+	  if (!$_result) {
          $this->error=true;
          $_msg = 'Data Base '.$_db.' Not Found: ' . mysql_error();
          $this->xhtmlMsgWrapper($_msg,'error');
          $this->dbServerDisconnect();
          die();
       }
-      $_msg = ('Data Base '.$_db.' Found');
+      
+	  $_msg = ('Data Base '.$_db.' Found');
       $this->xhtmlMsgWrapper($_msg);
    }
 
    function dbQueryDelete($_tbl='raventest') {
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
       $_sql = 'DELETE FROM '.$this->prefix.'_'.$_tbl.' WHERE field1=\'testing2\'';
       $this->error=false;
-      $_result = @mysql_query($_sql);
+      $_result = mysqli_query($link, $_sql);
       if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to delete record from table '.$_tbl.': ' . mysql_error();
@@ -101,10 +196,31 @@ class dbMysql {
    }
 
    function dbQueryInsert($_tbl='raventest') {
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
+	  $this->persistency = $persistency = false;
+	  $this->user = $dbuname;
+	  $this->password = $dbpass;
+	  $this->server = $dbhost;
+	  $this->dbname = $dbname;
+
       $_sql = 'INSERT INTO '.$this->prefix.'_'.$_tbl.' VALUES(NULL, \'testing\')';
       $this->error=false;
-      $_result = @mysql_query($_sql);
-      if (!$_result) {
+      $_result = mysqli_query($link, $_sql);
+      
+	  if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to insert record into table '.$_tbl.': ' . mysql_error();
          $this->dbTableDropSelective();
@@ -117,10 +233,25 @@ class dbMysql {
    }
 
    function dbQuerySelect($_tbl='raventest') {
+	  
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
       $_sql = 'SELECT * FROM '.$this->prefix.'_'.$_tbl;
       $this->error=false;
-      $_result = @mysql_query($_sql);
-      if (!$_result) {
+      $_result = mysqli_query($link, $_sql);
+      
+	  if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to select record from table '.$_tbl.': ' . mysql_error();
          $this->dbTableDropSelective();
@@ -133,11 +264,26 @@ class dbMysql {
    }
 
    function dbQueryUpdate($_tbl='raventest') {
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
       $_sql = 'UPDATE '.$this->prefix.'_'.$_tbl
             . ' SET field1=\'testing2\'';
       $this->error=false;
-      $_result = @mysql_query($_sql);
-      if (!$_result) {
+      $_result = mysqli_query($link, $_sql);
+      
+	  if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to update record in table '.$_tbl.': ' . mysql_error();
          $this->dbTableDropSelective();
@@ -150,12 +296,34 @@ class dbMysql {
    }
 
    function dbTableCreate($_tbl='raventest') {
+  
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+        define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+        include_once(INCLUDE_PATH.'config.php');
+      }
+
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
+	  $this->persistency = $persistency = false;
+	  $this->user = $dbuname;
+	  $this->password = $dbpass;
+	  $this->server = $dbhost;
+	  $this->dbname = $dbname;
+
       $_sql = 'DROP TABLE IF EXISTS '.$this->prefix.'_'.$_tbl;
-      $_result = @mysql_query($_sql);
+      $_result = mysqli_query($link, $_sql);
       $_sql = 'CREATE TABLE '.$this->prefix.'_'.$_tbl.' (id INT NOT NULL AUTO_INCREMENT, field1 varchar(30) NOT NULL, primary key(id))';
-      $this->error=false;
-      $_result = @mysql_query($_sql);
-      if (!$_result) {
+      
+	  $this->error=false;
+      $_result = mysqli_query($link, $_sql);
+      
+	  if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to create table '.$_tbl.': ' . mysql_error();
          $this->xhtmlMsgWrapper($_msg,'error');
@@ -168,8 +336,22 @@ class dbMysql {
    }
 
    function dbTableDropSelective($_tbl='raventest') {
+
+	  global $dbhost, $dbname, $dbuname, $dbpass;
+
+	  if (!defined('INCLUDE_PATH')) {
+       define('INCLUDE_PATH','../'.'/');
+      }
+   
+      if (file_exists(INCLUDE_PATH.'config.php')) {
+       include_once(INCLUDE_PATH.'config.php');
+      }
+      
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $link = mysqli_connect("localhost", $dbuname, $dbpass, $dbname);
+
       $_sql = 'DROP TABLE '.$this->prefix.'_'.$_tbl.';';
-      $_result = @mysql_query($_sql);
+      $_result = mysqli_query($link, $_sql);
       if (!$_result) {
          $this->error=true;
          $_msg = 'Unable to drop table '.$_tbl.': ' . mysql_error();
@@ -230,11 +412,13 @@ class dbMysql {
       else {
          $divclass='mysql';
       }
-      $_msg = '<br />'."\n".'<center><div class="'.$divclass.'">'."\n"
+      $_msg = '<br />'."\n".'<div align="center"><div class="'.$divclass.'">'."\n"
             . $_msg."\n"
-            . '</div></center>'."\n";
+            . '</div></div>'."\n";
       echo $_msg;
    }
 
 }
+
+
 ?>
