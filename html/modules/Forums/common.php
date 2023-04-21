@@ -141,7 +141,7 @@ if (defined('FORUM_ADMIN')) {
     include_once("modules/Forums/includes/auth.php");
     include_once("modules/Forums/includes/functions.php");
     include_once("db/db.php");
-
+}
 // We do not need this any longer, unset for safety purposes
 unset($dbpasswd);
 
