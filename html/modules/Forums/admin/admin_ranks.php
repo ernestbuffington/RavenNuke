@@ -17,6 +17,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 4:29 PM
+ * TernaryToNullCoalescingRector
  ***************************************************************************/
 
 if( !empty($setmodules) )
@@ -46,7 +48,7 @@ if ($cancel)
 
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
-	$mode = (isset($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : $HTTP_POST_VARS['mode'];
+	$mode = $HTTP_GET_VARS['mode'] ?? $HTTP_POST_VARS['mode'];
         $mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
