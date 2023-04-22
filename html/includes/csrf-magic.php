@@ -27,7 +27,12 @@
  * @version     1.0.0
  * @link        https://www.ravenphpscripts.com and http://montegoscripts.com
  * @since       2.40.00
+ *
+ * Applied rules: Ernest Allen Bufington (TheGhost) 04/22/2023 5:03 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
  */
+ 
 // CONFIGURATION:
 
 /**
@@ -160,7 +165,8 @@ $GLOBALS['csrf']['version'] = '1.0.2'; // montego - took from their latest git l
 // The following is needed for compatability with php4
 if (!function_exists('str_ireplace')) {
 	function str_ireplace($find,$replace,$string) {
-		if(!is_array($find)) {
+		$replace = [];
+  if(!is_array($find)) {
 			$find = array($find);
 		}
 		if(!is_array($replace)) {
@@ -450,7 +456,7 @@ function csrf_get_secret() {
 function csrf_generate_secret($len = 32) {
 	$secret = '';
 	for ($i = 0; $i < 32; $i++) {
-		$secret .= chr(mt_rand(0, 255));
+		$secret .= chr(random_int(0, 255));
 	}
 	$secret .= time() . microtime();
 	return sha1($secret);
