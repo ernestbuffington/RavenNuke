@@ -4,6 +4,14 @@
 // Courtesy jjwdesign
 // http://www.webmasterworld.com/forum88/12930.htm
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:17 PM
+ * PregReplaceEModifierRector (https://wiki.php.net/rfc/remove_preg_replace_eval_modifier https://stackoverflow.com/q/19245205/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 // strip html and Truncate to create a title, Google truncates Titles to 40 characters.
 function seo_create_title($str, $length = 70) {
   $title = truncate_string(seo_simple_strip_tags($str), $length);
@@ -60,8 +68,8 @@ function seo_simple_strip_tags($str) {
   }
   $untagged = preg_replace("/[\n\r\t\s ]+/i", " ", $untagged); // remove multiple spaces, returns, tabs, etc.
   if (substr($untagged,-1) == ' ') { $untagged = substr($untagged,0,strlen($untagged)-1); } // remove space from end of string
-  if (substr($untagged,0,1) == ' ') { $untagged = substr($untagged,1,strlen($untagged)-1); } // remove space from start of string
-  if (substr($untagged,0,12) == 'description ') { $untagged = substr($untagged,12,strlen($untagged)-1); } // remove 'description ' from start of string
+  if (str_starts_with($untagged, ' ')) { $untagged = substr($untagged,1,strlen($untagged)-1); } // remove space from start of string
+  if (str_starts_with($untagged, 'description ')) { $untagged = substr($untagged,12,strlen($untagged)-1); } // remove 'description ' from start of string
   return $untagged;
 }
 
@@ -86,9 +94,9 @@ function ucfirst_title($string) {
   $replace = array (' and ',' or ',' but ',' at ',' in ',' on ',' to ',' from ',' is ',' a ',' an ',' am ',' for ',' of ',' the ',"'s", 'AC/');
   $new_string = str_replace($search, $replace, $new_string);
   // Several special Replacements ('s, McPherson, McBain, etc.) on the $new_string.
-  $new_string = preg_replace("/Mc([a-z]{3,})/e", "\"Mc\".ucfirst(\"$1\")", $new_string);
+  $new_string = preg_replace_callback('/Mc([a-z]{3,})/', fn($matches) => "Mc" . ucfirst($matches[1]), $new_string);
   // Another Strange Replacement (example: "Pure-Breed Dogs: the Breeds and Standards") on the $new_string.
-  $new_string = preg_replace("/([:;])\s+([a-zA-Z]+)/e", "\"$1\".\" \".ucfirst(\"$2\")", $new_string);
+  $new_string = preg_replace_callback('/([:;])\s+([a-zA-Z]+)/', fn($matches) => $matches[1] . " " . ucfirst($matches[2]), $new_string);
   // If this is a very low string ( > 60 char) then do some more replacements.
   if (strlen($new_string > 60)) {
     $search = array (" With "," That ");
@@ -103,6 +111,8 @@ function ucfirst_title($string) {
 // any html tags, by the string $cut. Lines with whitespace in them are ok, only
 // single words over $cols length are split. (&shy; = safe-hyphen)
 function wordwrap_excluding_html($str, $cols = 30, $cut = "&shy;") {
+  $wordlen = null;
+  $result = null;
   $len = strlen($str);
   $tag = 0;
   for ($i = 0; $i < $len; $i++) {
@@ -128,6 +138,8 @@ function wordwrap_excluding_html($str, $cols = 30, $cut = "&shy;") {
 // "excluding" any html tags in the length calculation.
 // Split on html delimiters, count and then recombine with delimiters.
 function truncate_string_excluding_html($str, $len = 150) {
+  $match = [];
+  $result = null;
   $wordlen = 0; // Total text length.
   $resultlen = 0; // Total length of html and text.
   $len_exceeded = false;
@@ -137,7 +149,7 @@ function truncate_string_excluding_html($str, $len = 150) {
   $str = str_replace(array("\n","\r","\t"), array (" "," "," "), $str); // Replace returns/tabs with spaces
   $splitstr = preg_split('/(<[^>]*>)/', $str, -1, PREG_SPLIT_DELIM_CAPTURE );
   //var_dump($splitstr);
-  if (count($splitstr) > 0 && strlen($str) > $len) { // split
+  if ((is_countable($splitstr) ? count($splitstr) : 0) > 0 && strlen($str) > $len) { // split
     while ($wordlen <= $len && $cnt <= 200 &&!$len_exceeded) {
       $part = $splitstr[$cnt];
       if (preg_match('/^<[A-Za-z]{1,}/', $part)) {
