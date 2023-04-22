@@ -41,6 +41,9 @@
 * @package com.tecnick.tcpdf
 * @author Nicola Asuni
 * @version 1.0.008
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:18 PM
+* AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
 */
 
 // custom definitions
@@ -233,7 +236,8 @@ class Datamatrix {
 	 * @public
 	 */
 	public function __construct($code) {
-		$barcode_array = array();
+		$params = [];
+  $barcode_array = array();
 		if ((is_null($code)) OR ($code == '\0') OR ($code == '')) {
 			return false;
 		}
@@ -382,7 +386,9 @@ class Datamatrix {
 	 * @protected
 	 */
 	protected function getErrorCorrection($wd, $nb, $nd, $nc, $gf=256, $pp=301) {
-		// generate the log ($log) and antilog ($alog) tables
+		$log = [];
+  $alog = [];
+  // generate the log ($log) and antilog ($alog) tables
 		$log[0] = 0;
 		$alog[0] = 1;
 		for ($i = 1; $i < $gf; ++$i) {
@@ -651,7 +657,8 @@ class Datamatrix {
 	 * @protected
 	 */
 	protected function getSwitchEncodingCodeword($mode) {
-		switch ($mode) {
+		$cw = null;
+  switch ($mode) {
 			case ENC_ASCII: { // ASCII character 0 to 127
 				$cw = 254;
 				if ($this->last_enc == ENC_EDF) {
