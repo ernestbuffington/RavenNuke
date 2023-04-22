@@ -10,6 +10,7 @@
  *
  *
  ***************************************************************************/
+ 
 /***************************************************************************
 * phpbb2 forums port version 2.0.5 (c) 2003 - Nuke Cops (http://nukecops.com)
 *
@@ -31,6 +32,7 @@
 * now reflecting phpbb2 standalone 2.0.5 that fixes some bugs and the
 * invalid_session error message.
 ***************************************************************************/
+
 /***************************************************************************
  *   This file is part of the phpBB2 port to Nuke 6.0 (c) copyright 2002
  *   by Tom Nitzschner (tom@toms-home.com)
@@ -48,6 +50,7 @@
  *   under the GNU GENERAL PUBLIC LICENSE. Please see the README for more information.
  *
  ***************************************************************************/
+ 
 if ( !defined('IN_PHPBB') )
 {
 	die("Hacking attempt");
