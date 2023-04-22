@@ -7,6 +7,15 @@
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:42 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * Remove STFU Operators
+ * Fix Magic Quotes
+ */
+
 define("NUKESENTINEL_IS_LOADED", TRUE);
 unset($nsnst_const);
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
@@ -91,7 +100,7 @@ $db->sql_freeresult($result);
 
 // Check for Flood Attack
 // CAUTION: This function sometimes can slow your sites load time
-$blocker_row = @$blocker_array[11];
+$blocker_row = $blocker_array[11];
 if($blocker_row['activate'] > 0) {
 	session_start();
 	//session_name("NSNST_Flood");
@@ -137,7 +146,7 @@ if(strtolower($nsnst_const['request_method']) != 'get' AND strtolower( $nsnst_co
 	AND strtolower( $nsnst_const['request_method']) != 'put') { die(_AB_INVALIDMETHOD); }
 
 // DOS Attack Blocker
-if( $ab_config['prevent_dos'] == 1 AND !stristr($_SERVER['PHP_SELF'], 'backend.php') AND !stristr( $nuke_config['nukeurl'], $_SERVER['SERVER_NAME'])) {
+if( $ab_config['prevent_dos'] == 1 AND !stristr($_SERVER['PHP_SELF'], 'backend.php') AND !stristr( $nuke_config['nukeurl'], (string) $_SERVER['SERVER_NAME'])) {
 	if( empty($nsnst_const['user_agent']) || $nsnst_const['user_agent'] == '-' ||  !isset($nsnst_const['user_agent'])) { die(_AB_GETOUT); }
 }
 
@@ -174,9 +183,9 @@ if( $ab_config['self_expire'] == 1 AND $ab_config['blocked_clear'] < $clearedtim
 			}
 			$testip = 'deny from ' . $clearblock['ip_addr'] . "\n";
 			$ipfile = str_replace($testip, '', $ipfile);
-			$doit = @fopen($ab_config['htaccess_path'], 'w');
-			@fwrite($doit, $ipfile);
-			@fclose($doit);
+			$doit = fopen($ab_config['htaccess_path'], 'w');
+			fwrite($doit, $ipfile);
+			fclose($doit);
 			// count the records, to the check if the table should be optimized
 			$optimize_blocked_ips++;
 		}
@@ -201,9 +210,9 @@ if( $ab_config['self_expire'] == 1 AND $ab_config['blocked_clear'] < $clearedtim
 			$ipfile = implode('', $ipfile);
 			$ipfile = str_replace($old_masscidr, '', $ipfile);
 			$ipfile = $ipfile;
-			$doit = @fopen($ab_config['htaccess_path'], 'w');
-			@fwrite($doit, $ipfile);
-			@fclose($doit);
+			$doit = fopen($ab_config['htaccess_path'], 'w');
+			fwrite($doit, $ipfile);
+			fclose($doit);
 			// count the records, to the check if the table should be optimized
 			$optimize_blocked_ranges++;
 		}
@@ -221,7 +230,7 @@ if( $ab_config['proxy_switch'] == 1) {
 	$proxy0 = $nsnst_const['remote_ip'];
 	$proxy1 = $nsnst_const['client_ip'];
 	$proxy2 = $nsnst_const['forward_ip'];
-	$proxy_host = @getHostByAddr($proxy0);
+	$proxy_host = getHostByAddr($proxy0);
 	//Lite:
 	if($ab_config['proxy_switch'] == 1 AND ($proxy1 != 'none' OR $proxy2 != 'none')) {
 		$display_page = abget_template($ab_config['proxy_reason']);
@@ -254,7 +263,7 @@ $blockedrange_row = abget_blockedrange($nsnst_const['remote_ip']);
 if($blockedrange_row) { blockedrange($blockedrange_row); }
 
 // AUTHOR Protection
-$blocker_row = @$blocker_array[5];
+$blocker_row = $blocker_array[5];
 if($blocker_row['activate'] > 0) {
 	if(isset($op) AND ($op == 'mod_authors' OR $op == 'modifyadmin' OR $op == 'UpdateAuthor' OR $op == 'AddAuthor' OR $op == 'deladmin2' OR $op == 'deladmin'
 					OR $op == 'assignstories' OR $op == 'deladminconf') AND !is_god()) {
@@ -268,20 +277,20 @@ if($blocker_row['activate'] > 0) {
 }
 
 // ADMIN protection
-$blocker_row = @$blocker_array[10];
+$blocker_row = $blocker_array[10];
 if($blocker_row['activate'] > 0) {
-	if(stristr($_SERVER['PHP_SELF'], $admin_file . '.php') AND (isset($op) AND $op != 'login' AND $op != 'adminMain' AND $op != 'gfx') AND @!is_admin($_COOKIE['admin'])) {
+	if(stristr($_SERVER['PHP_SELF'], $admin_file . '.php') AND (isset($op) AND $op != 'login' AND $op != 'adminMain' AND $op != 'gfx') AND !is_admin($_COOKIE['admin'])) {
 		block_ip($blocker_row);
 	}
 } else {
-	if(stristr($_SERVER['PHP_SELF'], $admin_file . '.php') AND (isset($op) AND $op != 'login' AND $op != 'adminMain' AND $op != 'gfx') AND @!is_admin($_COOKIE['admin'])) {
+	if(stristr($_SERVER['PHP_SELF'], $admin_file . '.php') AND (isset($op) AND $op != 'login' AND $op != 'adminMain' AND $op != 'gfx') AND !is_admin($_COOKIE['admin'])) {
 		header('Location: ../' . $admin_file . '.php');
 	}
 }
 
 // Check for UNION attack
 // Copyright 2004(c) Raven PHP Scripts
-$blocker_row = @$blocker_array[1];
+$blocker_row = $blocker_array[1];
 if($blocker_row['activate'] > 0 AND (!isset($_COOKIE['admin']) OR !is_admin($_COOKIE['admin']))) {
 	if(stristr($nsnst_const['query_string'], '+or+') OR stristr($nsnst_const['query_string'], '*/or/*') OR stristr($nsnst_const['query_string_base64'], '+or+') OR stristr($nsnst_const['query_string_base64'], '*/or/*')) {
 		block_ip($blocker_row);
@@ -294,7 +303,7 @@ if($blocker_row['activate'] > 0 AND (!isset($_COOKIE['admin']) OR !is_admin($_CO
 
 // Check for CLIKE attack
 // Copyright 2004(c) Raven PHP Scripts
-$blocker_row = @$blocker_array[2];
+$blocker_row = $blocker_array[2];
 if($blocker_row['activate'] > 0) {
 	if(stristr($nsnst_const['query_string'], '/*') OR stristr($nsnst_const['query_string_base64'], '/*') OR stristr($nsnst_const['query_string'], '*/') OR stristr($nsnst_const['query_string_base64'], '*/')) {
 		block_ip($blocker_row);
@@ -302,7 +311,7 @@ if($blocker_row['activate'] > 0) {
 }
 
 // Check Filters
-$blocker_row = @$blocker_array[7];
+$blocker_row = $blocker_array[7];
 if($blocker_row['activate'] > 0) {
 	// Check for Forum attack
 	// Copyright 2004(c) GanjaUK & ChatServ
@@ -329,16 +338,16 @@ if($blocker_row['activate'] > 0) {
 	}
 }
 
-if (@is_admin($_COOKIE['admin'])==false) {
+if (is_admin($_COOKIE['admin'])==false) {
 	// Check for SCRIPTING attack
 	// Copyright 2004(c) ChatServ
-	$blocker_row = @$blocker_array[4];
+	$blocker_row = $blocker_array[4];
 	if($blocker_row['activate'] > 0) {
 		var_scripting_recursive($_GET, 'get', $blocker_row);
 		// BEGIN - Added by Raven 11/19/2007 to exclude Forums and Private_Message Posting blocks
 		$qs = $nsnst_const['query_string'];
 		$qsName = explode('name=', $qs);
-		$qsName = @explode('&', $qsName[1]);
+		$qsName = explode('&', $qsName[1]);
 		if (stristr($qs,'name=Forums') !== false && stristr($qs, 'file=posting')!== false && (strtolower($qsName[0]) == 'private_messages' || strtolower($qsName[0]) == 'forums')) {
 			// The following code is strictly for testing purposes.
 			// Uncomment the lines and change the 2 email address calls (you@your_domain.xxx) in the mail function call to your address to see the posts that are being allowed.
@@ -392,7 +401,7 @@ function var_scripting_recursive($array, $type, $blocker_row) {
 }
 
 // Check for Referer
-$blocker_row = @$blocker_array[6];
+$blocker_row = $blocker_array[6];
 if($blocker_row['activate'] > 0) {
 	if($ab_config['list_referer'] > '') {
 		$RefererList = explode("\r\n", $ab_config['list_referer']);
@@ -406,7 +415,7 @@ if($blocker_row['activate'] > 0) {
 }
 
 // Check for Harvester
-$blocker_row = @$blocker_array[3];
+$blocker_row = $blocker_array[3];
 if($blocker_row['activate'] > 0) {
 	if($ab_config['list_harvester'] > '') {
 		$HarvesterList = explode("\r\n", $ab_config['list_harvester']);
@@ -420,7 +429,7 @@ if($blocker_row['activate'] > 0) {
 }
 
 // Check for Strings
-$blocker_row = @$blocker_array[9];
+$blocker_row = $blocker_array[9];
 if($blocker_row['activate'] > 0) {
 	if($ab_config['list_string'] > '') {
 		$StringList = explode("\r\n", $ab_config['list_string']);
@@ -434,7 +443,7 @@ if($blocker_row['activate'] > 0) {
 }
 
 // Check for Request
-$blocker_row = @$blocker_array[8];
+$blocker_row = $blocker_array[8];
 if($blocker_row['activate'] > 0) {
 	if($blocker_row['list'] > "") {
 		$RequestList = explode("\r\n",$blocker_row['list']);
@@ -502,7 +511,7 @@ if( $ab_config['track_active'] == 1 AND !is_excluded($nsnst_const['remote_ip']))
 		if(!$c2c) { $c2c = '00'; }
 		if($nsnst_const['ban_user_id'] == 1) { $nsnst_const['ban_username2'] = ''; } else { $nsnst_const['ban_username2'] = $nsnst_const['ban_username']; }
 		$refered_from = htmlentities($nsnst_const['referer']);
-		if(!@get_magic_quotes_runtime()) {
+		if (!function_exists('get_magic_quotes_runtime')) {
 			$ban_username2 = addslashes($nsnst_const['ban_username2']);
 			$user_agent = addslashes($nsnst_const['user_agent']);
 			$pg = addslashes($pg);
@@ -659,7 +668,7 @@ function get_user_agent() {
 function get_referer() {
 	global $nuke_config;
 	if(get_env('HTTP_REFERER')) {
-	 if(stristr(get_env('HTTP_REFERER'), $nuke_config['nukeurl'])) {
+	 if(stristr(get_env('HTTP_REFERER'), (string) $nuke_config['nukeurl'])) {
 		return 'on site';
 	} elseif(stristr(get_env('HTTP_REFERER'), 'http://localhost') || stristr(get_env('HTTP_REFERER'), 'http://127.0.') || stristr(get_env('HTTP_REFERER'), 'http://192.168.') || stristr(get_env('HTTP_REFERER'), 'http://10.') || stristr(get_env('HTTP_REFERER'), 'file://')) {
 			return 'local link';
@@ -734,11 +743,11 @@ function clear_session(){
 	$db->sql_query('DELETE FROM `' . $prefix . '_session` WHERE `host_addr`="' . $x_forwarded . '" OR `host_addr`="' . $client_ip . '" OR `host_addr`="' . $remote_addr . '"');
 	// Clear nuke_bbsessions location
 	$x_f = explode('.', $x_forwarded);
-	$x_forwarded = @str_pad(dechex($x_f[0]), 2, '0', STR_PAD_LEFT) . @str_pad(dechex($x_f[1]), 2, '0', STR_PAD_LEFT) . @str_pad(dechex($x_f[2]), 2, '0', STR_PAD_LEFT)
-				. @str_pad(dechex($x_f[3]), 2, '0', STR_PAD_LEFT);
+	$x_forwarded = str_pad(dechex($x_f[0]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($x_f[1]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($x_f[2]), 2, '0', STR_PAD_LEFT)
+				. str_pad(dechex($x_f[3]), 2, '0', STR_PAD_LEFT);
 	$c_p = explode('.', $client_ip);
-	$client_ip = @str_pad(dechex($c_p[0]), 2, '0', STR_PAD_LEFT) . @str_pad(dechex($c_p[1]), 2, '0', STR_PAD_LEFT) . @str_pad(dechex($c_p[2]), 2, '0', STR_PAD_LEFT)
-				. @str_pad(dechex($c_p[3]), 2, '0', STR_PAD_LEFT);
+	$client_ip = str_pad(dechex($c_p[0]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($c_p[1]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($c_p[2]), 2, '0', STR_PAD_LEFT)
+				. str_pad(dechex($c_p[3]), 2, '0', STR_PAD_LEFT);
 	$r_a = explode('.', $remote_addr);
 	$remote_addr = str_pad(dechex($r_a[0]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($r_a[1]), 2, '0', STR_PAD_LEFT) . str_pad(dechex($r_a[2]), 2, '0', STR_PAD_LEFT)
 				. str_pad(dechex($r_a[3]), 2, '0', STR_PAD_LEFT);
@@ -833,7 +842,8 @@ function abget_reason($reason_id){
 }
 
 function write_ban($banip, $htip, $blocker_row) {
-	global $ab_config, $admin, $blocker_array, $db, $nsnst_const, $nuke_config, $prefix, $user_prefix;
+	$c2c = null;
+ global $ab_config, $admin, $blocker_array, $db, $nsnst_const, $nuke_config, $prefix, $user_prefix;
 	$a_aid = '';
 	if(isset($_COOKIE['admin']) && !empty($_COOKIE['admin'])) {
 		$abadmin = st_clean_string(base64_decode($_COOKIE['admin']));
@@ -874,7 +884,7 @@ function write_ban($banip, $htip, $blocker_row) {
 			list($c2c) = $db->sql_fetchrow($db->sql_query('SELECT `c2c` FROM `' . $prefix . '_nsnst_ip2country` WHERE `ip_lo`<="' . $nsnst_const['remote_long'] . '" AND `ip_hi`>="' . $nsnst_const['remote_long'] . '"'));
 		}
 		if(!$c2c) { $c2c = '00'; }
-		if(!@get_magic_quotes_runtime()) {
+		if (!function_exists('get_magic_quotes_runtime')) {
 			$addby = addslashes($addby);
 			$ban_username = addslashes($nsnst_const['ban_username']);
 			$user_agent = addslashes($nsnst_const['user_agent']);
@@ -889,10 +899,10 @@ function write_ban($banip, $htip, $blocker_row) {
 		if(!empty($ab_config['htaccess_path']) AND $blocker_row['htaccess'] > 0 AND file_exists($ab_config['htaccess_path'])) {
 			$ipfile = file($ab_config['htaccess_path']);
 			$ipfile = implode('', $ipfile);
-			if(!stristr($ipfile, $htip)) {
-				$doit = @fopen($ab_config['htaccess_path'], 'a');
-				@fwrite($doit, $htip);
-				@fclose($doit);
+			if(!stristr($ipfile, (string) $htip)) {
+				$doit = fopen($ab_config['htaccess_path'], 'a');
+				fwrite($doit, $htip);
+				fclose($doit);
 			}
 		}
 	 }
@@ -942,20 +952,20 @@ function write_mail($banip, $blocker_row, $abmatch = '') {
 			$message .= '--------------------' . "\n" . _AB_WHOISFOR . "\n";
 			// Copyright 2004(c) Raven PHP Scripts
 			$msg = '';
-			if(!@file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . $nsnst_const['remote_ip'])) {
+			if(!file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . $nsnst_const['remote_ip'])) {
 				$msg = ('Unable to query WhoIs information for ' . $nsnst_const['remote_ip'] . '.');
 			} else {
-				$data = @file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . $nsnst_const['remote_ip']);
+				$data = file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . $nsnst_const['remote_ip']);
 				$data = explode('Search results for: ',$data);
-				$data = @explode('#', $data[1]);
+				$data = explode('#', $data[1]);
 				$data = explode('(NET-', strip_tags($data[0]));
 				if( empty($data[1])) $msg .= $data[0];
 				else {
 					$data = explode(')',$data[1]);
-					if(!@file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . "!%20NET-" . strip_tags($data[0]))) {
+					if(!file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . "!%20NET-" . strip_tags($data[0]))) {
 						$data = 'Unable to query WhoIs information for ' . strip_tags($data[0]) . '.';
 					} else {
-						$data = @file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . "!%20NET-" . strip_tags($data[0]));
+						$data = file_get_contents('http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . "!%20NET-" . strip_tags($data[0]));
 						$data = explode('Search results for: ',$data);
 						$data = explode('Name',$data[1],2);
 						$data = explode('# ARIN WHOIS ',$data[1]);
@@ -967,10 +977,10 @@ function write_mail($banip, $blocker_row, $abmatch = '') {
 		} elseif($blocker_row['email_lookup'] == 2) {
 			$message .= '--------------------' . "\n";
 			// Copyright 2004(c) NukeScripts
-			if(!@file_get_contents('http://dnsstuff.com/tools/whois/?ip=' . $nsnst_const['remote_ip'])) {
+			if(!file_get_contents('http://dnsstuff.com/tools/whois/?ip=' . $nsnst_const['remote_ip'])) {
 				$data = 'Unable to query WhoIs information for ' . $nsnst_const['remote_ip'] . '.';
 			} else {
-				$data = @file_get_contents('http://dnsstuff.com/tools/whois/?email=on&ip=' . $nsnst_const['remote_ip']);
+				$data = file_get_contents('http://dnsstuff.com/tools/whois/?email=on&ip=' . $nsnst_const['remote_ip']);
 				$data = str_replace('</H1><H5>', '\n', $data);
 				$data = str_replace('status = \"Getting WHOIS results...\";', '\n', $data);
 				$data = str_replace('status = \"Done!\";', '\n', $data);
@@ -983,7 +993,7 @@ function write_mail($banip, $blocker_row, $abmatch = '') {
 			tnml_fMailer($admincontact, $subject, $message, $adminmail, '', $params);
 		} else {
 			for($i=0, $maxi=count($admincontact); $i < $maxi; $i++) {
-				@mail($admincontact[$i], $subject, $message, 'From: ' . $adminmail . "\r\nX-Mailer: " . _AB_NUKESENTINEL);
+				mail($admincontact[$i], $subject, $message, 'From: ' . $adminmail . "\r\nX-Mailer: " . _AB_NUKESENTINEL);
 			}
 		}
 	}
@@ -1070,10 +1080,11 @@ function is_god($axadmin = '') {
 
 if(!function_exists('file_get_contents')) {
 	function file_get_contents($filename, $use_include_path = 0) {
-		$file = @fopen($filename, 'rb', $use_include_path);
+		$data = null;
+  $file = fopen($filename, 'rb', $use_include_path);
 		if($file) {
 			while (!feof($file)) $data .= fread($file, 1024);
-			@fclose($file);
+			fclose($file);
 		}
 		return $data;
 	}
@@ -1090,9 +1101,9 @@ function abget_template($template = '') {
 	$querystring = get_query_string();
 	$filename = NUKE_BASE_DIR . 'abuse/' . $template;
 	if(!file_exists($filename)) { $filename = NUKE_BASE_DIR . 'abuse/abuse_default.tpl'; }
-	$handle = @fopen($filename, 'r');
+	$handle = fopen($filename, 'r');
 	$display_page = fread($handle, filesize($filename));
-	@fclose($handle);
+	fclose($handle);
 	$display_page = str_replace('__MATCH__', $abmatch, $display_page);
 	$display_page = str_replace('__SITENAME__', $sitename, $display_page);
 	$display_page = str_replace('__ADMINMAIL1__', $adminmail, $display_page);
@@ -1144,7 +1155,7 @@ function blocked($blocked_row = '', $blocker_row = '') {
 	} else {
 		$display_page = abget_template();
 		$display_page = str_replace('__TIMEDATE__', date('Y-m-d \@ H:i:s T \G\M\T O', time()), $display_page);
-		if(@$blocked_row['expires'] > 0) {
+		if($blocked_row['expires'] > 0) {
 			$display_page = str_replace('__DATEEXPIRES__', date('Y-m-d \@ H:i:s T \G\M\T O', $blocked_row['expires']), $display_page);
 		} else {
 			$display_page = str_replace('__DATEEXPIRES__', _AB_PERMENANT, $display_page);
@@ -1225,7 +1236,7 @@ function ab_flood($blocker_row) {
 	$_sessnm = session_name();
 	$currtime = time();
 	$floodarray = file($ab_config['ftaccess_path']);
-	$floodcount = count($floodarray);
+	$floodcount = is_countable($floodarray) ? count($floodarray) : 0;
 	$floodopen = fopen($ab_config['ftaccess_path'], 'w;');
 	foreach($floodarray as $floodwrite){
 		if ($floodcount - 10 >= 0) if(!strstr($floodwrite, $floodarray[$floodcount - 10]))
@@ -1285,14 +1296,14 @@ function PMA_auth_check() {
 			$PHP_AUTH_USER = $REMOTE_USER;
 		} else if(!empty($_ENV) && isset($_ENV['REMOTE_USER'])) {
 			$PHP_AUTH_USER = $_ENV['REMOTE_USER'];
-		} else if(@getenv('REMOTE_USER')) {
+		} else if(getenv('REMOTE_USER')) {
 			$PHP_AUTH_USER = getenv('REMOTE_USER');
 		// Fix from Matthias Fichtner for WebSite Professional - Part 1
 		} else if(isset($AUTH_USER)) {
 			$PHP_AUTH_USER = $AUTH_USER;
 		} else if(!empty($_ENV) && isset($_ENV['AUTH_USER'])) {
 			$PHP_AUTH_USER = $_ENV['AUTH_USER'];
-		} else if(@getenv('AUTH_USER')) {
+		} else if(getenv('AUTH_USER')) {
 			$PHP_AUTH_USER = getenv('AUTH_USER');
 		}
 	}
@@ -1306,14 +1317,14 @@ function PMA_auth_check() {
 			$PHP_AUTH_PW = $REMOTE_PASSWORD;
 		} else if(!empty($_ENV) && isset($_ENV['REMOTE_PASSWORD'])) {
 			$PHP_AUTH_PW = $_ENV['REMOTE_PASSWORD'];
-		} else if(@getenv('REMOTE_PASSWORD')) {
+		} else if(getenv('REMOTE_PASSWORD')) {
 			$PHP_AUTH_PW = getenv('REMOTE_PASSWORD');
 		// Fix from Matthias Fichtner for WebSite Professional - Part 2
 		} else if(isset($AUTH_PASSWORD)) {
 			$PHP_AUTH_PW = $AUTH_PASSWORD;
 		} else if(!empty($_ENV) && isset($_ENV['AUTH_PASSWORD'])) {
 			$PHP_AUTH_PW = $_ENV['AUTH_PASSWORD'];
-		} else if(@getenv('AUTH_PASSWORD')) {
+		} else if(getenv('AUTH_PASSWORD')) {
 			$PHP_AUTH_PW = getenv('AUTH_PASSWORD');
 		}
 		}
@@ -1321,14 +1332,14 @@ function PMA_auth_check() {
 		if(empty($PHP_AUTH_USER) && empty($PHP_AUTH_PW)
 		&& function_exists('base64_decode')) {
 		if(!empty($HTTP_AUTHORIZATION)
-			&& substr($HTTP_AUTHORIZATION, 0, 6) == 'Basic ') {
+			&& str_starts_with($HTTP_AUTHORIZATION, 'Basic ')) {
 			list($PHP_AUTH_USER, $PHP_AUTH_PW) = explode(':', base64_decode(substr($HTTP_AUTHORIZATION, 6)));
 		} else if(!empty($_ENV)
 			&& isset($_ENV['HTTP_AUTHORIZATION'])
-			&& substr($_ENV['HTTP_AUTHORIZATION'], 0, 6) == 'Basic ') {
+			&& str_starts_with($_ENV['HTTP_AUTHORIZATION'], 'Basic ')) {
 			list($PHP_AUTH_USER, $PHP_AUTH_PW) = explode(':', base64_decode(substr($_ENV['HTTP_AUTHORIZATION'], 6)));
-		} else if(@getenv('HTTP_AUTHORIZATION')
-			&& substr(getenv('HTTP_AUTHORIZATION'), 0, 6) == 'Basic ') {
+		} else if(getenv('HTTP_AUTHORIZATION')
+			&& str_starts_with(getenv('HTTP_AUTHORIZATION'), 'Basic ')) {
 			list($PHP_AUTH_USER, $PHP_AUTH_PW) = explode(':', base64_decode(substr(getenv('HTTP_AUTHORIZATION'), 6)));
 		}
 	} // end IIS
@@ -1337,7 +1348,7 @@ function PMA_auth_check() {
 	if(empty($PHP_AUTH_USER)) {
 		return FALSE;
 	} else {
-		if(@get_magic_quotes_runtime()) {
+		if (!function_exists('get_magic_quotes_runtime')) {
 			$PHP_AUTH_USER = stripslashes($PHP_AUTH_USER);
 			$PHP_AUTH_PW = stripslashes($PHP_AUTH_PW);
 		}
@@ -1350,7 +1361,7 @@ function PMA_auth_check() {
 /* but there are too many variables that would have to be globalized.                        */
 /* Copyright 2004(c) Raven                                                                   */
 /*********************************************************************************************/
-if(@ini_get('register_globals')) {
+if(ini_get('register_globals')) {
 	$sapi_name = strtolower(php_sapi_name());
 	$apass = $db->sql_numrows($db->sql_query('SELECT * FROM `' . $prefix . '_nsnst_admins` WHERE `password_md5`=""'));
 	if($apass > 0 AND $ab_config['http_auth'] == 1) {
