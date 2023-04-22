@@ -18,6 +18,11 @@
 /* Additional code clean-up, performance enhancements, and W3C and      */
 /* XHTML compliance fixes by Raven and Montego.                         */
 /************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:56 PM
+ * RandomFunctionRector
+ */
+ 
 if (!defined('BLOCK_FILE')) {
 	Header('Location: ../index.php');
 	die();
@@ -54,7 +59,7 @@ if ($numrows > 1) {
 	$r_topic = explode('-', $topic_array);
 	mt_srand((double)microtime() *1000000);
 	$numrows = $numrows-1;
-	$topic = mt_rand(0, $numrows);
+	$topic = random_int(0, $numrows);
 	$topic = $r_topic[$topic];
 } else {
 	$topic = 1;
