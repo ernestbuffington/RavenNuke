@@ -11,9 +11,11 @@
 //  and what your using it for. [ pesoto74@soltec.net]
 //
 // ==================================================================
+
 /*=======================================================================
  Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
+ 
 /**
  * RavenNuke(tm) Paginator: Extends the Paginator class to produce the HTML
  *
@@ -40,19 +42,24 @@
  *              _PAGINATOR_GO, _PAGINATOR_GOTOPAGE, _PAGINATOR_GOTONEXT, _PAGINATOR_GOTOPREV,
  *              _PAGINATOR_GOTOFIRST, and _PAGINATOR_GOTOLAST.
  *              It also uses _OF but that define should already be there.
-*/
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:30 PM
+ * VarToPublicPropertyRector
+ * CountOnNullRector (https://3v4l.org/Bndc9) 
+ */
+ 
 class Paginator_html extends Paginator {
 	/**
 	 * Properties used within this class extension.
 	 */
-	var $sLink;           // @var string  The base URI to use for the links, e.g., 'modules.php?name=News&amp;new_topic=0'
-	var $bShowPageOf;     // @var bool    Switch Page # of ## ON/OFF.  Default is ON (true).
-	var $bShowTotalItems; // @var bool    Switch (NN total items) ON/OFF.  Default is ON (true).
-	var $bShowJumpTo;     // @var bool    Switch Jump to Page ON/OFF.  Default is ON (true).
-	var $iJumpType;       // @var integer The method of doing a "Jump To Page".  Default is 0.  See comments for setJumpType() for value descriptions.
-	var $bNoFollow;       // @var bool    Switch SE "NO FOLLOW" attributes ON/OFF.  Default is OFF (false).
-	var $sQSPage;         // @var string  The Query String parameter to use.  Default is 'pagenum'.
-	var $sTotalItems;     // @var string  The text to display for Total Items.  Default is 'total items'.
+	public $sLink;           // @var string  The base URI to use for the links, e.g., 'modules.php?name=News&amp;new_topic=0'
+	public $bShowPageOf;     // @var bool    Switch Page # of ## ON/OFF.  Default is ON (true).
+	public $bShowTotalItems; // @var bool    Switch (NN total items) ON/OFF.  Default is ON (true).
+	public $bShowJumpTo;     // @var bool    Switch Jump to Page ON/OFF.  Default is ON (true).
+	public $iJumpType;       // @var integer The method of doing a "Jump To Page".  Default is 0.  See comments for setJumpType() for value descriptions.
+	public $bNoFollow;       // @var bool    Switch SE "NO FOLLOW" attributes ON/OFF.  Default is OFF (false).
+	public $sQSPage;         // @var string  The Query String parameter to use.  Default is 'pagenum'.
+	public $sTotalItems;     // @var string  The text to display for Total Items.  Default is 'total items'.
 	/**
 	 * Function: setDefaults
 	 *
@@ -123,7 +130,7 @@ class Paginator_html extends Paginator {
 		 * Display the page numbers, and if not the current page, show links
 		 */
 		$aiLinks = $this->getLinkArr();
-		$iLinksNum = count($aiLinks);
+		$iLinksNum = is_countable($aiLinks) ? count($aiLinks) : 0;
 		$i = 0;
 		foreach($aiLinks as $iLink) {
 			$i++;
