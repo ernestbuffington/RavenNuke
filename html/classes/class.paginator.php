@@ -11,9 +11,11 @@
 //  and what your using it for. [ pesoto74@soltec.net]
 //
 // ==================================================================
+
 /*=======================================================================
  Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
+ 
 /**
  * RavenNuke(tm) Paginator: Helper class to manage display of pages of data
  *
@@ -33,28 +35,32 @@
  * @version     1.0.1
  * @link        https://www.ravenphpscripts.com and http://montegoscripts.com
  * @since       2.20.00
-*/
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:28 PM
+ * VarToPublicPropertyRector
+ */
+ 
 class Paginator {
 	//all variables are pivate.
-	var $previous;
-	var $current;
-	var $next;
-	var $page;
-	var $total_pages;
-	var $link_arr;
-	var $range1;
-	var $range2;
-	var $num_rows;
-	var $first;
-	var $last;
-	var $first_of;
-	var $second_of;
-	var $limit;
-	var $prev_next;
-	var $base_page_num;
-	var $extra_page_num;
-	var $total_items;
-	var $pagename;
+	public $previous;
+	public $current;
+	public $next;
+	public $page;
+	public $total_pages;
+	public $link_arr;
+	public $range1;
+	public $range2;
+	public $num_rows;
+	public $first;
+	public $last;
+	public $first_of;
+	public $second_of;
+	public $limit;
+	public $prev_next;
+	public $base_page_num;
+	public $extra_page_num;
+	public $total_items;
+	public $pagename;
 	// Constructor for Paginator.  Takes the current page, the number of items
 	// in the source data and sets the current page ($this->page) and the total
 	// items in the source ($this->total_items).  It also determines if there are any
