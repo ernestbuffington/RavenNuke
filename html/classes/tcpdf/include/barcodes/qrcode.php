@@ -77,6 +77,11 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.010
+ *
+ * Applied rules: Ernest Allen Buffingon (TheGhost) 04/22/2023 7:21 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  */
 
 // definitions
@@ -258,7 +263,8 @@ if (!function_exists('str_split')) {
 	 * @return  If the optional split_length  parameter is specified, the returned array will be broken down into chunks with each being split_length  in length, otherwise each chunk will be one character in length. FALSE is returned if split_length is less than 1. If the split_length length exceeds the length of string , the entire string is returned as the first (and only) array element.
 	 */
 	function str_split($string, $split_length=1) {
-		if ((strlen($string) > $split_length) OR (!$split_length)) {
+		$parts = [];
+  if ((strlen($string) > $split_length) OR (!$split_length)) {
 			do {
 				$c = strlen($string);
 				$parts[] = substr($string, 0, $split_length);
@@ -687,7 +693,7 @@ class QRcode {
 	 * @return array frame in binary form
 	 */
 	protected function binarize($frame) {
-		$len = count($frame);
+		$len = is_countable($frame) ? count($frame) : 0;
 		// the frame is square (width = height)
 		foreach ($frame as &$frameLine) {
 			for ($i=0; $i<$len; $i++) {
@@ -1225,7 +1231,7 @@ class QRcode {
 		if (QR_FIND_FROM_RANDOM !== false) {
 			$howManuOut = 8 - (QR_FIND_FROM_RANDOM % 9);
 			for ($i = 0; $i <  $howManuOut; ++$i) {
-				$remPos = rand (0, count($checked_masks)-1);
+				$remPos = random_int (0, count($checked_masks)-1);
 				unset($checked_masks[$remPos]);
 				$checked_masks = array_values($checked_masks);
 			}
@@ -1381,7 +1387,8 @@ class QRcode {
 	 * @return int run
 	 */
 	 protected function eatKanji() {
-		$p = 0;
+		$run = null;
+  $p = 0;
 		while($this->identifyMode($p) == QR_MODE_KJ) {
 			$p += 2;
 		}
@@ -1443,7 +1450,8 @@ class QRcode {
 	 * @return (int)
 	 */
 	 protected function splitString() {
-		while (strlen($this->dataStr) > 0) {
+		$hint = null;
+  while (strlen($this->dataStr) > 0) {
 			$mode = $this->identifyMode(0);
 			switch ($mode) {
 				case QR_MODE_NM: {
@@ -2012,7 +2020,7 @@ class QRcode {
 		$total = 0;
 		foreach ($items as $key => $item) {
 			$items[$key] = $this->encodeBitStream($item, $this->version);
-			$bits = count($items[$key]['bstream']);
+			$bits = is_countable($items[$key]['bstream']) ? count($items[$key]['bstream']) : 0;
 			$total += $bits;
 		}
 		return array($items, $total);
@@ -2056,7 +2064,7 @@ class QRcode {
 	 	if (is_null($bstream)) {
 	 		return null;
 	 	}
-		$bits = count($bstream);
+		$bits = is_countable($bstream) ? count($bstream) : 0;
 		$maxwords = $this->getDataLength($this->version, $this->level);
 		$maxbits = $maxwords * 8;
 		if ($maxbits == $bits) {
@@ -2184,7 +2192,7 @@ class QRcode {
 		if ((!is_array($append)) OR (count($append) == 0)) {
 			return $bitstream;
 		}
-		if (count($bitstream) == 0) {
+		if ((is_countable($bitstream) ? count($bitstream) : 0) == 0) {
 			return $append;
 		}
 		return array_values(array_merge($bitstream, $append));
@@ -2229,7 +2237,7 @@ class QRcode {
 		if (is_null($bstream)) {
 	 		return null;
 	 	}
-		$size = count($bstream);
+		$size = is_countable($bstream) ? count($bstream) : 0;
 		if ($size == 0) {
 			return array();
 		}
@@ -2383,7 +2391,7 @@ class QRcode {
 	 * @return array spec
 	 */
 	protected function getEccSpec($version, $level, $spec) {
-		if (count($spec) < 5) {
+		if ((is_countable($spec) ? count($spec) : 0) < 5) {
 			$spec = array(0, 0, 0, 0, 0);
 		}
 		$b1 = $this->eccTable[$version][$level][0];
