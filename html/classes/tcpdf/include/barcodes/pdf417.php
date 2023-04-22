@@ -51,6 +51,9 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.005
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:19 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
  */
 
 // definitions
@@ -530,7 +533,9 @@ class PDF417 {
 	 * @public
 	 */
 	public function __construct($code, $ecl=-1, $aspectratio=2, $macro=array()) {
-		$barcode_array = array();
+		$macrocw = [];
+  $L = null;
+  $barcode_array = array();
 		if ((is_null($code)) OR ($code == '\0') OR ($code == '')) {
 			return false;
 		}
