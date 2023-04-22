@@ -21,7 +21,11 @@
  * @link        https://www.ravenphpscripts.com
  * @link        http://montegoscripts.com
  * @since       2.30.00
+ *
+ * Applied rules:  Ernest Allen Buffington (TheGhost) 04/22/2023 5:25 PM
+ * VarToPublicPropertyRector
  */
+ 
 /**
  * Define key constants and variables for the entire package
  */
@@ -52,7 +56,7 @@ class Legal_Document
 	 *
 	 * @var array
 	 */
-	var $doc = array(
+	public $doc = array(
 				'did' => 0,
 				'tid_title' => 0,
 				'tid_text' => 0,
@@ -67,12 +71,12 @@ class Legal_Document
 	 *
 	 * @var mixed
 	 */
-	var $modName = 'Legal';
-	var $modFrom = 'Legal';
-	var $docCountry = 'The United States of America';
-	var $checkActive = true;
-	var $haveTxt = false;
-	var $inAdmin = false;
+	public $modName = 'Legal';
+	public $modFrom = 'Legal';
+	public $docCountry = 'The United States of America';
+	public $checkActive = true;
+	public $haveTxt = false;
+	public $inAdmin = false;
 	/**
 	 * Class constructor
 	 *
