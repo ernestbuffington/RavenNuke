@@ -19,7 +19,14 @@
  * http://www.nukefixes.com - Development location
  * http://sourceforge.net/projects/nukepatched/ - CVS Last file update: 30/07/05
  *
-*/
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:02 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * ArraySpreadInsteadOfArrayMergeRector (https://wiki.php.net/rfc/spread_operator_for_array)
+ */
 
 /**
  * End the transaction
@@ -42,7 +49,7 @@ if (!isset($_SERVER)) {
 	$_ENV = &$HTTP_ENV_VARS;
 	$_SERVER = &$HTTP_SERVER_VARS;
 	$_COOKIE = &$HTTP_COOKIE_VARS;
-	$_REQUEST = array_merge($_GET, $_POST, $_COOKIE);
+	$_REQUEST = [...$_GET, ...$_POST, ...$_COOKIE];
 }
 $PHP_SELF = $_SERVER['PHP_SELF'];
 
@@ -92,7 +99,7 @@ if (!function_exists('stripos')) {
 } else {
 	// But when this is PHP5, we use the original function
 	function stripos_clone($haystack, $needle, $offset=0) {
-		$return = stripos($haystack, $needle, $offset);
+		$return = stripos($haystack, (string) $needle, $offset);
 		if ($return === false) {
 			return false;
 		} else {
@@ -267,27 +274,27 @@ if (!defined('FORUM_ADMIN')) {
 	if (($multilingual == 1) AND isset($newlang) AND !stristr($newlang,'.')) {
 		$newlang = check_html($newlang, 'nohtml');
 		if (file_exists('language/lang-' . $newlang . '.php')) {
-			setcookie('lang', $newlang, time() + 31536000);
+			setcookie('lang', $newlang, ['expires' => time() + 31536000]);
 			include_once 'language/lang-' . $newlang . '.php';
 			$currentlang = $newlang;
 		} else {
-			setcookie('lang', $language, time() + 31536000);
+			setcookie('lang', $language, ['expires' => time() + 31536000]);
 			include_once 'language/lang-' . $language . '.php';
 			$currentlang = $language;
 		}
 	} elseif (($multilingual == 1) AND isset($lang) AND !stristr($lang, '.')) {
 		$lang = check_html($lang, 'nohtml');
 		if (file_exists('language/lang-' . $lang . '.php')) {
-			setcookie('lang', $lang, time() + 31536000);
+			setcookie('lang', $lang, ['expires' => time() + 31536000]);
 			include_once 'language/lang-' . $lang . '.php';
 			$currentlang = $lang;
 		} else {
-			setcookie('lang', $language, time() + 31536000);
+			setcookie('lang', $language, ['expires' => time() + 31536000]);
 			include_once 'language/lang-' . $language . '.php';
 			$currentlang = $language;
 		}
 	} else {
-		setcookie('lang', $language, time() + 31536000);
+		setcookie('lang', $language, ['expires' => time() + 31536000]);
 		include_once 'language/lang-' . $language . '.php';
 		$currentlang = $language;
 	}
@@ -491,7 +498,7 @@ function is_admin($admin) {
 		$admin = explode(':', $admin);
 	}
 	$aid = isset($admin[0]) ? substr($admin[0], 0, 25) : '';
-	$pwd = isset($admin[1]) ? $admin[1] : '';
+	$pwd = $admin[1] ?? '';
 	if (!empty($aid) && !empty($pwd)) {
 		global $db, $prefix;
 		$sql = 'SELECT `pwd` FROM `' . $prefix . '_authors` WHERE `aid`=\'' .  $db->sql_escape_string($aid) . '\'';
@@ -553,7 +560,7 @@ function is_user($user) {
 		$user = explode(':', $user);
 	}
 	$uid = isset($user[0]) ? (int) $user[0] : 0;
-	$pwd = isset($user[2]) ? $user[2] : '';
+	$pwd = $user[2] ?? '';
 	if (!empty($user[0]) && !empty($pwd)) {
 		global $db, $user_prefix;
 		$sql = 'SELECT `user_password` FROM `' . $user_prefix . '_users` WHERE `user_id`=\'' . $db->sql_escape_string($user[0]) . '\'';
@@ -1367,7 +1374,8 @@ function seoReadFeed ($url = '', $maxrss = 20, $refresh = 3600) {
 }
 
 function automated_news() {
-	global $currentlang, $db, $multilingual, $prefix;
+	$tags = [];
+    global $currentlang, $db, $multilingual, $prefix;
 	if ($multilingual == 1) {
 		$querylang = 'WHERE (`alanguage`=\'' . $currentlang . '\' OR `alanguage`=\'\')'; /* the OR is needed to display stories who are posted to ALL languages */
 	} else {
@@ -1405,7 +1413,8 @@ function automated_news() {
 }
 
 function public_message() {
-	global $admin, $broadcast_msg, $cookie, $db, $prefix, $p_msg, $user, $user_prefix;
+	$t_off = null;
+    global $admin, $broadcast_msg, $cookie, $db, $prefix, $p_msg, $user, $user_prefix;
 	if ($broadcast_msg == 1) {
 		if (is_user($user)) {
 			cookiedecode($user);
@@ -1459,7 +1468,7 @@ function public_message() {
 					} else {
 						$mid = base64_encode($mid);
 						$mid = addslashes($mid);
-						setcookie('p_msg', $mid, time() + 600);
+						setcookie('p_msg', $mid, ['expires' => time() + 600]);
 					}
 				}
 			}
@@ -1741,7 +1750,7 @@ function encode_mail($email) {
 	// From RavenPHPScripts
 	$strEncodedEmail = '';
 	for ($i=0; $i < strlen($email); ++$i) {
-		$n = rand(0, 1);
+		$n = random_int(0, 1);
 		if ($n) {
 			$strEncodedEmail .= '&#x'. sprintf("%X", ord($email[$i])) . ';';
 		} else {
@@ -1793,23 +1802,28 @@ function paid() {
  * Added for Advertizing module from v7.8
 */
 function makePass() {
-	$cons = 'bcdfghjklmnpqrstvwxyz';
+	$con = [];
+    $voc = [];
+    $cons = 'bcdfghjklmnpqrstvwxyz';
 	$vocs = 'aeiou';
 	for ($x=0; $x < 6; $x++) {
 		mt_srand ((double) microtime() * 1000000);
-		$con[$x] = substr($cons, mt_rand(0, strlen($cons) - 1), 1);
-		$voc[$x] = substr($vocs, mt_rand(0, strlen($vocs) - 1), 1);
+		$con[$x] = substr($cons, random_int(0, strlen($cons) - 1), 1);
+		$voc[$x] = substr($vocs, random_int(0, strlen($vocs) - 1), 1);
 	}
 	mt_srand((double)microtime() * 1000000);
-	$num1 = mt_rand(0, 9);
-	$num2 = mt_rand(0, 9);
+	$num1 = random_int(0, 9);
+	$num2 = random_int(0, 9);
 	$makepass = $con[0] . $voc[0] .$con[2] . $num1 . $num2 . $con[3] . $voc[3] . $con[4];
 	return($makepass);
 }
 
 //Should ads() function be in mainfile?
 function ads($position) {
-	global $admin, $adminmail, $db, $nukeurl, $prefix, $sitename;
+	$body = null;
+    $imagurl = null;
+    $img_url = null;
+    global $admin, $adminmail, $db, $nukeurl, $prefix, $sitename;
 	$position = intval($position);
 	if (paid()) {
 		return;
@@ -1819,7 +1833,7 @@ function ads($position) {
 	if ($numrows > 1) {
 		$numrows = $numrows - 1;
 		mt_srand((double)microtime() * 1000000);
-		$bannum = mt_rand(0, $numrows);
+		$bannum = random_int(0, $numrows);
 	} else {
 		$bannum = 0;
 	}
