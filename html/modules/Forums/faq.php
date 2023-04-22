@@ -18,6 +18,8 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:38 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 if ( !defined('MODULE_FILE') )
 {
@@ -114,7 +116,7 @@ $template->assign_vars(array(
 
 for($i = 0; $i < count($faq_block); $i++)
 {
-        if( count($faq_block[$i]) )
+        if( is_countable($faq_block[$i]) ? count($faq_block[$i]) : 0 )
         {
                 $template->assign_block_vars('faq_block', array(
                         'BLOCK_TITLE' => $faq_block_titles[$i])
@@ -123,7 +125,7 @@ for($i = 0; $i < count($faq_block); $i++)
                         'BLOCK_TITLE' => $faq_block_titles[$i])
                 );
 
-                for($j = 0; $j < count($faq_block[$i]); $j++)
+                for($j = 0; $j < (is_countable($faq_block[$i]) ? count($faq_block[$i]) : 0); $j++)
                 {
                         $row_color = ( !($j % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                         $row_class = ( !($j % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
