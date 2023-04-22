@@ -36,6 +36,12 @@
  * Unicode data and font methods for TCPDF library.
  * @author Nicola Asuni
  * @package com.tecnick.tcpdf
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:13 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ArraySpreadInsteadOfArrayMergeRector (https://wiki.php.net/rfc/spread_operator_for_array)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions) 
  */
 
 /**
@@ -70,7 +76,8 @@ class TCPDF_FONTS {
 	 * @public static
 	 */
 	public static function addTTFfont($fontfile, $fonttype='', $enc='', $flags=32, $outpath='', $platid=3, $encid=1, $addcbbox=false, $link=false) {
-		if (!TCPDF_STATIC::file_exists($fontfile)) {
+		$ctg = [];
+  if (!TCPDF_STATIC::file_exists($fontfile)) {
 			// Could not find file
 			return false;
 		}
@@ -109,7 +116,7 @@ class TCPDF_FONTS {
 			if (TCPDF_STATIC::_getULONG($font, 0) == 0x10000) {
 				// True Type (Unicode or not)
 				$fonttype = 'TrueTypeUnicode';
-			} elseif (substr($font, 0, 4) == 'OTTO') {
+			} elseif (str_starts_with($font, 'OTTO')) {
 				// Open Type (Unicode or not)
 				//Unsupported font format: OpenType with CFF data
 				return false;
@@ -1797,7 +1804,7 @@ class TCPDF_FONTS {
 			$start = 0;
 		}
 		if (strlen($end) == 0) {
-			$end = count($strarr);
+			$end = is_countable($strarr) ? count($strarr) : 0;
 		}
 		$string = '';
 		for ($i = $start; $i < $end; ++$i) {
@@ -1820,7 +1827,7 @@ class TCPDF_FONTS {
 			$start = 0;
 		}
 		if (strlen($end) == 0) {
-			$end = count($uniarr);
+			$end = is_countable($uniarr) ? count($uniarr) : 0;
 		}
 		$string = '';
 		for ($i=$start; $i < $end; ++$i) {
@@ -2111,7 +2118,7 @@ class TCPDF_FONTS {
 		}
 
 		// get number of chars
-		$numchars = count($ta);
+		$numchars = is_countable($ta) ? count($ta) : 0;
 
 		if ($forcertl == 'R') {
 			$pel = 1;
@@ -2625,7 +2632,7 @@ class TCPDF_FONTS {
 				} else {
 					if ($onlevel) {
 						$revarr = array_reverse($revarr);
-						$ordarray = array_merge($ordarray, $revarr);
+						$ordarray = [...$ordarray, ...$revarr];
 						$revarr = Array();
 						$onlevel = false;
 					}
@@ -2634,7 +2641,7 @@ class TCPDF_FONTS {
 			}
 			if ($onlevel) {
 				$revarr = array_reverse($revarr);
-				$ordarray = array_merge($ordarray, $revarr);
+				$ordarray = [...$ordarray, ...$revarr];
 			}
 			$chardata = $ordarray;
 		}
