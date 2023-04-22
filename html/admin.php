@@ -12,7 +12,11 @@
  * Copyright (c) 2002 by Francisco Burzi
  * http://phpnuke.org
  *
-*/
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 3:56 PM
+ * TernaryToNullCoalescingRector
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
 
 define('ADMIN_FILE', true);
 require_once 'mainfile.php';
@@ -52,7 +56,7 @@ create_first();
 if (isset($_POST['aid']) && isset($_POST['pwd']) && $op == 'login') {
 	$aid = substr($_POST['aid'], 0, 25);
 	$pwd = substr($_POST['pwd'], 0, 40);
-	$gfx_check = isset($_POST['gfx_check']) ? $_POST['gfx_check'] : '';
+	$gfx_check = $_POST['gfx_check'] ?? '';
 	if (!security_code_check($gfx_check, array(1,5,6,7))) {
 		login();
 		die();
@@ -64,7 +68,7 @@ if (isset($_POST['aid']) && isset($_POST['pwd']) && $op == 'login') {
 
 		if($rpwd == $pwd) {
 			$admin = base64_encode($aid . ':' . $pwd . ':' . $admlanguage);
-			setcookie('admin', $admin, time() + 2592000);
+			setcookie('admin', $admin, ['expires' => time() + 2592000]);
 			$op = 'adminMain';
 		}
 	}
@@ -110,7 +114,7 @@ if(!empty($admin) && is_admin($admin)) {
 			}
 			$casedir = dir('admin/case');
 			while($func=$casedir->read()) {
-				if(substr($func, 0, 5) == 'case.') {
+				if(str_starts_with($func, 'case.')) {
 					include_once $casedir->path . '/' . $func;
 				}
 			}
@@ -221,7 +225,7 @@ function GraphicAdmin() {
 			$linksdir = dir('admin/links');
 			$menulist = '';
 			while($func = $linksdir->read()) {
-				if(substr($func, 0, 6) == 'links.') {
+				if(str_starts_with($func, 'links.')) {
 					$menulist .= $func . ' ';
 				}
 			}
