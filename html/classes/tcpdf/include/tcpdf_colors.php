@@ -36,6 +36,11 @@
  * PHP color class for TCPDF
  * @author Nicola Asuni
  * @package com.tecnick.tcpdf
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:09 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
  */
 
 /**
@@ -254,7 +259,7 @@ class TCPDF_COLORS {
 		$color = strtolower($color);
 		if (isset(self::$spotcolor[$color])) {
 			if (!isset($spotc[$name])) {
-				$i = (1 + count($spotc));
+				$i = (1 + (is_countable($spotc) ? count($spotc) : 0));
 				$spotc[$name] = array('C' => self::$spotcolor[$color][0], 'M' => self::$spotcolor[$color][1], 'Y' => self::$spotcolor[$color][2], 'K' => self::$spotcolor[$color][3], 'name' => self::$spotcolor[$color][4], 'i' => $i);
 			}
 			return $spotc[self::$spotcolor[$color][4]];
@@ -306,7 +311,7 @@ class TCPDF_COLORS {
 				}
 				return $returncolor;
 			}
-		} elseif ((substr($color, 0, 4) != 'cmyk') AND (substr($color, 0, 3) != 'rgb') AND (($dotpos = strpos($color, '.')) !== false)) {
+		} elseif ((!str_starts_with($color, 'cmyk')) AND (!str_starts_with($color, 'rgb')) AND (($dotpos = strpos($color, '.')) !== false)) {
 			// remove class parent (i.e.: color.red)
 			$color = substr($color, ($dotpos + 1));
 			if ($color == 'transparent') {
@@ -318,7 +323,7 @@ class TCPDF_COLORS {
 			return $defcol;
 		}
 		// RGB ARRAY
-		if (substr($color, 0, 3) == 'rgb') {
+		if (str_starts_with($color, 'rgb')) {
 			$codes = substr($color, 4);
 			$codes = str_replace(')', '', $codes);
 			$returncolor = explode(',', $codes);
@@ -335,7 +340,7 @@ class TCPDF_COLORS {
 			return $returncolor;
 		}
 		// CMYK ARRAY
-		if (substr($color, 0, 4) == 'cmyk') {
+		if (str_starts_with($color, 'cmyk')) {
 			$codes = substr($color, 5);
 			$codes = str_replace(')', '', $codes);
 			$returncolor = explode(',', $codes);
@@ -444,7 +449,8 @@ class TCPDF_COLORS {
 	 * @public static
 	 */
 	public static function _JScolor($color) {
-		if (substr($color, 0, 1) == '#') {
+		$jscolor = [];
+  if (str_starts_with($color, '#')) {
 			return sprintf("['RGB',%F,%F,%F]", (hexdec(substr($color, 1, 2)) / 255), (hexdec(substr($color, 3, 2)) / 255), (hexdec(substr($color, 5, 2)) / 255));
 		}
 		if (!in_array($color, self::$jscolor)) {
