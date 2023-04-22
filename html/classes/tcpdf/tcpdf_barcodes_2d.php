@@ -38,6 +38,9 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.015
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:04 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
  */
 
 /**
@@ -191,7 +194,8 @@ class TCPDF2DBarcode {
  	 * @public
 	 */
 	public function getBarcodePngData($w=3, $h=3, $color=array(0,0,0)) {
-		// calculate image size
+		$bar = null;
+  // calculate image size
 		$width = ($this->barcode_array['num_cols'] * $w);
 		$height = ($this->barcode_array['num_rows'] * $h);
 		if (function_exists('imagecreate')) {
