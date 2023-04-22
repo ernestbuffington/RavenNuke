@@ -38,6 +38,9 @@
  * Try to automatically configure some TCPDF constants if not defined.
  * @package com.tecnick.tcpdf
  * @version 1.1.1
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 6:58 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
  */
 
 // DOCUMENT_ROOT fix for IIS Webserver
@@ -117,7 +120,7 @@ if (!defined('PDF_HEADER_LOGO_WIDTH')) {
 }
 
 if (!defined('K_PATH_CACHE')) {
-	$K_PATH_CACHE = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+	$K_PATH_CACHE = ini_get('upload_tmp_dir') ?: sys_get_temp_dir();
 	if (substr($K_PATH_CACHE, -1) != '/') {
 		$K_PATH_CACHE .= '/';
 	}
