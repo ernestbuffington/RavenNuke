@@ -38,6 +38,10 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.027
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:02 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
  */
 
 /**
@@ -190,7 +194,8 @@ class TCPDFBarcode {
  	 * @public
 	 */
 	public function getBarcodePngData($w=2, $h=30, $color=array(0,0,0)) {
-		// calculate image size
+		$bar = null;
+  // calculate image size
 		$width = ($this->barcode_array['maxw'] * $w);
 		$height = $h;
 		if (function_exists('imagecreate')) {
@@ -391,7 +396,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_code39($code, $extended=false, $checksum=false) {
-		$chr['0'] = '111331311';
+		$chr = [];
+  $chr['0'] = '111331311';
 		$chr['1'] = '311311113';
 		$chr['2'] = '113311113';
 		$chr['3'] = '313311111';
@@ -558,7 +564,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_code93($code) {
-		$chr[48] = '131112'; // 0
+		$chr = [];
+  $chr[48] = '131112'; // 0
 		$chr[49] = '111213'; // 1
 		$chr[50] = '111312'; // 2
 		$chr[51] = '111411'; // 3
@@ -761,7 +768,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_msi($code, $checksum=false) {
-		$chr['0'] = '100100100100';
+		$chr = [];
+  $chr['0'] = '100100100100';
 		$chr['1'] = '100100100110';
 		$chr['2'] = '100100110100';
 		$chr['3'] = '100100110110';
@@ -820,7 +828,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_s25($code, $checksum=false) {
-		$chr['0'] = '10101110111010';
+		$chr = [];
+  $chr['0'] = '10101110111010';
 		$chr['1'] = '11101010101110';
 		$chr['2'] = '10111010101110';
 		$chr['3'] = '11101110101010';
@@ -892,7 +901,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_i25($code, $checksum=false) {
-		$chr['0'] = '11221';
+		$chr = [];
+  $chr['0'] = '11221';
 		$chr['1'] = '21112';
 		$chr['2'] = '12112';
 		$chr['3'] = '22111';
@@ -956,7 +966,8 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function barcode_c128($code, $type='') {
-		$chr = array(
+		$startid = null;
+  $chr = array(
 			'212222', /* 00 */
 			'222122', /* 01 */
 			'222221', /* 02 */
@@ -1090,7 +1101,7 @@ class TCPDFBarcode {
 					if (($char_id >= 241) AND ($char_id <= 244)) {
 						$code_data[] = $fnc_a[$char_id];
 					} elseif (($char_id >= 0) AND ($char_id <= 95)) {
-						$code_data[] = strpos($keys_a, $char);
+						$code_data[] = strpos($keys_a, (string) $char);
 					} else {
 						return false;
 					}
@@ -1105,7 +1116,7 @@ class TCPDFBarcode {
 					if (($char_id >= 241) AND ($char_id <= 244)) {
 						$code_data[] = $fnc_b[$char_id];
 					} elseif (($char_id >= 32) AND ($char_id <= 127)) {
-						$code_data[] = strpos($keys_b, $char);
+						$code_data[] = strpos($keys_b, (string) $char);
 					} else {
 						return false;
 					}
@@ -1185,7 +1196,7 @@ class TCPDFBarcode {
 								if (($char_id >= 241) AND ($char_id <= 244)) {
 									$code_data[] = $fnc_a[$char_id];
 								} else {
-									$code_data[] = strpos($keys_a, $char);
+									$code_data[] = strpos($keys_a, (string) $char);
 								}
 							}
 							break;
@@ -1228,7 +1239,7 @@ class TCPDFBarcode {
 								if (($char_id >= 241) AND ($char_id <= 244)) {
 									$code_data[] = $fnc_b[$char_id];
 								} else {
-									$code_data[] = strpos($keys_b, $char);
+									$code_data[] = strpos($keys_b, (string) $char);
 								}
 							}
 							break;
