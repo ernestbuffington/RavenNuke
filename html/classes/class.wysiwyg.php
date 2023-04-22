@@ -7,6 +7,9 @@
 * @copyright (c) 2012 Raven Web Services, LLC
 * @link http://www.ravennuke.com
 * @license http://www.gnu.org/licenses/gpl.html GNU/GPL 3
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:32 PM
+* TernaryToNullCoalescingRector
 */
 
 /**
@@ -74,10 +77,10 @@ abstract class wysiwyg {
 	* Set default configuration options if passed.
 	*/
 	public function __construct($config = array()) {
-		$this->name = isset($config['name']) ? $config['name'] : $this->name;
-		$this->value = isset($config['value']) ? $config['value'] : $this->value;
-		$this->width = isset($config['width']) ? $config['width'] : $this->width;
-		$this->height = isset($config['height']) ? $config['height'] : $this->height;
+		$this->name = $config['name'] ?? $this->name;
+		$this->value = $config['value'] ?? $this->value;
+		$this->width = $config['width'] ?? $this->width;
+		$this->height = $config['height'] ?? $this->height;
 	}
 
 	/**
