@@ -38,6 +38,10 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.15
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:05 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TypedPropertyFromAssignsRector
  */
 
 // include class for decoding filters
@@ -57,7 +61,7 @@ class TCPDF_PARSER {
 	 * Raw content of the PDF document.
 	 * @private
 	 */
-	private $pdfdata = '';
+	private string $pdfdata = '';
 
 	/**
 	 * XREF data.
@@ -81,7 +85,7 @@ class TCPDF_PARSER {
 	 * Array of configuration parameters.
 	 * @private
 	 */
-	private $cfg = array(
+	private array $cfg = array(
 		'die_for_errors' => false,
 		'ignore_filter_decoding_errors' => true,
 		'ignore_missing_filter_decoders' => true,
@@ -167,7 +171,8 @@ class TCPDF_PARSER {
 	 * @since 1.0.000 (2011-05-24)
 	 */
 	protected function getXrefData($offset=0, $xref=array()) {
-		if ($offset == 0) {
+		$startxref = null;
+  if ($offset == 0) {
 			// find last startxref
 			if (preg_match_all('/[\r\n]startxref[\s]*[\r\n]+([0-9]+)[\s]*[\r\n]+%%EOF/i', $this->pdfdata, $matches, PREG_SET_ORDER, $offset) == 0) {
 				$this->Error('Unable to find startxref');
