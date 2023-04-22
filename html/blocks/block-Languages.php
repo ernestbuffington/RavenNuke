@@ -16,6 +16,10 @@
 /* XHTML compliance fixes by Raven and Montego.                         */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:42 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 if ( !defined('BLOCK_FILE') ) {
 	Header('Location: ../index.php');
 	die();
@@ -28,7 +32,7 @@ if ($multilingual == 1) {
 		$langdir = dir('language');
 		$menulist = '';
 		while($func=$langdir->read()) {
-			if(substr($func, 0, 5) == 'lang-') {
+			if(str_starts_with($func, 'lang-')) {
 				$menulist .= $func.' ';
 			}
 		}
