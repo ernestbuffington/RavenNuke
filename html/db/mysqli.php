@@ -8,7 +8,12 @@
  * @link http://www.ravennuke.com
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
-*/
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:19 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * TypedPropertyFromAssignsRector
+ * Remove STFU Operators
+ */
 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: ../index.php');
@@ -51,13 +56,13 @@ class sql_db extends mysqli {
 	public $qtime = 0;
 	public $preparedStatement;
 	public $parameters = '';
-	private $query_result;
-	private $stmt_obj;
+	private bool|\mysqli_result|null $query_result = null;
+	private ?\mysqli_stmt $stmt_obj = null;
 	private $row;
 	private $rowset;
-	private $file = '';
+	private string $file = '';
 	private $line = '';
-	private $varsBound = false;
+	private bool $varsBound = false;
 	private static $instance = false;
 
 	public $persistency;
@@ -91,9 +96,9 @@ class sql_db extends mysqli {
 		$this->display_errors = $GLOBALS['display_errors'];
 
 		if (version_compare(phpversion(), '5.3', '>=' ) && $this->persistency) {
-			@parent::__construct('p:' . $this->server, $this->user, $this->password);
+			parent::__construct('p:' . $this->server, $this->user, $this->password);
 		} else {
-			@parent::__construct($this->server, $this->user, $this->password);
+			parent::__construct($this->server, $this->user, $this->password);
 		}
 
 		/**
@@ -392,7 +397,8 @@ class sql_db extends mysqli {
 	* Returns an associative array of "message" and "code" for a failed query.
 	*/
 	public function sql_error() {
-		$result['message'] = $this->error;
+		$result = [];
+        $result['message'] = $this->error;
 		$result['code'] = $this->errno;
 		return $result;
 	}
@@ -569,7 +575,8 @@ class sql_db extends mysqli {
 	* Similar to mysqli_stmt_bind_param().
 	*/
 	public function bind_param() {
-		$numargs = func_num_args();
+		$params = [];
+        $numargs = func_num_args();
 		$arg_list = func_get_args();
 		if($this->loglevel > 1) {
 			for ($i = 1; $i < $numargs; $i++) {
@@ -587,9 +594,10 @@ class sql_db extends mysqli {
 	* This function automatically utilizes mysqli_stmt_store_result() and stores results if they are found.
 	*/
 	public function execute() {
-		$this->num_queries++;
+		$query = null;
+        $this->num_queries++;
 		if($this->loglevel > 1) {
-			$params = count($this->parameters);
+			$params = is_countable($this->parameters) ? count($this->parameters) : 0;
 			$query = '';
 			for($i = 0; $i < $params; $i++) {
 				$query .= preg_replace('/\?/', $this->parameters[$i], $this->preparedStatement, 1);
@@ -623,7 +631,7 @@ class sql_db extends mysqli {
 		} else {
 			$error = $this->sql_error();
 			if ($this->loglevel < 0) {
-				$params = count($this->parameters);
+				$params = is_countable($this->parameters) ? count($this->parameters) : 0;
 				$query = '';
 				for($i = 0; $i < $params; $i++) {
 					$query .= preg_replace('/\?/', $this->parameters[$i], $this->preparedStatement, 1);
@@ -655,7 +663,9 @@ class sql_db extends mysqli {
 	* </code>
 	*/
 	public function fetch_stmt_assoc() {
-		/**
+		$bindVarArray = [];
+        $results = [];
+       /**
 		* Checks to see if the variables have already been bound.
 		*/
 		if (!$this->varsBound) {
