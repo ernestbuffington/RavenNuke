@@ -38,6 +38,9 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.001
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:11 PM
+ * TypedPropertyFromAssignsRector
  */
 
 /**
@@ -54,7 +57,7 @@ class TCPDF_FILTERS {
 	 * Define a list of available filter decoders.
 	 * @private static
 	 */
-	private static $available_filters = array('ASCIIHexDecode', 'ASCII85Decode', 'LZWDecode', 'FlateDecode', 'RunLengthDecode');
+	private static array $available_filters = array('ASCIIHexDecode', 'ASCII85Decode', 'LZWDecode', 'FlateDecode', 'RunLengthDecode');
 
 // -----------------------------------------------------------------------------
 
