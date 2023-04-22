@@ -3,7 +3,12 @@
 	 * Script:    DataTables server-side script for PHP and MySQL (modified for RavenNuke)
 	 * Copyright: 2010 - Allan Jardine
 	 * License:   GPL v2 or BSD (3-point)
+	 *
+	 * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:06 PM
+     * CountOnNullRector (https://3v4l.org/Bndc9)
+     * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
 	 */
+	 
 if (!defined('MODULE_FILE') and !defined('DT_AJAXSOURCE')) {
 	header('Location: ../index.php');
 	die();
@@ -75,7 +80,7 @@ if (!defined('MODULE_FILE') and !defined('DT_AJAXSOURCE')) {
 	if ( $_GET['sSearch'] != "" )
 	{
 		$sWhere = "WHERE (";
-		for ( $i=0 ; $i<count($aColumns) ; $i++ )
+		for ( $i=0 ; $i<(is_countable($aColumns) ? count($aColumns) : 0) ; $i++ )
 		{
 			$sWhere .= $aColumns[$i]." LIKE '%".addslashes( $_GET['sSearch'] )."%' OR ";
 		}
@@ -84,7 +89,7 @@ if (!defined('MODULE_FILE') and !defined('DT_AJAXSOURCE')) {
 	}
 	
 	/* Individual column filtering */
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
+	for ( $i=0 ; $i<(is_countable($aColumns) ? count($aColumns) : 0) ; $i++ )
 	{
 		if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
 		{
@@ -145,7 +150,7 @@ if (!defined('MODULE_FILE') and !defined('DT_AJAXSOURCE')) {
 	while ( $aRow = $db->sql_fetchrow( $rResult ) )
 	{
 		$row = array();
-		for ( $i=0 ; $i<count($aColumns) ; $i++ )
+		for ( $i=0 ; $i<(is_countable($aColumns) ? count($aColumns) : 0) ; $i++ )
 		{
 			if ( $aColumns[$i] == "wltype" )
 			{
@@ -163,5 +168,5 @@ if (!defined('MODULE_FILE') and !defined('DT_AJAXSOURCE')) {
 		$output['aaData'][] = $row;
 	}
 	
-	echo json_encode( $output );
+	echo json_encode( $output, JSON_THROW_ON_ERROR );
 ?>
