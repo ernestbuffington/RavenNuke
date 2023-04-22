@@ -24,7 +24,11 @@ Notes         : GFX functions
 /***************************************************************************
  * RavenNuke76(tm) v2.10.00 Modifications                                  *
  * Raven - 10/19/2006 - Brought up to W3C standard for XHTML               *
+ *                                                                         *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:09 PM    *
+ * RandomFunctionRector                                                    *
  ***************************************************************************/
+ 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
@@ -41,12 +45,12 @@ function random_code($number) {
     $letters = range('a', 'z');
     for ($i=0; $i < $number; $i++) {
         mt_srand(crc32(microtime()));
-        $num = mt_rand(0,1);
+        $num = random_int(0,1);
         if ($num) {
             //Number 1 - 9
-            $out .= mt_rand(1, 9);
+            $out .= random_int(1, 9);
         } else {
-            $out .= $letters[mt_rand(0, 25)];
+            $out .= $letters[random_int(0, 25)];
         }
     }
     return $out;
