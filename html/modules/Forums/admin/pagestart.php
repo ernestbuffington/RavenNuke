@@ -25,14 +25,11 @@ if (!defined('IN_PHPBB')) {
 }
 
 $module_name = basename(dirname(dirname(__FILE__)));
+$phpbb_root_path = './../';
 define('IN_ADMIN', true);
 define('FORUM_ADMIN', true);
-define("PHPBB_ROOT_PATH", $phpbb_root_path);
-define("PHPBB_PHPEX", $phpEx);
-include_once '../../../mainfile.php';
-$phpbb_root_path = PHPBB_ROOT_PATH;
-$phpEx = PHPBB_PHPEX;
-include_once $phpbb_root_path . 'common.' . $phpEx;
+include(dirname(dirname(dirname(dirname(__FILE__)))) .  "/mainfile.php");
+include(NUKE_FORUMS_DIR.'common.php');
 
 //added for RN 2.4 - Palbin
 //CSRF protect has a frame breaker that disables iframes
