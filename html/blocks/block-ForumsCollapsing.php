@@ -84,6 +84,12 @@
 # 12/03/2004  : Added truncation to poster name and last replied name. #
 ########################################################################
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:39 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullCoalescingOperatorRector (https://wiki.php.net/rfc/null_coalesce_equal_operator)
+ */
+
 global $admin, $bgcolor1, $bgcolor2, $currentlang, $db, $language, $prefix, $sitename, $textcolor1, $textcolor2, $user, $userinfo, $user_prefix;
 
 if(!defined('IN_PHPBB')) define('IN_PHPBB', TRUE);
@@ -438,10 +444,10 @@ if (!function_exists('auth')) {
 			* and admin automatically have access to an ACL forum, similarly we assume admins meet an
 			* auth requirement of MOD
 			*/
-			for($k = 0; $k < count($f_access); $k++) {
+			for($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 				$value = $f_access[$k][$key];
 				$f_forum_id = $f_access[$k]['forum_id'];
-				$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
+				$u_access[$f_forum_id] ??= array();
 				switch( $value ) {
 					case AUTH_ALL:
 						$auth_user[$f_forum_id][$key] = TRUE;
@@ -468,10 +474,10 @@ if (!function_exists('auth')) {
 		/*
 		* Is user a moderator?
 		*/
-		for($k = 0; $k < count($f_access); $k++) {
+		for($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 			$f_forum_id = $f_access[$k]['forum_id'];
 
-			$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
+			$u_access[$f_forum_id] ??= array();
 			$auth_user[$f_forum_id]['auth_mod'] = auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin);
 		}
 
@@ -483,8 +489,8 @@ if (!function_exists('auth_check_user')) {
 	function auth_check_user($type, $key, $u_access, $is_admin) {
 		$auth_user = 0;
 
-		if ( count($u_access) ) {
-			for($j = 0; $j < count($u_access); $j++) {
+		if ( is_countable($u_access) ? count($u_access) : 0 ) {
+			for($j = 0; $j < (is_countable($u_access) ? count($u_access) : 0); $j++) {
 				$result = 0;
 				switch($type) {
 					case AUTH_ACL:
