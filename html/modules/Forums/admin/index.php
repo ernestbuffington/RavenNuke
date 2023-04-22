@@ -32,8 +32,8 @@ define('IN_PHPBB', 1);
 //
 $no_page_header = TRUE;
 $phpbb_root_path = "./../";
-require_once('./../extension.inc');
-require_once('./pagestart.' . $phpEx);
+require($phpbb_root_path . 'extension.inc');
+require('./pagestart.' . $phpEx);
 
 // ---------------
 // Begin functions
