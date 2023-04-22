@@ -24,7 +24,12 @@
  * @link        https://www.ravenphpscripts.com
  * @link        http://montegoscripts.com
  * @since       2.30.00
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 5:21 PM
+ * VarToPublicPropertyRector
+ * ArrayKeyFirstLastRector (https://tomasvotruba.com/blog/2018/08/16/whats-new-in-php-73-in-30-seconds-in-diffs/#2-first-and-last-array-key)
  */
+ 
 /**
  * Define key constants and variables for the entire package
  */
@@ -55,23 +60,23 @@ class Legal_DocTypes
 	 *
 	 * @var array
 	 */
-	var $docTypes = array();
+	public $docTypes = array();
 	/**
 	 * List of document titles associated with the type
 	 *
 	 * @var array
 	 */
-	var $docTypeText = array();
+	public $docTypeText = array();
 	/**
 	 * Various variables needed for normal operations - yes, I am lazy
 	 *
 	 * @var mixed
 	 */
-	var $numTypes = 0;
-	var $showContact = false;
-	var $lang = 'english';
-	var $modName = 'Legal';
-	var $labContact = _LGL_COM_CONTACTMENU;
+	public $numTypes = 0;
+	public $showContact = false;
+	public $lang = 'english';
+	public $modName = 'Legal';
+	public $labContact = _LGL_COM_CONTACTMENU;
 
 	/**
 	 * Class constructor
@@ -206,8 +211,7 @@ class Legal_DocTypes
 	{
 		$key = array_search($docType, $this->docTypes);
 		if (empty($docType) || $key === false) {
-			reset($this->docTypes);
-			return (int)key($this->docTypes);
+			return (int)array_key_first($this->docTypes);
 		}
 		return (int)$key;
 	}
