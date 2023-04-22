@@ -39,6 +39,13 @@
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.1.2
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 7:15 PM
+ * RandomFunctionRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * TypedPropertyFromAssignsRector
  */
 
 /**
@@ -55,7 +62,7 @@ class TCPDF_STATIC {
 	 * Current TCPDF version.
 	 * @private static
 	 */
-	private static $tcpdf_version = '6.3.5';
+	private static string $tcpdf_version = '6.3.5';
 
 	/**
 	 * String alias for total number of pages.
@@ -361,7 +368,7 @@ class TCPDF_STATIC {
 	public static function replacePageNumAliases($page, $replace, $diff=0) {
 		foreach ($replace as $rep) {
 			foreach ($rep[3] as $a) {
-				if (strpos($page, $a) !== false) {
+				if (strpos($page, (string) $a) !== false) {
 					$page = str_replace($a, $rep[0], $page);
 					$diff += ($rep[2] - $rep[1]);
 				}
@@ -405,7 +412,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function getRandomSeed($seed='') {
-		$rnd = uniqid(rand().microtime(true), true);
+		$rnd = uniqid(random_int(0, mt_getrandmax()).microtime(true), true);
 		if (function_exists('posix_getpid')) {
 			$rnd .= posix_getpid();
 		}
@@ -1260,7 +1267,7 @@ class TCPDF_STATIC {
 											break;
 										}
 										case '^=': {
-											if ($val == substr($dom[$key]['attribute'][$att], 0, strlen($val))) {
+											if (str_starts_with($dom[$key]['attribute'][$att], $val)) {
 												$valid = true;
 											}
 											break;
@@ -1789,7 +1796,7 @@ class TCPDF_STATIC {
 	 */
 	public static function pregSplit($pattern, $modifiers, $subject, $limit=NULL, $flags=NULL) {
 		// the bug only happens on PHP 5.2 when using the u modifier
-		if ((strpos($modifiers, 'u') === FALSE) OR (count(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY)) == 2)) {
+		if ((strpos($modifiers, 'u') === FALSE) OR ((is_countable(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY)) ? count(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY)) : 0) == 2)) {
 			return preg_split($pattern.$modifiers, $subject, $limit, $flags);
 		}
 		// preg_split is bugged - try alternative solution
@@ -1904,7 +1911,7 @@ class TCPDF_STATIC {
 		    && !empty($_SERVER['DOCUMENT_ROOT'])
 		    && ($_SERVER['DOCUMENT_ROOT'] !== '/')
 		) {
-		    $findroot = strpos($file, $_SERVER['DOCUMENT_ROOT']);
+		    $findroot = strpos($file, (string) $_SERVER['DOCUMENT_ROOT']);
 		    if (($findroot === false) || ($findroot > 1)) {
 			$alt[] = htmlspecialchars_decode(urldecode($_SERVER['DOCUMENT_ROOT'].$file));
 		    }
@@ -1929,7 +1936,7 @@ class TCPDF_STATIC {
 			$urldata = parse_url($url);
 			if (empty($urldata['query'])) {
 				$host = $protocol.'://'.$_SERVER['HTTP_HOST'];
-				if (strpos($url, $host) === 0) {
+				if (str_starts_with($url, $host)) {
 				    // convert URL to full server path
 				    $tmp = str_replace($host, $_SERVER['DOCUMENT_ROOT'], $url);
 				    $alt[] = htmlspecialchars_decode(urldecode($tmp));
@@ -2120,7 +2127,7 @@ class TCPDF_STATIC {
 		return $a['i'];
 	}
 
-	
+
 	/**
 	 * Array of page formats
 	 * measures are calculated in this way: (inches * 72) or (millimeters * 72 / 25.4)
