@@ -57,7 +57,12 @@
  * @package elfinder
  * @author Naoki Sawada
  * @license New BSD
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:24 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions) 
  */
+ 
 class elFinderPluginWatermark extends elFinderPlugin {
 
 	private $watermarkImgInfo = null;
@@ -93,7 +98,7 @@ class elFinderPluginWatermark extends elFinderPlugin {
 		$srcImgInfo = null;
 		if (extension_loaded('fileinfo') && function_exists('mime_content_type')) {
 			$mime = mime_content_type($src);
-			if (substr($mime, 0, 5) !== 'image') {
+			if (!str_starts_with($mime, 'image')) {
 				return false;
 			}
 		}
@@ -214,7 +219,9 @@ class elFinderPluginWatermark extends elFinderPlugin {
 	
 	private function watermarkPrint_gd($src, $watermark, $dest_x, $dest_y, $quality, $transparency, $watermarkImgInfo, $srcImgInfo, $opts) {
 		
-		$watermark_width = $watermarkImgInfo[0];
+		$oSrcImg = null;
+  $oWatermarkImg = null;
+  $watermark_width = $watermarkImgInfo[0];
 		$watermark_height = $watermarkImgInfo[1];
 				
 		$ermsg = '';
