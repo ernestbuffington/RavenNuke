@@ -14,6 +14,11 @@
 /* Additional code clean-up, performance enhancements, and W3C and      */
 /* XHTML compliance fixes by Raven and Montego.                         */
 /************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:44 PM
+ * BinaryOpBetweenNumberAndStringRector (https://3v4l.org/XPEEl)
+ */
+ 
 if (!defined('ADMIN_FILE')) {
 	die('Access Denied');
 }
@@ -1029,7 +1034,7 @@ function position_save($apid = 0, $ad_position_number, $ad_position_name, $posit
 function position_edit($apid) {
 	global $prefix, $db, $banners, $admin_file, $ad_admin_menu;
 	$apid = intval($apid);
-	if ($apid == '' AND $apid == 0) {
+	if ($apid == 0 AND $apid == 0) {
 		Header('Location: ' . $admin_file . '.php?op=ad_positions');
 		die();
 	}
