@@ -30,6 +30,10 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:01 PM
+ * TernaryToNullCoalescingRector
+ */
+
 if (!defined('MODULE_FILE'))
 {
    die('You can\'t access this file directly...');
@@ -52,7 +56,7 @@ CloseTable();
 echo '<br />';
 OpenTable();
 
-$source = isset($_POST['source']) ? $_POST['source'] : 'news';
+$source = $_POST['source'] ?? 'news';
 $factory = new RNComm_FormFactory($modPath);
 $form = $factory->create($source);
 $form->setFormAction('modules.php?name=' . $module_name);
