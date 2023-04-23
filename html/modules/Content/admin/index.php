@@ -18,6 +18,10 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:45 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */ 
 
 if (!defined('ADMIN_FILE')) { die('Access Denied'); }
 
@@ -721,6 +725,7 @@ function CPEditCat() {
 }
 
 function CPSaveCat() {
+$cp_filemove = null;
 global $prefix, $db, $admin_file, $module_name;
 
     $cid = intval($_POST['cid']);
@@ -961,6 +966,7 @@ global $prefix, $db, $admin_file;
 }
 
 function CPChangeStatus($pid, $active) {
+    $new_active = null;
     global $prefix, $db, $admin_file;
     if ($active == 1) {
         $new_active = 0;
