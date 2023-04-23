@@ -27,6 +27,12 @@
  * provide an interface to do quick locking/unlocking/moving/deleting of
  * topics via the moderator operations buttons on all of the viewtopic pages.
  */
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:58 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+  
 if ( !defined('MODULE_FILE') )
 {
 	die("You can't access this file directly...");
@@ -85,7 +91,7 @@ $unlock = ( isset($HTTP_POST_VARS['unlock']) ) ? TRUE : FALSE;
 
 if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
 {
-	$mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+	$mode = $HTTP_POST_VARS['mode'] ?? $HTTP_GET_VARS['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
@@ -245,10 +251,10 @@ switch( $mode )
 
                         include_once("modules/$module_name/includes/functions_search.php");
 
-			$topics = ( isset($HTTP_POST_VARS['topic_id_list']) ) ? $HTTP_POST_VARS['topic_id_list'] : array($topic_id);
+			$topics = $HTTP_POST_VARS['topic_id_list'] ?? array($topic_id);
 
 			$topic_id_sql = '';
-			for($i = 0; $i < count($topics); $i++)
+			for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 			{
 				$topic_id_sql .= ( ( !empty($topic_id_sql) ) ? ', ' : '' ) . intval($topics[$i]);
 			}
@@ -434,7 +440,7 @@ switch( $mode )
 			if ( isset($HTTP_POST_VARS['topic_id_list']) )
 			{
 				$topics = $HTTP_POST_VARS['topic_id_list'];
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
 				}
@@ -497,10 +503,10 @@ switch( $mode )
                         $db->sql_freeresult($result);
 			if ( $new_forum_id != $old_forum_id )
 			{
-				$topics = ( isset($HTTP_POST_VARS['topic_id_list']) ) ?  $HTTP_POST_VARS['topic_id_list'] : array($topic_id);
+				$topics = $HTTP_POST_VARS['topic_id_list'] ?? array($topic_id);
 
 				$topic_list = '';
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 				{
                                         $topic_list .= ( ( !empty($topic_list) ) ? ', ' : '' ) . intval($topics[$i]);
 				}
@@ -518,7 +524,7 @@ switch( $mode )
 				$row = $db->sql_fetchrowset($result);
                                 $db->sql_freeresult($result);
 
-				for($i = 0; $i < count($row); $i++)
+				for($i = 0; $i < (is_countable($row) ? count($row) : 0); $i++)
 				{
 					$topic_id = $row[$i]['topic_id'];
 
@@ -594,7 +600,7 @@ switch( $mode )
 			{
 				$topics = $HTTP_POST_VARS['topic_id_list'];
 
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
 				}
@@ -637,10 +643,10 @@ switch( $mode )
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = ( isset($HTTP_POST_VARS['topic_id_list']) ) ?  $HTTP_POST_VARS['topic_id_list'] : array($topic_id);
+		$topics = $HTTP_POST_VARS['topic_id_list'] ?? array($topic_id);
 
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 		{
 			$topic_id_sql .= ( ( $topic_id_sql != '' ) ? ', ' : '' ) . intval($topics[$i]);
 		}
@@ -682,10 +688,10 @@ switch( $mode )
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = ( isset($HTTP_POST_VARS['topic_id_list']) ) ?  $HTTP_POST_VARS['topic_id_list'] : array($topic_id);
+		$topics = $HTTP_POST_VARS['topic_id_list'] ?? array($topic_id);
 
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++)
 		{
 			$topic_id_sql .= ( ( !empty($topic_id_sql) ) ? ', ' : '' ) . intval($topics[$i]);
 		}
@@ -731,7 +737,7 @@ switch( $mode )
 		{
 			$posts = $HTTP_POST_VARS['post_id_list'];
 
-			for ($i = 0; $i < count($posts); $i++)
+			for ($i = 0; $i < (is_countable($posts) ? count($posts) : 0); $i++)
 			{
 				$post_id_sql .= (($post_id_sql != '') ? ', ' : '') . intval($posts[$i]);
 			}
@@ -974,7 +980,7 @@ switch( $mode )
 		$page_title = $lang['Mod_CP'];
                         include_once("modules/$module_name/includes/page_header.php");
 
-		$rdns_ip_num = ( isset($HTTP_GET_VARS['rdns']) ) ? $HTTP_GET_VARS['rdns'] : "";
+		$rdns_ip_num = $HTTP_GET_VARS['rdns'] ?? "";
 
 		if ( !$post_id )
 		{
