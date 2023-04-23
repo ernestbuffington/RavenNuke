@@ -19,6 +19,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:10 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+  
 if ( !defined('MODULE_FILE') )
 {
         die ("You can't access this file directly...");
@@ -76,7 +85,7 @@ if ( isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL]) )
 
                 if ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid']) || isset($HTTP_GET_VARS['sid']) )
                 {
-                        $session_id = isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid']) ? $HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid'] : $HTTP_GET_VARS['sid'];
+                        $session_id = $HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid'] ?? $HTTP_GET_VARS['sid'];
                         if (!preg_match('/^[A-Za-z0-9]*$/', $session_id))
                         {
                         $session_id = '';
@@ -563,7 +572,7 @@ if ( $userdata['session_logged_in'] )
                 $topic_last_read = $userdata['user_lastvisit'];
         }
 
-        if ( count($tracking_topics) >= 150 && empty($tracking_topics[$topic_id]) )
+        if ( (is_countable($tracking_topics) ? count($tracking_topics) : 0) >= 150 && empty($tracking_topics[$topic_id]) )
         {
                 asort($tracking_topics);
                 unset($tracking_topics[key($tracking_topics)]);
@@ -571,7 +580,7 @@ if ( $userdata['session_logged_in'] )
 
         $tracking_topics[$topic_id] = time();
 
-        setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+        setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), ['expires' => 0, 'path' => $board_config['cookie_path'], 'domain' => $board_config['cookie_domain'], 'secure' => $board_config['cookie_secure']]);
 }
 
 //
@@ -709,7 +718,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
         if ( $vote_info = $db->sql_fetchrowset($result) )
         {
                 $db->sql_freeresult($result);
-                $vote_options = count($vote_info);
+                $vote_options = is_countable($vote_info) ? count($vote_info) : 0;
 
                 $vote_id = $vote_info[0]['vote_id'];
                 $vote_title = $vote_info[0]['vote_text'];
@@ -728,7 +737,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
 
                 if ( isset($HTTP_GET_VARS['vote']) || isset($HTTP_POST_VARS['vote']) )
                 {
-                        $view_result = ( ( ( isset($HTTP_GET_VARS['vote']) ) ? $HTTP_GET_VARS['vote'] : $HTTP_POST_VARS['vote'] ) == 'viewresult' ) ? TRUE : 0;
+                        $view_result = ( ( $HTTP_GET_VARS['vote'] ?? $HTTP_POST_VARS['vote'] ) == 'viewresult' ) ? TRUE : 0;
                 }
                 else
                 {
@@ -751,7 +760,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
                         }
 
                         $vote_graphic = 0;
-                        $vote_graphic_max = count($images['voting_graphic']);
+                        $vote_graphic_max = is_countable($images['voting_graphic']) ? count($images['voting_graphic']) : 0;
 
                         for($i = 0; $i < $vote_options; $i++)
                         {
@@ -976,7 +985,7 @@ for($i = 0; $i < $total_posts; $i++)
                 if (( $postrow[$i]['user_website'] == "http:///") || ( $postrow[$i]['user_website'] == "http://")){
                     $postrow[$i]['user_website'] =  "";
                 }
-                if (($postrow[$i]['user_website'] != "" ) && (substr($postrow[$i]['user_website'],0, 7) != "http://")) {
+                if (($postrow[$i]['user_website'] != "" ) && (!str_starts_with($postrow[$i]['user_website'], "http://"))) {
                     $postrow[$i]['user_website'] = "http://".$postrow[$i]['user_website'];
                 }
 
@@ -1157,17 +1166,13 @@ for($i = 0; $i < $total_posts; $i++)
 			if ($user_sig != '') {
 				$user_sig = preg_replace_callback(
 					'#(?!<.*)(?<!\w)([A-Za-z0-9_-]+)(?!\w|[^<>]*>)#i',
-					function ($m1) use ($orig_word, $replacement_word) {
-						return preg_replace($orig_word, $replacement_word, $m1[1]);
-					},
+					fn($m1) => preg_replace($orig_word, $replacement_word, $m1[1]),
 					$user_sig
 				);
 			}
 			$message = preg_replace_callback(
 				'#(?!<.*)(?<!\w)([A-Za-z0-9_-]+)(?!\w|[^<>]*>)#i',
-				function ($m2) use ($orig_word, $replacement_word) {
-					return preg_replace($orig_word, $replacement_word, $m2[1]);
-				},
+				fn($m2) => preg_replace($orig_word, $replacement_word, $m2[1]),
 				$message
 			);
 		}
