@@ -14,6 +14,11 @@
 /*                           2003 chatserv                              */
 /*      http://www.nukefixes.com -- http://www.nukeresources.com        */
 /************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 02/23/2023 9:46 AM
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+ 
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 require_once 'mainfile.php';
 if (!isset($op)) $op = '';
@@ -117,7 +122,7 @@ if ($op == 'Reply') {
 		$longUrl = $gooarticleurl;
 		$apiKey = $googlapi;
 		$postData = array('longUrl' => $longUrl, 'key' => $apiKey);
-		$jsonData = json_encode($postData);
+		$jsonData = json_encode($postData, JSON_THROW_ON_ERROR);
 		$curlObj = curl_init();
 		curl_setopt($curlObj, CURLOPT_URL, 'https://www.googleapis.com/urlshortener/v1/url');
 		curl_setopt($curlObj, CURLOPT_RETURNTRANSFER, 1);
@@ -127,7 +132,7 @@ if ($op == 'Reply') {
 		curl_setopt($curlObj, CURLOPT_POST, 1);
 		curl_setopt($curlObj, CURLOPT_POSTFIELDS, $jsonData);
 		$response = curl_exec($curlObj);
-		$json = json_decode($response);
+		$json = json_decode($response, null, 512, JSON_THROW_ON_ERROR);
 		curl_close($curlObj);
 		$goourl = $json->id;
 		$endshort = '<div>Short URL: <input value="'.$goourl.'" id="goourl" name="'.$goourl.'" type="text" /></div>'; //Google short url
