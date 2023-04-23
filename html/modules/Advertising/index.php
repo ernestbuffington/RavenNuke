@@ -24,6 +24,11 @@
 // Google Page Rank Calculator script, please go to: http://www.GoogleCommunity.com
 // and download the latest and stand alone release.
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:46 PM
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+ 
 if (!defined('MODULE_FILE')) {
 	die('You can\'t access this file directly...');
 }
@@ -334,7 +339,7 @@ function client_valid($login, $pass) {
 		$row = $db->sql_fetchrow($result);
 		$cid = intval($row['cid']);
 		$info = base64_encode($cid . ':' . $login . ':' . $pass);
-		setcookie('client', $info, time() +3600);
+		setcookie('client', $info, ['expires' => time() +3600]);
 		Header('Location: modules.php?name=' . $module_name . '&op=client_home');
 	}
 }
@@ -518,7 +523,7 @@ function sitestats() {
 function strord($string) {
 	$j = strlen($string); // RN0000284 - moved this out of the for loop for performance
 	for ($i = 0;$i < $j;$i++) {
-		$result[$i] = ord($string{$i});
+		$result[$i] = ord($string[$i]);
 	}
 	return $result;
 }
