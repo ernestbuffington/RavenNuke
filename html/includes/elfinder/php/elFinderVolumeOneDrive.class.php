@@ -1,5 +1,13 @@
 <?php
-
+/* Applied rules: Ernest Alle Buffington (TheGhost) 8:58 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 elFinder::$netDrivers['onedrive'] = 'OneDrive';
 
 /**
@@ -23,17 +31,17 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
     /**
      * @var string The base URL for API requests
      **/
-    const API_URL = 'https://graph.microsoft.com/v1.0/me/drive/items/';
+    public const API_URL = 'https://graph.microsoft.com/v1.0/me/drive/items/';
 
     /**
      * @var string The base URL for authorization requests
      */
-    const AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+    public const AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
 
     /**
      * @var string The base URL for token requests
      */
-    const TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+    public const TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
 
     /**
      * OneDrive token object.
@@ -172,7 +180,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
         }
         curl_close($curl);
 
-        $decoded = json_decode($result);
+        $decoded = json_decode($result, null, 512, JSON_THROW_ON_ERROR);
 
         if (null === $decoded) {
             throw new \Exception('json_decode() failed');
@@ -235,7 +243,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
             }
             curl_close($curl);
 
-            $decoded = json_decode($result);
+            $decoded = json_decode($result, null, 512, JSON_THROW_ON_ERROR);
 
             if (!$decoded) {
                 throw new \Exception('json_decode() failed');
@@ -251,7 +259,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 );
 
             $this->session->set('OneDriveTokens', $token);
-            $this->options['accessToken'] = json_encode($token);
+            $this->options['accessToken'] = json_encode($token, JSON_THROW_ON_ERROR);
             $this->token = $token;
 
             if (!empty($this->options['netkey'])) {
@@ -329,7 +337,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
         if ($contents) {
             $res = elFinder::curlExec($curl);
         } else {
-            $result = json_decode(curl_exec($curl));
+            $result = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
             curl_close($curl);
             if (isset($result->value)) {
                 $res = $result->value;
@@ -404,9 +412,9 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
     {
         $stat = array();
 
-        $folder = isset($raw->folder) ? $raw->folder : null;
+        $folder = $raw->folder ?? null;
 
-        $stat['rev'] = isset($raw->id) ? $raw->id : 'root';
+        $stat['rev'] = $raw->id ?? 'root';
         $stat['name'] = $raw->name;
         if (isset($raw->lastModifiedDateTime)) {
             $stat['ts'] = strtotime($raw->lastModifiedDateTime);
@@ -515,7 +523,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => '{}',
             ));
-            $sess = json_decode(curl_exec($curl));
+            $sess = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
             curl_close($curl);
 
             if ($sess) {
@@ -548,7 +556,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                     ),
                 );
                 curl_setopt_array($curl, $options);
-                $sess = json_decode(curl_exec($curl));
+                $sess = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
                 curl_close($curl);
                 if ($sess) {
                     if (isset($sess->error)) {
@@ -682,7 +690,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 } catch (Exception $e) {
                     $out = array(
                             'node' => $options['id'],
-                            'json' => json_encode(array('error' => elFinder::ERROR_ACCESS_DENIED.' '.$e->getMessage())),
+                            'json' => json_encode(array('error' => elFinder::ERROR_ACCESS_DENIED.' '.$e->getMessage()), JSON_THROW_ON_ERROR),
                     );
 
                     return array('exit' => 'callback', 'out' => $out);
@@ -781,7 +789,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                     }
 
                     $folders = ['root' => 'My OneDrive'] + $folders;
-                    $folders = json_encode($folders);
+                    $folders = json_encode($folders, JSON_THROW_ON_ERROR);
 
                     $expires = empty($this->token->data->refresh_token) ? (int) $this->token->expires : 0;
                     $json = '{"protocol": "onedrive", "mode": "done", "folders": '.$folders.', "expires": '.$expires.'}';
@@ -798,7 +806,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
         }
 
         if ($_aToken = $this->session->get('OneDriveTokens')) {
-            $options['accessToken'] = json_encode($_aToken);
+            $options['accessToken'] = json_encode($_aToken, JSON_THROW_ON_ERROR);
         } else {
             $this->setError(elFinder::ERROR_NETMOUNT, $options['host'], implode(' ', $this->error()));
 
@@ -860,12 +868,13 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function init()
     {
+        $options = [];
         if (!$this->options['accessToken']) {
             return $this->setError('Required option `accessToken` is undefined.');
         }
 
         try {
-            $this->token = json_decode($this->options['accessToken']);
+            $this->token = json_decode($this->options['accessToken'], null, 512, JSON_THROW_ON_ERROR);
             $this->_od_refreshToken();
         } catch (Exception $e) {
             $this->token = null;
@@ -876,7 +885,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
 
         if (empty($options['netkey'])) {
             // make net mount key
-            $_tokenKey = isset($this->token->data->refresh_token) ? $this->token->data->refresh_token : $this->token->data->access_token;
+            $_tokenKey = $this->token->data->refresh_token ?? $this->token->data->access_token;
             $this->netMountKey = md5(implode('-', array('box', $this->options['path'], $_tokenKey)));
         } else {
             $this->netMountKey = $options['netkey'];
@@ -1032,9 +1041,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
 
         $path = $this->_copy($src, $dst, $name);
 
-        return $path
-            ? $path
-            : $this->setError(elFinder::ERROR_COPY, $this->_path($src));
+        return $path ?: $this->setError(elFinder::ERROR_COPY, $this->_path($src));
     }
 
     /**
@@ -1214,13 +1221,13 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 $curl = $this->_od_prepareCurl($url);
                 curl_setopt_array($curl, array(
                     CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => json_encode($data),
+                    CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
                 ));
 
                 $result = curl_exec($curl);
                 curl_close($curl);
                 if ($result) {
-                    $result = json_decode($result);
+                    $result = json_decode($result, null, 512, JSON_THROW_ON_ERROR);
                     if (isset($result->link)) {
                         list(, $res) = explode('?', $result->link->webUrl);
                         $res = 'https://onedrive.live.com/download.aspx?'.$res;
@@ -1360,7 +1367,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function _inpath($path, $parent)
     {
-        return $path == $parent || strpos($path, $parent.'/') === 0;
+        return $path == $parent || str_starts_with($path, $parent.'/');
     }
 
     /***************** file stat ********************/
@@ -1429,7 +1436,8 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function _dimensions($path, $mime)
     {
-        if (strpos($mime, 'image') !== 0) {
+        $cache = [];
+        if (!str_starts_with($mime, 'image')) {
             return '';
         }
 
@@ -1502,9 +1510,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function _scandir($path)
     {
-        return isset($this->dirsCache[$path])
-            ? $this->dirsCache[$path]
-            : $this->cacheDir($path);
+        return $this->dirsCache[$path] ?? $this->cacheDir($path);
     }
 
     /**
@@ -1580,13 +1586,13 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
 
             curl_setopt_array($curl, array(
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
             ));
 
             //create the Folder in the Parent
             $result = curl_exec($curl);
             curl_close($curl);
-            $folder = json_decode($result);
+            $folder = json_decode($result, null, 512, JSON_THROW_ON_ERROR);
 
             return $this->_joinPath($path, $folder->id);
         } catch (Exception $e) {
@@ -1664,7 +1670,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                        'Authorization: Bearer '.$this->token->data->access_token,
                     'Prefer: respond-async',
                 ),
-                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
             ));
             $result = curl_exec($curl);
             curl_close($curl);
@@ -1681,7 +1687,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                             'Content-Type: application/json',
                         ),
                     ));
-                    $res = json_decode(curl_exec($curl));
+                    $res = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
                     curl_close($curl);
                     if (isset($res->status)) {
                         if ($res->status === 'completed' || $res->status === 'failed') {
@@ -1741,10 +1747,10 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
 
             curl_setopt_array($curl, array(
                     CURLOPT_CUSTOMREQUEST => 'PATCH',
-                    CURLOPT_POSTFIELDS => json_encode($data),
+                    CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
                 ));
 
-            $result = json_decode(curl_exec($curl));
+            $result = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
             curl_close($curl);
             if ($result && isset($result->id)) {
                 return $targetDir.'/'.$result->id;
@@ -1828,7 +1834,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 if (isset($stat['name'])) {
                     $name = $stat['name'];
                 }
-                if (isset($stat['rev']) && strpos($stat['hash'], $this->id) === 0) {
+                if (isset($stat['rev']) && str_starts_with($stat['hash'], $this->id)) {
                     $itemId = $stat['rev'];
                 }
             }
@@ -1871,7 +1877,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
             curl_setopt_array($curl, $options);
 
             //create or update File in the Target
-            $file = json_decode(curl_exec($curl));
+            $file = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
             curl_close($curl);
 
             return $this->_joinPath($parent, $file->id);
