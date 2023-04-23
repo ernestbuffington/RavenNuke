@@ -26,6 +26,10 @@
 
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:36 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 function source2doc($filename)
 {
   define('endl',"\n");
@@ -138,7 +142,7 @@ function source2doc($filename)
     $html .= '</tr>' . endl;
   }
 
-  for($i=0; $i < count($vname) ; $i++)
+  for($i=0; $i < (is_countable($vname) ? count($vname) : 0) ; $i++)
   {
     $html .= '<tr>' . endl;
 
@@ -169,7 +173,7 @@ function source2doc($filename)
   $funcname = $func[1];
   $funccomment = $func[0];
 
-  for($i=0; $i < count($funcname) ; $i++)
+  for($i=0; $i < (is_countable($funcname) ? count($funcname) : 0) ; $i++)
   {
     $html .= '<tr>' . endl;
     $html .= '<td bgcolor="#33ff99" colspan="2">' . endl;
