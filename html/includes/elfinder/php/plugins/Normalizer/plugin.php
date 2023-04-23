@@ -56,11 +56,16 @@
  * @package elfinder
  * @author Naoki Sawada
  * @license New BSD
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:22 PM
+ * TernaryToNullCoalescingRector
+ * TypedPropertyFromAssignsRector 
  */
+ 
 class elFinderPluginNormalizer extends elFinderPlugin
 {
-	private $replaced = array();
-	private $keyMap = array(
+	private array $replaced = array();
+	private array $keyMap = array(
 		'ls' => 'intersect',
 		'upload' => 'renames'
 	);
@@ -84,7 +89,7 @@ class elFinderPluginNormalizer extends elFinderPlugin
 			return false;
 		}
 		$this->replaced[$cmd] = array();
-		$key = (isset($this->keyMap[$cmd]))? $this->keyMap[$cmd] : 'name';
+		$key = $this->keyMap[$cmd] ?? 'name';
 		
 		if (isset($args[$key])) {
 			if (is_array($args[$key])) {
