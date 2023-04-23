@@ -8,11 +8,20 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost( 04/22/2023 9:40 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
   
 if ( !function_exists('getServerTime') )
 {
   function getServerTime()
   {
+    $user = null;
+    $user_prefix = null;
+    $db = null;
     // Calculate posting time offset for user defined timezones
     $serverTimeZone = date("Z")/3600;
     if ($serverTimeZone >= 0) $serverTimeZone = "+".$serverTimeZone;
@@ -34,22 +43,22 @@ if ( !function_exists('getServerTime') )
 
 class seocontentclass 
 {
-  var $query;
-  var $name;
-  var $sql_table_with_prefix;
-  var $sql_col_id;
-  var $sql_col_title;
-  var $sql_col_desc;
-  var $sql_col_desc2;
-  var $sql_col_time;
-  var $sql_col_catid;
-  var $sql_col_author;
-  var $sql_where_cols;
-  var $activeWhere;
-  var $orderArray;
-  var $orderSQLArray;
-  var $levelArray;
-  var $levelSQLArray;
+  public $query;
+  public $name;
+  public $sql_table_with_prefix;
+  public $sql_col_id;
+  public $sql_col_title;
+  public $sql_col_desc;
+  public $sql_col_desc2;
+  public $sql_col_time;
+  public $sql_col_catid;
+  public $sql_col_author;
+  public $sql_where_cols;
+  public $activeWhere;
+  public $orderArray;
+  public $orderSQLArray;
+  public $levelArray;
+  public $levelSQLArray;
 
   function tablesExist()
   {
@@ -81,7 +90,7 @@ class seocontentclass
     $q = $this->query[0][1];
     foreach ($q as $query){
       $wheretext = '('.$this->sql_where_cols[0].' like \'%'.$query.'%\')';
-      for ($i = 1,$x=count($this->sql_where_cols);$i<$x;$i++){
+      for ($i = 1,$x=is_countable($this->sql_where_cols) ? count($this->sql_where_cols) : 0;$i<$x;$i++){
         $wheretext .= ' OR (`'.$this->sql_where_cols[$i].'` like \'%'.$query.'%\')';}
       $db->sql_query('INSERT INTO '.$tblname.' 
                      (`id`, `relevance`, `date`, `title`, `rid`, `desc`, `author`, `searchmodule`)
