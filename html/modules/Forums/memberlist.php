@@ -19,6 +19,10 @@
  *
  ***************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:57 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ */
+
 define('IN_PHPBB', true);
 $phpbb_root_path = './';
 include_once($phpbb_root_path . 'extension.inc');
@@ -161,7 +165,7 @@ if ( $row = $db->sql_fetchrow($result) )
 
 		$from = ( !empty($row['user_from']) ) ? $row['user_from'] : '&nbsp;';
 		$joined = create_date($lang['DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']);
-		$posts = ( $row['user_posts'] ) ? $row['user_posts'] : 0;
+		$posts = $row['user_posts'] ?: 0;
 
 		$poster_avatar = '';
 		if ( $row['user_avatar_type'] && $user_id != ANONYMOUS && $row['user_allowavatar'] )
