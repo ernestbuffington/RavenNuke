@@ -8,6 +8,11 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:20 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Remove STFU Operators
+ */
+ 
 /**
 * All Attachment Functions needed to determine Special Files/Dimensions
 */
@@ -57,7 +62,11 @@ function read_byte($fp)
 */
 function image_getdimension($file)
 {
-	$size = @getimagesize($file);
+	$xmax = null;
+ $xmin = null;
+ $ymax = null;
+ $ymin = null;
+ $size = getimagesize($file);
 
 	if ($size[0] != 0 || $size[1] != 0)
 	{
@@ -65,7 +74,7 @@ function image_getdimension($file)
 	}
 
 	// Try to get the Dimension manually, depending on the mimetype
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 	if (!$fp)
 	{
 		return $size;
@@ -136,7 +145,7 @@ function image_getdimension($file)
 
 	// GIF - IMAGE
 
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 
 	$tmp_str = fread($fp, 3);
 	
@@ -181,7 +190,7 @@ function image_getdimension($file)
 	fclose($fp);
 
 	// JPG - IMAGE
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 
 	$tmp_str = fread($fp, 4);
 	$w1 = read_word($fp);
@@ -245,7 +254,7 @@ function image_getdimension($file)
 
 	// PCX - IMAGE
 
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 
 	$tmp_str = fread($fp, 3);
 	
@@ -349,7 +358,7 @@ function swf_decompress($buffer)
 */
 function swf_getdimension($file)
 {
-	$size = @getimagesize($file);
+	$size = getimagesize($file);
 
 	if ($size[0] != 0 || $size[1] != 0)
 	{
@@ -357,7 +366,7 @@ function swf_getdimension($file)
 	}
 
 	// Try to get the Dimension manually
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 	if (!$fp)
 	{
 		return $size;
@@ -366,7 +375,7 @@ function swf_getdimension($file)
 	$error = false;
 
 	// SWF - FLASH FILE
-	$fp = @fopen($file, 'rb');
+	$fp = fopen($file, 'rb');
 
 	// Decompress if file is a Flash MX compressed file
 	$buffer = fread($fp, 1024);
@@ -376,7 +385,7 @@ function swf_getdimension($file)
 		if (substr($buffer, 0, 3) == swf_tag_compressed)
 		{
 			fclose($fp);
-			$fp = @fopen($file, 'rb');
+			$fp = fopen($file, 'rb');
 			$buffer = fread($fp, filesize($file));
 			$buffer = swf_decompress($buffer);
 		}
