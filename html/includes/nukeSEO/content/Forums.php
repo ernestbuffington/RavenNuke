@@ -9,6 +9,13 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:09 PM
+ * PregReplaceEModifierRector (https://wiki.php.net/rfc/remove_preg_replace_eval_modifier https://stackoverflow.com/q/19245205/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ * Remove STFU Operators
+ */
+ 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: ../../../index.php');
 	exit('Access Denied');
@@ -17,7 +24,8 @@ define('IN_PHPBB',TRUE);
 
 function bbcode2HTML($topic_content, $bbcode_uid, $cid)
 {
-	global $db, $prefix, $user_ip, $nukeuser, $user_prefix, $theme, $name, $phpbb_root_path, $board_config, $nukeurl, $userdata, $lang, $phpEx;
+	$topic_title = null;
+ global $db, $prefix, $user_ip, $nukeuser, $user_prefix, $theme, $name, $phpbb_root_path, $board_config, $nukeurl, $userdata, $lang, $phpEx;
   $savename = $name;
   $module_name = $name = 'Forums';
   $nuke_root_path = $nukeurl.'modules.php?name='.$module_name;
@@ -55,7 +63,7 @@ function bbcode2HTML($topic_content, $bbcode_uid, $cid)
   $topic_content = bbencode_second_pass($topic_content, $bbcode_uid, $cid);
   $topic_content = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($topic_content, $bbcode_uid, $cid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $topic_content);
   if ( $board_config['allow_smilies']) $topic_content = smilies_pass($topic_content);
-  $topic_content = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $topic_content . '<'), 1, -1));
+  $topic_content = str_replace('\"', '"', substr(preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', fn($matches) => preg_replace($orig_word, $replacement_word, $matches[0]), '>' . $topic_content . '<'), 1, -1));
   $topic_content = str_replace("\n", "\n<br />\n", $topic_content);
   return $topic_content;
 }
