@@ -38,6 +38,11 @@
 #
 #########################################################################
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:06 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+
 global $allowedentitynames;
 /**
  * @var string[] $allowedentitynames Array of KSES allowed HTML entitity names.
@@ -432,12 +437,12 @@ function kses_split2( $string, $allowed_html, $allowed_protocols ) {
 	$string = kses_stripslashes( $string );
 
 	// It matched a ">" character.
-	if ( substr( $string, 0, 1 ) != '<' ) {
+	if ( !str_starts_with($string, '<') ) {
 		return '&gt;';
 	}
 
 	// Allow HTML comments.
-	if ( '<!--' == substr( $string, 0, 4 ) ) {
+	if ( str_starts_with($string, '<!--') ) {
 		$string = str_replace( array( '<!--', '-->' ), '', $string );
 		while ( $string != ( $newstring = kses( $string, $allowed_html, $allowed_protocols ) ) ) {
 			$string = $newstring;
@@ -501,7 +506,7 @@ function kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
         $xhtml_slash = ' /';
 
     // Are any attributes allowed at all for this element?
-    if ( ! isset($allowed_html[strtolower($element)]) || count($allowed_html[strtolower($element)]) == 0 )
+    if ( ! isset($allowed_html[strtolower($element)]) || (is_countable($allowed_html[strtolower($element)]) ? count($allowed_html[strtolower($element)]) : 0) == 0 )
         return "<$element$xhtml_slash>";
 
     // Split it
