@@ -31,14 +31,19 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:53 PM
+ * VarToPublicPropertyRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+
 class RNComm_Combo
 {
-   var $items;
-   var $selKey;
-   var $enabled = true;
-   var $onChange = '';
-   var $attrs = array();
-   var $titles = array();
+   public $items;
+   public $selKey;
+   public $enabled = true;
+   public $onChange = '';
+   public $attrs = array();
+   public $titles = array();
 
    function __construct($name, $items, $selKey = '')
    {
@@ -52,7 +57,7 @@ class RNComm_Combo
       }
       else  // pick first key in items array
       {
-         $this->selKey = count($this->items) > 0 ? key($this->items) : '';
+         $this->selKey = (is_countable($this->items) ? count($this->items) : 0) > 0 ? key($this->items) : '';
       }
    }
 
