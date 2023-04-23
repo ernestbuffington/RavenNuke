@@ -8,6 +8,10 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:28 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+
 /**
 */
 if ( !defined('IN_PHPBB') )
@@ -32,7 +36,7 @@ function display_compile_cache_clear($filename, $template_var)
 	if (isset($template->cachedir))
 	{
 		$filename = str_replace($template->root, '', $filename);
-		if (substr($filename, 0, 1) == '/')
+		if (str_starts_with($filename, '/'))
 		{
 			$filename = substr($filename, 1, strlen($filename));
 		}
@@ -97,7 +101,7 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 	}
 
 	$complete_filename = $filename;
-	if (substr($complete_filename, 0, 1) != '/')
+	if (!str_starts_with($complete_filename, '/'))
 	{
 		$complete_filename = $template->root . '/' . $complete_filename;
 	}
