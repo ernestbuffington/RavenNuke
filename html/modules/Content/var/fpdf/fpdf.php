@@ -9,6 +9,16 @@
 * You may use, modify and redistribute this software as you wish.              *
 *******************************************************************************/
 
+/* Applied rules: Ernest Allen Buffinton (TheGhost) 04/22/2023 11:27 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+
 // Modified by Renato A.C. [html2fpdf.sf.net]
 // (look for 'EDITEI' in the code)
 
@@ -19,69 +29,69 @@ define('FPDF_VERSION','1.52');
 class FPDF
 {
 //Private properties
-var $DisplayPreferences=''; //EDITEI - added
-var $outlines=array(); //EDITEI - added
-var $OutlineRoot; //EDITEI - added
-var $flowingBlockAttr; //EDITEI - added
-var $page;               //current page number
-var $n;                  //current object number
-var $offsets;            //array of object offsets
-var $buffer;             //buffer holding in-memory PDF
-var $pages;              //array containing pages
-var $state;              //current document state
-var $compress;           //compression flag
-var $DefOrientation;     //default orientation
-var $CurOrientation;     //current orientation
-var $OrientationChanges; //array indicating orientation changes
-var $k;                  //scale factor (number of points in user unit)
-var $fwPt,$fhPt;         //dimensions of page format in points
-var $fw,$fh;             //dimensions of page format in user unit
-var $wPt,$hPt;           //current dimensions of page in points
-var $w,$h;               //current dimensions of page in user unit
-var $lMargin;            //left margin
-var $tMargin;            //top margin
-var $rMargin;            //right margin
-var $bMargin;            //page break margin
-var $cMargin;            //cell margin
-var $x,$y;               //current position in user unit for cell positioning
-var $lasth;              //height of last cell printed
-var $LineWidth;          //line width in user unit
-var $CoreFonts;          //array of standard font names
-var $fonts;              //array of used fonts
-var $FontFiles;          //array of font files
-var $diffs;              //array of encoding differences
-var $images;             //array of used images
-var $PageLinks;          //array of links in pages
-var $links;              //array of internal links
-var $FontFamily;         //current font family
-var $FontStyle;          //current font style
-var $underline;          //underlining flag
-var $CurrentFont;        //current font info
-var $FontSizePt;         //current font size in points
-var $FontSize;           //current font size in user unit
-var $DrawColor;          //commands for drawing color
-var $FillColor;          //commands for filling color
-var $TextColor;          //commands for text color
-var $ColorFlag;          //indicates whether fill and text colors are different
-var $ws;                 //word spacing
-var $AutoPageBreak;      //automatic page breaking
-var $PageBreakTrigger;   //threshold used to trigger page breaks
-var $InFooter;           //flag set when processing footer
-var $ZoomMode;           //zoom display mode
-var $LayoutMode;         //layout display mode
-var $title;              //title
-var $subject;            //subject
-var $author;             //author
-var $keywords;           //keywords
-var $creator;            //creator
-var $AliasNbPages;       //alias for total number of pages
+public $DisplayPreferences=''; //EDITEI - added
+public $outlines=array(); //EDITEI - added
+public $OutlineRoot; //EDITEI - added
+public $flowingBlockAttr; //EDITEI - added
+public $page;               //current page number
+public $n;                  //current object number
+public $offsets;            //array of object offsets
+public $buffer;             //buffer holding in-memory PDF
+public $pages;              //array containing pages
+public $state;              //current document state
+public $compress;           //compression flag
+public $DefOrientation;     //default orientation
+public $CurOrientation;     //current orientation
+public $OrientationChanges; //array indicating orientation changes
+public $k;                  //scale factor (number of points in user unit)
+public $fwPt,$fhPt;         //dimensions of page format in points
+public $fw,$fh;             //dimensions of page format in user unit
+public $wPt,$hPt;           //current dimensions of page in points
+public $w,$h;               //current dimensions of page in user unit
+public $lMargin;            //left margin
+public $tMargin;            //top margin
+public $rMargin;            //right margin
+public $bMargin;            //page break margin
+public $cMargin;            //cell margin
+public $x,$y;               //current position in user unit for cell positioning
+public $lasth;              //height of last cell printed
+public $LineWidth;          //line width in user unit
+public $CoreFonts;          //array of standard font names
+public $fonts;              //array of used fonts
+public $FontFiles;          //array of font files
+public $diffs;              //array of encoding differences
+public $images;             //array of used images
+public $PageLinks;          //array of links in pages
+public $links;              //array of internal links
+public $FontFamily;         //current font family
+public $FontStyle;          //current font style
+public $underline;          //underlining flag
+public $CurrentFont;        //current font info
+public $FontSizePt;         //current font size in points
+public $FontSize;           //current font size in user unit
+public $DrawColor;          //commands for drawing color
+public $FillColor;          //commands for filling color
+public $TextColor;          //commands for text color
+public $ColorFlag;          //indicates whether fill and text colors are different
+public $ws;                 //word spacing
+public $AutoPageBreak;      //automatic page breaking
+public $PageBreakTrigger;   //threshold used to trigger page breaks
+public $InFooter;           //flag set when processing footer
+public $ZoomMode;           //zoom display mode
+public $LayoutMode;         //layout display mode
+public $title;              //title
+public $subject;            //subject
+public $author;             //author
+public $keywords;           //keywords
+public $creator;            //creator
+public $AliasNbPages;       //alias for total number of pages
 
 /*******************************************************************************
 *                                                                              *
 *                               Public methods                                 *
 *                                                                              *
 *******************************************************************************/
-function FPDF($orientation='P',$unit='mm',$format='A4')
+function __construct($orientation='P',$unit='mm',$format='A4')
 {
 	//Some checks
 	$this->_dochecks();
@@ -401,7 +411,7 @@ function GetStringWidth($s)
 	$cw=&$this->CurrentFont['cw'];
 	$w=0;
 	$l=strlen($s);
-	for($i=0;$i<$l;$i++) $w+=$cw[$s{$i}];
+	for($i=0;$i<$l;$i++) $w+=$cw[$s[$i]];
 	return $w*$this->FontSize/1000;
 }
 
@@ -429,7 +439,9 @@ function Rect($x,$y,$w,$h,$style='')
 
 function AddFont($family,$style='',$file='')
 {
-	//Add a TrueType or Type1 font
+	$diff = null;
+ $type = null;
+ //Add a TrueType or Type1 font
 	$family=strtolower($family);
 	if($family=='arial') $family='helvetica';
 	$style=strtoupper($style);
@@ -439,13 +451,13 @@ function AddFont($family,$style='',$file='')
 	if(defined('FPDF_FONTPATH')) $file=FPDF_FONTPATH.$file;
 	include($file);
 	if(!isset($name))	$this->Error('Could not include font definition file');
-	$i=count($this->fonts)+1;
+	$i=(is_countable($this->fonts) ? count($this->fonts) : 0)+1;
 	$this->fonts[$family.$style]=array('i'=>$i,'type'=>$type,'name'=>$name,'desc'=>$desc,'up'=>$up,'ut'=>$ut,'cw'=>$cw,'enc'=>$enc,'file'=>$file);
 	if($diff)
 	{
 		//Search existing encodings
 		$d=0;
-		$nb=count($this->diffs);
+		$nb=is_countable($this->diffs) ? count($this->diffs) : 0;
 		for($i=1;$i<=$nb;$i++)
 			if($this->diffs[$i]==$diff)
 			{
@@ -507,7 +519,7 @@ function SetFont($family,$style='',$size=0)
 				include($file);
 				if(!isset($fpdf_charwidths[$fontkey])) $this->Error('Could not include font metric file');
 			}
-			$i=count($this->fonts)+1;
+			$i=(is_countable($this->fonts) ? count($this->fonts) : 0)+1;
 			$this->fonts[$fontkey]=array('i'=>$i,'type'=>'core','name'=>$this->CoreFonts[$fontkey],'up'=>-100,'ut'=>50,'cw'=>$fpdf_charwidths[$fontkey]);
 		}
 		else $this->Error('Undefined font: '.$family.' '.$style);
@@ -535,7 +547,7 @@ function SetFontSize($size)
 function AddLink()
 {
 	//Create a new internal link
-	$n=count($this->links)+1;
+	$n=(is_countable($this->links) ? count($this->links) : 0)+1;
 	$this->links[$n]=array(0,0);
 	return $n;
 }
@@ -666,7 +678,8 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='',$curren
 //EDITEI
 function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0,$link='')
 {
-	//Output text with automatic or explicit line breaks
+	$ls = null;
+ //Output text with automatic or explicit line breaks
 	$cw=&$this->CurrentFont['cw'];
 	if($w==0)	$w=$this->w-$this->rMargin-$this->x;
 	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -699,7 +712,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0,$link='')
 	while($i<$nb)
 	{
 		//Get next character
-		$c=$s{$i};
+		$c=$s[$i];
 		if($c=="\n")
 		{
 			//Explicit line break
@@ -784,7 +797,7 @@ function Write($h,$txt,$currentx=0,$link='') //EDITEI
 	while($i<$nb)
 	{
 		//Get next character
-		$c=$s{$i};
+		$c=$s[$i];
 		if($c=="\n")
 		{
 			//Explicit line break
@@ -942,7 +955,7 @@ function finishFlowingBlock($outofblock=false)
    $empty = $maxWidth - $contentWidth;
    $empty /= $this->k;
    $b = ''; //do not use borders
-   $arraysize = count($content);
+   $arraysize = is_countable($content) ? count($content) : 0;
    $margins = (2*$this->cMargin);
    if ($outofblock)
    {
@@ -960,7 +973,7 @@ function finishFlowingBlock($outofblock=false)
               // determine which borders should be used
               $b = '';
               if ( $lineCount == 1 && is_int( strpos( $border, 'T' ) ) ) $b .= 'T';
-              if ( $k == count( $content ) - 1 && is_int( strpos( $border, 'R' ) ) ) $b .= 'R';
+              if ( $k == (is_countable($content) ? count( $content ) : 0) - 1 && is_int( strpos( $border, 'R' ) ) ) $b .= 'R';
 
               if ($k == $arraysize-1 and !$outofblock) $skipln = 1;
               else $skipln = 0;
@@ -1035,7 +1048,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
     $font[] = $this->saveFont();
     $content[] = '';
 
-    $currContent =& $content[ count( $content ) - 1 ];
+    $currContent =& $content[ (is_countable($content) ? count( $content ) : 0) - 1 ];
 
     // where the line should be cutoff if it is to be justified
     $cutoffWidth = $contentWidth;
@@ -1044,7 +1057,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
     for ( $i = 0; $i < strlen( $s ); $i++ )
     {
        // extract the current character
-       $c = $s{$i};
+       $c = $s[$i];
        // get the width of the character in points
        $cw = $this->CurrentFont[ 'cw' ][ $c ] * ( $this->FontSizePt / 1000 );
 
@@ -1135,7 +1148,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
 			         $this->_out(sprintf('%.3f Tw',$ws));
             	}
 	         }
-           $arraysize = count($content);
+           $arraysize = is_countable($content) ? count($content) : 0;
            $margins = (2*$this->cMargin);
            if ($outofblock)
            {
@@ -1153,7 +1166,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
                      // determine which borders should be used
                      $b = '';
                      if ( $lineCount == 1 && is_int( strpos( $border, 'T' ) ) ) $b .= 'T';
-                     if ( $k == count( $content ) - 1 && is_int( strpos( $border, 'R' ) ) ) $b .= 'R';
+                     if ( $k == (is_countable($content) ? count( $content ) : 0) - 1 && is_int( strpos( $border, 'R' ) ) ) $b .= 'R';
 
                      if ($arraysize == 1) $this->Cell( $stringWidth + $margins + $empty, $lineHeight, $chunk, $b, 1, $align, $fill, $this->HREF , $currentx ); //mono-style line
                      elseif ($k == 0) $this->Cell( $stringWidth + ($margins/2) + $empty, $lineHeight, $chunk, $b, 0, 'R', $fill, $this->HREF );//first part
@@ -1211,7 +1224,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
            // move on to the next line, reset variables, tack on saved content and current char
            $this->restoreFont( $savedFont );
            $font = array( $savedFont );
-           $content = array( $savedContent . $s{ $i } );
+           $content = array( $savedContent . $s[$i] );
 
            $currContent =& $content[ 0 ];
            $contentWidth = $this->GetStringWidth( $currContent ) * $this->k;
@@ -1221,7 +1234,7 @@ function WriteFlowingBlock( $s , $outofblock = false )
        else
        {
            $contentWidth += $cw;
-           $currContent .= $s{ $i };
+           $currContent .= $s[$i];
        }
     }
 }
@@ -1359,7 +1372,9 @@ function Ellipse($x,$y,$rx,$ry,$style='D')
 
 function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$paint=true)
 {
-	//Put an image on the page
+	$tMargin = null;
+ $sizesarray = [];
+ //Put an image on the page
 	if(!isset($this->images[$file]))
 	{
 		//First use of image, get info
@@ -1383,7 +1398,7 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$paint=true)
 			$info=$this->$mtd($file);
 		}
 		@ini_set('magic_quotes_runtime', $mqr);
-		$info['i']=count($this->images)+1;
+		$info['i']=(is_countable($this->images) ? count($this->images) : 0)+1;
 		$this->images[$file]=$info;
 	}
 	else $info=$this->images[$file];
@@ -1901,47 +1916,46 @@ function _putimages()
 {
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	reset($this->images);
-	while(list($file,$info)=each($this->images))
-	{
-		$this->_newobj();
-		$this->images[$file]['n']=$this->n;
-		$this->_out('<</Type /XObject');
-		$this->_out('/Subtype /Image');
-		$this->_out('/Width '.$info['w']);
-		$this->_out('/Height '.$info['h']);
-		if($info['cs']=='Indexed')
-			$this->_out('/ColorSpace [/Indexed /DeviceRGB '.(strlen($info['pal'])/3-1).' '.($this->n+1).' 0 R]');
-		else
-		{
-			$this->_out('/ColorSpace /'.$info['cs']);
-			if($info['cs']=='DeviceCMYK')
-				$this->_out('/Decode [1 0 1 0 1 0 1 0]');
-		}
-		$this->_out('/BitsPerComponent '.$info['bpc']);
-		$this->_out('/Filter /'.$info['f']);
-		if(isset($info['parms']))
-			$this->_out($info['parms']);
-		if(isset($info['trns']) and is_array($info['trns']))
-		{
-			$trns='';
-			for($i=0;$i<count($info['trns']);$i++)
-				$trns.=$info['trns'][$i].' '.$info['trns'][$i].' ';
-			$this->_out('/Mask ['.$trns.']');
-		}
-		$this->_out('/Length '.strlen($info['data']).'>>');
-		$this->_putstream($info['data']);
-		unset($this->images[$file]['data']);
-		$this->_out('endobj');
-		//Palette
-		if($info['cs']=='Indexed')
-		{
-			$this->_newobj();
-			$pal=($this->compress) ? gzcompress($info['pal']) : $info['pal'];
-			$this->_out('<<'.$filter.'/Length '.strlen($pal).'>>');
-			$this->_putstream($pal);
-			$this->_out('endobj');
-		}
-	}
+	foreach ($this->images as $file => $info) {
+     $this->_newobj();
+     $this->images[$file]['n']=$this->n;
+     $this->_out('<</Type /XObject');
+     $this->_out('/Subtype /Image');
+     $this->_out('/Width '.$info['w']);
+     $this->_out('/Height '.$info['h']);
+     if($info['cs']=='Indexed')
+   			$this->_out('/ColorSpace [/Indexed /DeviceRGB '.(strlen($info['pal'])/3-1).' '.($this->n+1).' 0 R]');
+   		else
+   		{
+   			$this->_out('/ColorSpace /'.$info['cs']);
+   			if($info['cs']=='DeviceCMYK')
+   				$this->_out('/Decode [1 0 1 0 1 0 1 0]');
+   		}
+     $this->_out('/BitsPerComponent '.$info['bpc']);
+     $this->_out('/Filter /'.$info['f']);
+     if(isset($info['parms']))
+   			$this->_out($info['parms']);
+     if(isset($info['trns']) and is_array($info['trns']))
+   		{
+   			$trns='';
+   			for($i=0;$i<count($info['trns']);$i++)
+   				$trns.=$info['trns'][$i].' '.$info['trns'][$i].' ';
+   			$this->_out('/Mask ['.$trns.']');
+   		}
+     $this->_out('/Length '.strlen($info['data']).'>>');
+     $this->_putstream($info['data']);
+     unset($this->images[$file]['data']);
+     $this->_out('endobj');
+     //Palette
+     if($info['cs']=='Indexed')
+   		{
+   			$this->_newobj();
+   			$pal=($this->compress) ? gzcompress($info['pal']) : $info['pal'];
+   			$this->_out('<<'.$filter.'/Length '.strlen($pal).'>>');
+   			$this->_putstream($pal);
+   			$this->_out('endobj');
+   		}
+ }
 }
 
 function _putresources()
@@ -1956,7 +1970,7 @@ function _putresources()
 	foreach($this->fonts as $font)
 		$this->_out('/F'.$font['i'].' '.$font['n'].' 0 R');
 	$this->_out('>>');
-	if(count($this->images))
+	if(is_countable($this->images) ? count($this->images) : 0)
 	{
 		$this->_out('/XObject <<');
 		foreach($this->images as $image)
@@ -2069,7 +2083,7 @@ function _beginpage($orientation)
 		$orientation=$this->DefOrientation;
 	else
 	{
-		$orientation=strtoupper($orientation{0});
+		$orientation=strtoupper($orientation[0]);
 		if($orientation!=$this->DefOrientation)
 			$this->OrientationChanges[$this->page]=true;
 	}
@@ -2132,7 +2146,7 @@ function _parsejpg($file)
 		$colspace='DeviceCMYK';
 	else
 		$colspace='DeviceGray';
-	$bpc=isset($a['bits']) ? $a['bits'] : 8;
+	$bpc=$a['bits'] ?? 8;
 	//Read whole file
 	$f=fopen($file,'rb');
 	$data='';
@@ -2144,7 +2158,8 @@ function _parsejpg($file)
 
 function _parsepng($file)
 {
-	//Extract info from a PNG file
+	$colspace = null;
+ //Extract info from a PNG file
 	$f=fopen($file,'rb');
 	//Extract info from a PNG file
 	if(!$f)	$this->Error('Can\'t open image file: '.$file);
@@ -2212,7 +2227,8 @@ function _parsepng($file)
 
 function _parsegif($file) //EDITEI - GIF support is now included
 {
-	//Function by Jérôme Fenal
+	$bgColor = null;
+ //Function by Jérôme Fenal
 	require_once(RELATIVE_PATH.'gif.php'); //GIF class in pure PHP from Yamasoft (http://www.yamasoft.com/php-gif.zip)
 
 	$h=0;
