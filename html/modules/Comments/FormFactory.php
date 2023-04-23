@@ -31,10 +31,14 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:58 PM
+ * VarToPublicPropertyRector
+ */
+
 class RNComm_FormFactory
 {
-   var $modPath;              // path for this module
-   var $modules = array();    // array of active modules to check comments for
+   public $modPath;              // path for this module
+   public $modules = array();    // array of active modules to check comments for
 
    // constructor:
    function __construct($path)
