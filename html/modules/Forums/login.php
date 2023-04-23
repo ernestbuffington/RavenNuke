@@ -19,6 +19,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:55 PM
+ * TernaryToNullCoalescingRector
+ */
+ 
 if ( !defined('MODULE_FILE') )
 {
     die ('You can\'t access this file directly...');
@@ -60,7 +65,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 	if( ( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) ) && (!$userdata['session_logged_in'] || isset($HTTP_POST_VARS['admin'])) )
 	{
 		$username = isset($HTTP_POST_VARS['username']) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
-		$password = isset($HTTP_POST_VARS['password']) ? $HTTP_POST_VARS['password'] : '';
+		$password = $HTTP_POST_VARS['password'] ?? '';
 
 		$sql = 'SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try
 			FROM ' . USERS_TABLE . "
