@@ -11,19 +11,22 @@
 *    GNU General Public License for more details. 
 * 
 *    http://www.gnu.org/licenses/gpl.txt 
-* 
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:33 PM
+* VarToPublicPropertyRector
+* CountOnNullRector (https://3v4l.org/Bndc9) 
 */ 
 
 class CLinkedSelect
 { 
-    var $formName;
-    var $primaryFieldName;
-    var $secondaryFieldName;
-    var $secondaryFieldValue;
-    var $thirdFieldName;
-    var $thirdFieldValue;
-	  var $fieldValues;
-	  var $selectedPrimary;
+    public $formName;
+    public $primaryFieldName;
+    public $secondaryFieldName;
+    public $secondaryFieldValue;
+    public $thirdFieldName;
+    public $thirdFieldValue;
+	  public $fieldValues;
+	  public $selectedPrimary;
      
     function __construct() 
     {
@@ -72,7 +75,7 @@ function <?php print ($this->get_function_name ()); ?> (code_item)
 		$this->_safe_set ($list["items2"], array ());
 ?>
 	if (document.<?php print ($this->formName); ?>.<?php print ($this->primaryFieldName); ?>.options[primary_field_index].value == '<?php print ($list["value"]); ?>') {
-		document.<?php print ($this->formName); ?>.<?php print ($this->secondaryFieldName); ?>.length = <?php print (count ($list["items"])); ?>;
+		document.<?php print ($this->formName); ?>.<?php print ($this->secondaryFieldName); ?>.length = <?php print (is_countable($list["items"]) ? count ($list["items"]) : 0); ?>;
 <?php 
 		$i = 0;
 		foreach ($list["items"] as $value => $text) 
@@ -84,7 +87,7 @@ function <?php print ($this->get_function_name ()); ?> (code_item)
 			$i++;
 		}  // foreach ($items as $item) 
 ?>		
-		document.<?php print ($this->formName); ?>.<?php print ($this->thirdFieldName); ?>.length = <?php print (count ($list["items2"])); ?>;
+		document.<?php print ($this->formName); ?>.<?php print ($this->thirdFieldName); ?>.length = <?php print (is_countable($list["items2"]) ? count ($list["items2"]) : 0); ?>;
 <?php 
 		$i = 0;
 		foreach ($list["items2"] as $value => $text) 
