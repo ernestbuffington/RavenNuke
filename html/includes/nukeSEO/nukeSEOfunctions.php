@@ -9,6 +9,12 @@
 * the Free Software Foundation; either version 2 of the License.
 *************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:38 PM
+ * PregReplaceEModifierRector (https://wiki.php.net/rfc/remove_preg_replace_eval_modifier https://stackoverflow.com/q/19245205/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ */
+
 if ( !function_exists('htmlspecialchars_decode') )
 {
    function htmlspecialchars_decode($text)
@@ -22,8 +28,8 @@ if ( !function_exists('html_entities_decode') )
     function html_entities_decode($string) 
     {
         // replace numeric entities
-        $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-        $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
+        $string = preg_replace_callback('~&#x([0-9a-f]+);~i', fn($matches) => chr(hexdec("\x01")), $string);
+        $string = preg_replace_callback('~&#([0-9]+);~', fn($matches) => chr($matches[1]), $string);
         // replace literal entities
         $trans_tbl = get_html_translation_table(HTML_ENTITIES);
         $trans_tbl = array_flip($trans_tbl);
@@ -133,6 +139,7 @@ if ( !function_exists('seoGetContentTypes') )
 {
   function seoGetContentTypes($selText, $naText)
   {
+    $values = [];
     global $cFContent, $subItems, $subItems2;
     $value = array (
         'value' => '', 
