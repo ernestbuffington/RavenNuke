@@ -30,10 +30,14 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:00 PM
+ * VarToPublicPropertyRector
+ */
+
 class RNComm_HtmlList
 {
-   var $items = array();
-   var $ordered;
+   public $items = array();
+   public $ordered;
 
    function __construct($items = array(), $ordered = false)
    {
