@@ -1,5 +1,12 @@
 <?php
-
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:46 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * TypedPropertyFromAssignsRector
+ */
+ 
 use \Kunnu\Dropbox\DropboxApp;
 use \Kunnu\Dropbox\Dropbox;
 use \Kunnu\Dropbox\DropboxFile;
@@ -38,7 +45,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      *
      * @var string
      */
-    private $FETCH_OPTIONS = [];
+    private array $FETCH_OPTIONS = [];
 
     /**
      * Directory for tmp files
@@ -256,13 +263,13 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
             'Content-Type: application/json',
             'Authorization: Basic '.$auth,
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_THROW_ON_ERROR));
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $res = $result ? json_decode($result, true) : [];
+        $res = $result ? json_decode($result, true, 512, JSON_THROW_ON_ERROR) : [];
 
-        return isset($res['oauth2_token']) ? $res['oauth2_token'] : false;
+        return $res['oauth2_token'] ?? false;
     }
 
     /*********************************************************************/
@@ -392,7 +399,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
                     }
 
                     $folders = ['/' => '/'] + $folders;
-                    $folders = json_encode($folders);
+                    $folders = json_encode($folders, JSON_THROW_ON_ERROR);
                     $json = '{"protocol": "dropbox2", "mode": "done", "folders": '.$folders.'}';
                     $options['pass'] = 'return';
                     $html = 'Dropbox.com';
@@ -473,6 +480,8 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      **/
     protected function init()
     {
+        $options = [];
+        $errors = [];
         if (empty($options['app_key'])) {
             if (defined('ELFINDER_DROPBOX_APPKEY') && ELFINDER_DROPBOX_APPKEY) {
                 $this->options['app_key'] = ELFINDER_DROPBOX_APPKEY;
@@ -1021,7 +1030,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      **/
     protected function _inpath($path, $parent)
     {
-        return $path == $parent || strpos($path, $parent.'/') === 0;
+        return $path == $parent || str_starts_with($path, $parent.'/');
     }
 
     /***************** file stat ********************/
@@ -1099,7 +1108,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      **/
     protected function _dimensions($path, $mime)
     {
-        if (strpos($mime, 'image') !== 0) {
+        if (!str_starts_with($mime, 'image')) {
             return '';
         }
         $ret = '';
@@ -1133,9 +1142,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      **/
     protected function _scandir($path)
     {
-        return isset($this->dirsCache[$path])
-            ? $this->dirsCache[$path]
-            : $this->cacheDir($path);
+        return $this->dirsCache[$path] ?? $this->cacheDir($path);
     }
 
     /**
