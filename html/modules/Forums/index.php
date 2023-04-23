@@ -20,6 +20,11 @@
  *
  ***************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:54 PM
+ * TernaryToNullCoalescingRector
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ */
+
 if ( !defined('MODULE_FILE') )
 {
 	die("You can't access this file directly...");
@@ -50,7 +55,7 @@ $viewcat = ( !empty($HTTP_GET_VARS[POST_CAT_URL]) ) ? $HTTP_GET_VARS[POST_CAT_UR
 
 if( isset($HTTP_GET_VARS['mark']) || isset($HTTP_POST_VARS['mark']) )
 {
-        $mark_read = ( isset($HTTP_POST_VARS['mark']) ) ? $HTTP_POST_VARS['mark'] : $HTTP_GET_VARS['mark'];
+        $mark_read = $HTTP_POST_VARS['mark'] ?? $HTTP_GET_VARS['mark'];
 }
 else
 {
@@ -64,7 +69,7 @@ if( $mark_read == 'forums' )
 {
         if( $userdata['session_logged_in'] )
         {
-                setcookie($board_config['cookie_name'] . '_f_all', time(), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+                setcookie($board_config['cookie_name'] . '_f_all', time(), ['expires' => 0, 'path' => $board_config['cookie_path'], 'domain' => $board_config['cookie_domain'], 'secure' => $board_config['cookie_secure']]);
         }
 
         $template->assign_vars(array(
