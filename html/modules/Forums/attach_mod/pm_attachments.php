@@ -8,6 +8,11 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington 04/22/2023
+ * VarToPublicPropertyRector
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ */
+
 /**
 */
 if ( !defined('IN_PHPBB') )
@@ -22,12 +27,12 @@ if ( !defined('IN_PHPBB') )
 */
 class attach_pm extends attach_parent
 {
-	var $pm_delete_attachments = false;
+	public $pm_delete_attachments = false;
 
 	/**
 	* Constructor
 	*/
-	function attach_pm()
+	function __construct()
 	{
 		global $HTTP_POST_VARS;
 
