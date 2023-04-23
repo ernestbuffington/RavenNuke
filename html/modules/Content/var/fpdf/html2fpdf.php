@@ -36,8 +36,8 @@ TODO (in the future...):
 // HTML2FPDF is a php script to read a HTML text and generate a PDF file.   //
 // Copyright (C) 2004-2005 Renato Coelho                                    //
 // This script may be distributed as long as the following files are kept   //
-// together: 								                                                //
-//	                          					                                    //
+// together: 								                                //
+//	                          					                            //
 // fpdf.php, html2fpdf.php, gif.php,htmltoolkit.php,license.txt,credits.txt //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
@@ -57,6 +57,16 @@ Perl:  '/regexp/x'  where x == option ( x = i:ignore case , x = s: DOT gets \n a
 ========================END OF INITIAL COMMENTS=================================
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:32 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ * NullCoalescingOperatorRector (https://wiki.php.net/rfc/null_coalesce_equal_operator)
+ */
+ 
 define('HTML2FPDF_VERSION','3.0(beta)');
 if (!defined('RELATIVE_PATH')) define('RELATIVE_PATH','');
 if (!defined('FPDF_FONTPATH')) define('FPDF_FONTPATH','font/');
@@ -67,90 +77,90 @@ require_once(RELATIVE_PATH.'htmltoolkit.php');
 class HTML2FPDF extends FPDF
 {
   //internal attributes
-  var $HREF; //! string
-  var $pgwidth; //! float
-  var $fontlist; //! array 
-  var $issetfont; //! bool
-  var $issetcolor; //! bool
-  var $titulo; //! string
-  var $oldx; //! float
-  var $oldy; //! float
-  var $B; //! int
-  var $U; //! int
-  var $I; //! int
+  public $HREF; //! string
+  public $pgwidth; //! float
+  public $fontlist; //! array 
+  public $issetfont; //! bool
+  public $issetcolor; //! bool
+  public $titulo; //! string
+  public $oldx; //! float
+  public $oldy; //! float
+  public $B; //! int
+  public $U; //! int
+  public $I; //! int
 
-  var $tablestart; //! bool
-  var $tdbegin; //! bool
-  var $table; //! array
-  var $cell; //! array 
-  var $col; //! int
-  var $row; //! int
+  public $tablestart; //! bool
+  public $tdbegin; //! bool
+  public $table; //! array
+  public $cell; //! array 
+  public $col; //! int
+  public $row; //! int
 
-  var $divbegin; //! bool
-  var $divalign; //! char
-  var $divwidth; //! float
-  var $divheight; //! float
-  var $divbgcolor; //! bool
-  var $divcolor; //! bool
-  var $divborder; //! int
-  var $divrevert; //! bool
+  public $divbegin; //! bool
+  public $divalign; //! char
+  public $divwidth; //! float
+  public $divheight; //! float
+  public $divbgcolor; //! bool
+  public $divcolor; //! bool
+  public $divborder; //! int
+  public $divrevert; //! bool
 
-  var $listlvl; //! int
-  var $listnum; //! int
-  var $listtype; //! string
+  public $listlvl; //! int
+  public $listnum; //! int
+  public $listtype; //! string
   //array(lvl,# of occurrences)
-  var $listoccur; //! array
+  public $listoccur; //! array
   //array(lvl,occurrence,type,maxnum)
-  var $listlist; //! array
+  public $listlist; //! array
   //array(lvl,num,content,type)
-  var $listitem; //! array
+  public $listitem; //! array
 
-  var $buffer_on; //! bool
-  var $pbegin; //! bool
-  var $pjustfinished; //! bool
-  var $blockjustfinished; //! bool
-  var $SUP; //! bool
-  var $SUB; //! bool
-  var $toupper; //! bool
-  var $tolower; //! bool
-  var $dash_on; //! bool
-  var $dotted_on; //! bool
-  var $strike; //! bool
+  public $buffer_on; //! bool
+  public $pbegin; //! bool
+  public $pjustfinished; //! bool
+  public $blockjustfinished; //! bool
+  public $SUP; //! bool
+  public $SUB; //! bool
+  public $toupper; //! bool
+  public $tolower; //! bool
+  public $dash_on; //! bool
+  public $dotted_on; //! bool
+  public $strike; //! bool
 
-  var $CSS; //! array
-  var $CSSbackup;        //! array
-  var $CSSbackupTag;     //! array
-  var $CSSbackupChanged; //! array
-  var $CSSproperties; //! array
-  var $textbuffer; //! array
-  var	$currentstyle; //! string
-  var $currentfont; //! string
-  var $colorarray; //! array
-  var $bgcolorarray; //! array
-  var $internallink; //! array
-  var $enabledtags; //! string
-  var $isdisplay; //! bool  When false, do not display current tags.
+  public $CSS; //! array
+  public $CSSbackup;        //! array
+  public $CSSbackupTag;     //! array
+  public $CSSbackupChanged; //! array
+  public $CSSproperties; //! array
+  public $textbuffer; //! array
+  public $currentstyle; //! string
+  public $currentfont; //! string
+  public $colorarray; //! array
+  public $bgcolorarray; //! array
+  public $internallink; //! array
+  public $enabledtags; //! string
+  public $isdisplay; //! bool  When false, do not display current tags.
 
-  var $lineheight; //! int
-  var $urlbasepath; //! string
-  var $urllevels; // !int The URL depth to the filebasepath
-  var $filebasepath; //! string
-  var $basepath; //! string
+  public $lineheight; //! int
+  public $urlbasepath; //! string
+  public $urllevels; // !int The URL depth to the filebasepath
+  public $filebasepath; //! string
+  public $basepath; //! string
   // array('COLOR','WIDTH','OLDWIDTH')
-  var $outlineparam; //! array
-  var $outline_on; //! bool
+  public $outlineparam; //! array
+  public $outline_on; //! bool
 
-  var $specialcontent; //! string
-  var $selectoption; //! array
+  public $specialcontent; //! string
+  public $selectoption; //! array
 
   //options attributes
-  var $usecss; //! bool
-  var $usepre; //! bool
-  var $usetableheader; //! bool
-  var $shownoimg; //! bool
-  var $debug_str; //! string
+  public $usecss; //! bool
+  public $usepre; //! bool
+  public $usetableheader; //! bool
+  public $shownoimg; //! bool
+  public $debug_str; //! string
 
-  function HTML2FPDF($orientation='P',$unit='mm',$format='A4')
+  function __construct($orientation='P',$unit='mm',$format='A4')
   {
   //! @desc Constructor
   //! @return An object (a class instance)
@@ -227,7 +237,7 @@ class HTML2FPDF extends FPDF
 
     $this->urlbasepath = "";
     $this->filebasepath = "";
-    
+
     $this->outlineparam = array();
     $this->outline_on = false;
 
@@ -374,8 +384,8 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   function SetCSSonEndOfOpenTag($tag) {
     //! @desc Check if the Tag just opened should be closed immediately.
     //! @return void
-    if(count($this->CSSbackupTag)>0) { 
-      $ltag=$this->CSSbackupTag[count($this->CSSbackupTag)-1];
+    if((is_countable($this->CSSbackupTag) ? count($this->CSSbackupTag) : 0)>0) { 
+      $ltag=$this->CSSbackupTag[(is_countable($this->CSSbackupTag) ? count($this->CSSbackupTag) : 0)-1];
 //      $this->debug("Test old:${ltag} <br>");
       //////////////////////////////////////////////////
       // TODO: Verify this list of tags without endtags
@@ -394,14 +404,15 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
     //! @desc Indicate that the CSS changed and a revert will be needed
     //! @return void
     $this->debug("Change of CSS<br>");
-    $this->CSSbackupChanged[count($this->CSSbackupChanged)-1]=1;
+    $this->CSSbackupChanged[(is_countable($this->CSSbackupChanged) ? count($this->CSSbackupChanged) : 0)-1]=1;
     $this->SetCSS($properties);
   }
 
   //Page header
   function Header($content='')
   {
-  //! @return void
+  $h = null;
+    //! @return void
   //! @desc The header is printed in every page.
     if($this->usetableheader and $content != '')
     {
@@ -466,7 +477,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
     $path = str_replace("\\","/",$orgpath); //If on Windows
     $regexp = '|^(\\./)+|';
     $path = preg_replace($regexp,'',$path);  // Remove useless leading ./
-    if($path{0} != '#') { //It is not an Internal Link
+    if($path[0] != '#') { //It is not an Internal Link
       if(strpos($path,"../") !== false ) { //It is a Relative Link
         $backtrackamount = substr_count($path,"../");
         $maxbacktrack = $this->urllevels - 1;
@@ -496,7 +507,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
     $element = preg_replace($regexp,"=\"\$1\"",$element);
     $regexp = '|\\s(\\w+?)=([^\\s>"]+)|si'; // changes anykey=anyvalue to anykey="anyvalue" (only do this when this happens inside tags)
     $element = preg_replace($regexp," \$1=\"\$2\"",$element);
-			 
+
     preg_match_all('/\\S*=["\'][^"\']*["\']/',$element,$contents);
     preg_match('/\\S+/',$element,$a2);
     $tag=strtoupper($a2[0]);
@@ -586,7 +597,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
         }
       } else {
       	//Tag
-      	if($e{0}=='/') { 
+      	if($e[0]=='/') { 
       	  $this->CloseTag(strtoupper(substr($e,1)));
         } else {
       	  //Extract attributes
@@ -610,7 +621,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
       }
     }
   }
-  
+
   ////////////////////////////////////////
   function get_ID_properties($tag, $id) {
   ////////////////////////////////////////
@@ -645,7 +656,8 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
 
   ////////////////////////////////////////
   function get_TAG_properties($tag) {
-  ////////////////////////////////////////
+  $id = null;
+    ////////////////////////////////////////
     //! @desc get ID properties for tag
     //! @return array
     $this->debug("Check TAG $tag <br>");
@@ -659,7 +671,8 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
 
   ///////////////////////////////////////////
   function OpenTag($tag,$attr) {
-  ///////////////////////////////////////////
+  $texto = null;
+    ///////////////////////////////////////////
     //! @return void
     // What this gets: < $tag $attr['WIDTH']="90px" > does not get content here </closeTag here>
     //  $this->debug("OpenTag($tag)<br>");
@@ -816,7 +829,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
               if(!$this->isdisplay) $this->listitem[] = array($this->listlvl,$this->listnum,$this->textbuffer,$this->listoccur[$this->listlvl]);
               if(!$this->isdisplay) $this->listnum++;
             }
-            
+
           $this->textbuffer = array(); // -> vide buffer de text;
     	  $occur = $this->listoccur[$this->listlvl];
           $this->listlist[$this->listlvl][$occur]['MAXNUM'] = $this->listnum; //save previous lvl's maxnum
@@ -959,7 +972,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
     case 'U':
         $this->SetStyle($tag,true);
         break;
-    
+
     case 'A':
         if (isset($attr['NAME']) and $attr['NAME'] != '') $this->textbuffer[] = array('','','',array(),'',false,false,$attr['NAME']); //an internal link (adds a space for recognition)
         if (isset($attr['HREF'])) $this->HREF=$attr['HREF'];
@@ -1348,9 +1361,9 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
           {
     				$cor = ConvertColor($attr['COLOR']);
     				//If something goes wrong switch color to black
-    			  $cor['R'] = (isset($cor['R'])?$cor['R']:0);
-            $cor['G'] = (isset($cor['G'])?$cor['G']:0);
-            $cor['B'] = (isset($cor['B'])?$cor['B']:0);
+    			  $cor['R'] ??= 0;
+            $cor['G'] ??= 0;
+            $cor['B'] ??= 0;
     			  $this->colorarray = $cor;
     				$this->SetTextColor($cor['R'],$cor['G'],$cor['B']);
     				$this->issetcolor = true;
@@ -1492,7 +1505,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
 
       //Output table on PDF
   		$this->_tableWrite($this->table);
-  		
+
       //Reset values
       $this->tablestart=false; //bool
       $this->table=array(); //array
@@ -1604,9 +1617,9 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
             else $texto .= $textoaux[$i] . "\n";
           }
           //Inform the user that some text has been truncated
-          $texto{strlen($texto)-1} = ".";
-          $texto{strlen($texto)-2} = ".";
-          $texto{strlen($texto)-3} = ".";
+          $texto[strlen($texto)-1] = ".";
+          $texto[strlen($texto)-2] = ".";
+          $texto[strlen($texto)-3] = ".";
         }
         $backup_y = $this->y;
         $this->Rect($this->x,$this->y,(2.2*$this->col)+6,5*$this->row,'DF');
@@ -1870,7 +1883,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
 
       $this->newFlowingBlock( $this->divwidth,$this->divheight,$this->divborder,$align,$fill,$is_table);
 
-      $array_size = count($arrayaux);
+      $array_size = is_countable($arrayaux) ? count($arrayaux) : 0;
       for($i=0;$i < $array_size; $i++)
       {
         $vetor = $arrayaux[$i];
@@ -1936,7 +1949,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
           $this->SetStyle('U',true);
         }
         //Print-out special content
-        if (isset($vetor[0]) and $vetor[0]{0} == '»' and $vetor[0]{1} == '¤' and $vetor[0]{2} == '¬') //identifier has been identified!
+        if (isset($vetor[0]) and $vetor[0][0] == '»' and $vetor[0][1] == '¤' and $vetor[0][2] == '¬') //identifier has been identified!
         {
           $content = explode("»¤¬",$vetor[0]);
           $texto = $content[2];
@@ -2110,9 +2123,9 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
                     else $texto .= $textoaux[$i] . "\n";
                   }
                   //Inform the user that some text has been truncated
-                  $texto{strlen($texto)-1} = ".";
-                  $texto{strlen($texto)-2} = ".";
-                  $texto{strlen($texto)-3} = ".";
+                  $texto[strlen($texto)-1] = ".";
+                  $texto[strlen($texto)-2] = ".";
+                  $texto[strlen($texto)-3] = ".";
                 }
                 $backup_y = $this->y;
                 $backup_x = $this->x;
@@ -2276,7 +2289,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
          }
        }
     }
-    
+
     //Comercial do Aplicativo usado (no caso um script):
     $this->SetCreator("HTML2FPDF >> http://html2fpdf.sf.net");
   }
@@ -2294,7 +2307,8 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   }
 
   function ParseStyle($CSSblock) {
-     //! @desc Parse style code, either from style sheet or embedded style code
+     $extclassproperties = [];
+      //! @desc Parse style code, either from style sheet or embedded style code
      //! @return string    
       //////////////////////////////
       // PARSE THE STYLESHEET ITSELF
@@ -2310,7 +2324,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
       $property_regexp = '/\\s*?(\\S+?)\\s*:\\s*(\S+?|"[^"]*")(?:\\s*\\\!\\s*important)?\\s*;/si';
       $id_class_exp = '/([^\\#\\.,\s]*(?=[\\.\\#]))?([\\.\\#]?)([^,\\.\\#\\s]+)/m';
 
-      for($i=0; $i < count($extstyle[1]) ; $i++)
+      for($i=0; $i < (is_countable($extstyle[1]) ? count($extstyle[1]) : 0) ; $i++)
       {
         $this->debug("ID/CLASS=".$extstyle[1][$i]."<br>");
         $this->debug("PROPS=".$extstyle[2][$i]."<br>");
@@ -2318,7 +2332,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
         preg_match_all( $property_regexp, $extstyle[2][$i], $extstyleinfo);
         $extproperties = $extstyleinfo[1];
         $extvalues = $extstyleinfo[2];
-        for($j = 0; $j < count($extproperties) ; $j++) 
+        for($j = 0; $j < (is_countable($extproperties) ? count($extproperties) : 0) ; $j++) 
         {
     	  //Array-properties and Array-values must have the SAME SIZE!
     	  $extclassproperties[strtoupper($extproperties[$j])] = trim($extvalues[$j]);
@@ -2327,7 +2341,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
         //$this->debug("ID=".$id_class_exp."<br>");
         //$this->debug("STR='".$extstyle[1][$i]."'<br>");
         //$this->debug("CNT=".$cnt."<br>");
-        for($j=0;$j<count($id_class_info[0]);$j++) {
+        for($j=0;$j<(is_countable($id_class_info[0]) ? count($id_class_info[0]) : 0);$j++) {
 	  // TODO: Need to check conversion to upper case
           //  $this->debug("RES".$j."='".$id_class_info[1][$j]."''".$id_class_info[2][$j]."''".$id_class_info[3][$j]."'<br>");
           if($id_class_info[2][$j] == '#') {
@@ -2370,7 +2384,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
     //   Cumulate properties (in stead of replacing them all?)
     // DONE:
     //  a#hover, p.right are interpreted.  To be used elsewhere in the code.
-      
+
     $match = 0; // no match yet
     $regexp = ''; // This helps debugging: showing what is the REAL string being processed
 
@@ -2444,7 +2458,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
 
     //Fix incomplete CSS code
     $size = strlen($html)-1;
-    if ($html{$size} != ';') $html .= ';';
+    if ($html[$size] != ';') $html .= ';';
     //Make CSS[Name-of-the-class] = array(key => value)
     $regexp = '|\\s*?(\\S+?):(.+?);|i';  // TODO
   	preg_match_all( $regexp, $html, $styleinfo);
@@ -2452,8 +2466,8 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   	$values = $styleinfo[2];
   	//Array-properties and Array-values must have the SAME SIZE!
   	$classproperties = array();
-  	for($i = 0; $i < count($properties) ; $i++) $classproperties[strtoupper($properties[$i])] = trim($values[$i]);
-   	
+  	for($i = 0; $i < (is_countable($properties) ? count($properties) : 0) ; $i++) $classproperties[strtoupper($properties[$i])] = trim($values[$i]);
+
     return $classproperties;
   }
 
@@ -2512,7 +2526,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
               }
   					  break;
   			  case 'FONT-SIZE': //Does not support: smaller, larger
-  			      if(is_numeric($v{0}))
+  			      if(is_numeric($v[0]))
   			      {
   			         $mmsize = ConvertSize($v,$this->pgwidth);
   			         $this->SetFontSize( $mmsize*(72/25.4) ); //Get size in points (pt)
@@ -2637,7 +2651,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   	foreach(array('B','I','U') as $s)
   		if($this->$s>0)
   			$style.=$s;
-  			
+
   	$this->currentstyle=$style;
   	$this->SetFont('',$style);
   }
@@ -2723,7 +2737,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   		$c = &$cs[$i][$j];
   		$lc = $j + $c['colspan'];
   		if ($lc > $nc) $lc = $nc;
-  		
+
   		$wis = $wisa = 0;
   		$was = $wasa = 0;
   		$list = array();
@@ -2836,7 +2850,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   		}
   	}
   }
-  	
+
   function _tableHeight(&$table){
   //! @return void
   //! @desc Calculates the Table Height
@@ -2974,15 +2988,17 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
   	if ($type==1)	$this->Rect($x, $y, $w, $h);
   	elseif (strlen($type)==4){
   		$x2 = $x + $w; $y2 = $y + $h;
-  		if (intval($type{0})) $this->Line($x , $y , $x2, $y );
-  		if (intval($type{1})) $this->Line($x2, $y , $x2, $y2);
-  		if (intval($type{2})) $this->Line($x , $y2, $x2, $y2);
-  		if (intval($type{3})) $this->Line($x , $y , $x , $y2);
+  		if (intval($type[0])) $this->Line($x , $y , $x2, $y );
+  		if (intval($type[1])) $this->Line($x2, $y , $x2, $y2);
+  		if (intval($type[2])) $this->Line($x , $y2, $x2, $y2);
+  		if (intval($type[3])) $this->Line($x , $y , $x , $y2);
   	}
   }
 
   function _tableWrite(&$table){
-  //! @desc Main table function
+  $y = null;
+   $h = null;
+   //! @desc Main table function
   //! @return void
   	$cells = &$table['cells'];
   	$numcols = $table['nc'];
@@ -3027,14 +3043,12 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
             }
   				  //Align
   				  $this->x = $x; $this->y = $y;
-  				  $align = isset($cell['a'])? $cell['a'] : 'L';
+  				  $align = $cell['a'] ?? 'L';
   				  //Vertical align
   				  if (!isset($cell['va']) || $cell['va']=='M') $this->y += ($h-$cell['mih'])/2;
             elseif (isset($cell['va']) && $cell['va']=='B') $this->y += $h-$cell['mih'];
   				  //Fill
-  				  $fill = isset($cell['bgcolor']) ? $cell['bgcolor']
-    					: (isset($table['bgcolor'][$i]) ? $table['bgcolor'][$i]
-    					: (isset($table['bgcolor'][-1]) ? $table['bgcolor'][-1] : 0));
+  				  $fill = $cell['bgcolor'] ?? $table['bgcolor'][$i] ?? $table['bgcolor'][-1] ?? 0;
     				if ($fill)
             {
     					$color = ConvertColor($fill);
@@ -3055,7 +3069,7 @@ if ( preg_match( '/^(http|https|ftp|file):\/\//', $str ) ) {
                 $tableheader[$j]['w'] = $w;
                 $tableheader[$j]['text'] = $cell['text'];
                 $tableheader[$j]['textbuffer'] = $cell['textbuffer'];
-                $tableheader[$j]['a'] = isset($cell['a'])? $cell['a'] : 'L';
+                $tableheader[$j]['a'] = $cell['a'] ?? 'L';
                 $tableheader[$j]['va'] = $cell['va'];
                 $tableheader[$j]['mih'] = $cell['mih'];
                 $tableheader[$j]['bgcolor'] = $fill;
