@@ -19,8 +19,14 @@
  *      MA 02110-1301, USA.
  */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:39 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * Utf8DecodeEncodeToMbConvertEncodingRector (https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode)
+ */
+ 
 if(!defined('IN_CPM')) { die('You Can\'t access this file directly'); }
-if(!defined('PHP_EOL')) define ('PHP_EOL', strtoupper(substr(PHP_OS,0,3) == 'WIN') ? "\r\n" : "\n");
+if(!defined('PHP_EOL')) define ('PHP_EOL', strtoupper(str_starts_with(PHP_OS, 'WIN')) ? "\r\n" : "\n");
 
 function cpheader() {
 	global $module_name, $admin, $admin_file, $pa;
@@ -274,7 +280,7 @@ function PrintPDF($pid) {
 
 	//Make it compatible with UTF-8
 	if(strcasecmp(_CHARSET, 'utf-8') == 0) {
-		$html=utf8_decode($html);
+		$html=mb_convert_encoding($html, 'ISO-8859-1');
 	}
 
 	define('RELATIVE_PATH','modules/'.$module_name.'/var/fpdf/');
@@ -549,7 +555,9 @@ function BrowseTags() {
 }
 
 function BrowseTag($tag, $order, $ofsbgn, $ofsppg) {
-	global $db, $prefix, $module_name, $bgcolor4, $multilingual, $admin_file, $admin;
+	$selected = [];
+ $orderby = null;
+ global $db, $prefix, $module_name, $bgcolor4, $multilingual, $admin_file, $admin;
 
 	for($i=0; $i<=6; $i++) {
 		$selected[$i]='';
