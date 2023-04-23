@@ -32,6 +32,7 @@
 * now reflecting phpbb2 standalone 2.0.5 that fixes some bugs and the
 * invalid_session error message.
 ***************************************************************************/
+
 /***************************************************************************
  *   This file is part of the phpBB2 port to Nuke 6.0 (c) copyright 2002
  *   by Tom Nitzschner (tom@toms-home.com)
@@ -58,6 +59,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:07 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ */ 
 
 if ( !defined('MODULE_FILE') )
 {
@@ -98,7 +106,7 @@ $start = ($start < 0) ? 0 : $start;
 
 if ( isset($HTTP_GET_VARS['mark']) || isset($HTTP_POST_VARS['mark']) )
 {
-        $mark_read = (isset($HTTP_POST_VARS['mark'])) ? $HTTP_POST_VARS['mark'] : $HTTP_GET_VARS['mark'];
+        $mark_read = $HTTP_POST_VARS['mark'] ?? $HTTP_GET_VARS['mark'];
 }
 else
 {
@@ -205,7 +213,7 @@ if ( $mark_read == 'topics' )
                         $tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : array();
                         $tracking_topics = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) : array();
 
-                        if ( ( count($tracking_forums) + count($tracking_topics) ) >= 150 && empty($tracking_forums[$forum_id]) )
+                        if ( ( (is_countable($tracking_forums) ? count($tracking_forums) : 0) + count($tracking_topics) ) >= 150 && empty($tracking_forums[$forum_id]) )
                         {
                                 asort($tracking_forums);
                                 unset($tracking_forums[key($tracking_forums)]);
@@ -215,7 +223,7 @@ if ( $mark_read == 'topics' )
                         {
                                 $tracking_forums[$forum_id] = time();
 
-                                setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+                                setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), ['expires' => 0, 'path' => $board_config['cookie_path'], 'domain' => $board_config['cookie_domain'], 'secure' => $board_config['cookie_secure']]);
                         }
                 }
 
@@ -327,7 +335,7 @@ if ( !empty($HTTP_POST_VARS['topicdays']) || !empty($HTTP_GET_VARS['topicdays'])
         }
         $row = $db->sql_fetchrow($result);
 
-        $topics_count = ( $row['forum_topics'] ) ? $row['forum_topics'] : 1;
+        $topics_count = $row['forum_topics'] ?: 1;
         $limit_topics_time = "AND p.post_time >= $min_topic_time";
 
         if ( !empty($HTTP_POST_VARS['topicdays']) )
@@ -337,7 +345,7 @@ if ( !empty($HTTP_POST_VARS['topicdays']) || !empty($HTTP_GET_VARS['topicdays'])
 }
 else
 {
-        $topics_count = ( $forum_row['forum_topics'] ) ? $forum_row['forum_topics'] : 1;
+        $topics_count = $forum_row['forum_topics'] ?: 1;
 
         $limit_topics_time = '';
         $topic_days = 0;
