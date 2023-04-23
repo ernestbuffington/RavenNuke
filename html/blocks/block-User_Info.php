@@ -9,13 +9,18 @@
 /* the Tango Desktop Project tango.freedesktop.org/Tango_Desktop_Project */
 /* Intended for use on RavenNuke(tm) v2.5+                               */
 /*************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:02 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+
 if ( !defined('BLOCK_FILE') ) {
     Header("Location: ../index.php");
     die();
 }
 if (!isset($side)) { $side = ''; }
 if ($side == 'c' || $side == 'd' || $side == 't') { $IBCentermode = true; } else { $IBCentermode = false; }
-if (!defined('PHP_EOL')) define ('PHP_EOL', strtoupper(substr(PHP_OS,0,3) == 'WIN') ? "\r\n" : "\n");
+if (!defined('PHP_EOL')) define ('PHP_EOL', strtoupper(str_starts_with(PHP_OS, 'WIN')) ? "\r\n" : "\n");
 /*********************************************************************************************************/
 /* Setup - Use these settings to control how the user info block displays to users/admins/anonymous.     */
 /*********************************************************************************************************/
