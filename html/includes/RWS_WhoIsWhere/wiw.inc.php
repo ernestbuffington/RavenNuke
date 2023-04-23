@@ -32,11 +32,11 @@ function mysql_table_exists($table) {
 }
 
 if (!mysql_table_exists(_RWS_WIW_TABLE_HEAP)) {
-	/*********************************************************************/
+	/****************************************************************************/
 	/* Depending on your version of MySQL, the TYPE can be either MEMORY or 	*/
 	/* HEAP.  This next routine first tries TYPE=MEMORY.  If it fails then		*/
-	/* it will try again as TYPE=HEAP.								*/
-	/*********************************************************************/
+	/* it will try again as TYPE=HEAP.								            */
+	/****************************************************************************/
 	$result = $db->sql_query('CREATE TABLE ' . _RWS_WIW_TABLE_HEAP . ' (who VARCHAR(20), mn VARCHAR(20)) ENGINE=memory');
 	if (!$result) {
 		$db->sql_query('CREATE TABLE ' . _RWS_WIW_TABLE_HEAP . ' (who VARCHAR(20), mn VARCHAR(20)) ENGINE=heap');
