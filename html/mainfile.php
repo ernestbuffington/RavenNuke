@@ -161,7 +161,7 @@ if ($display_errors) {
 
 /**
  * Fail if $admin_file is not set or does not exist
-*/
+ */
 define('_ADMINSET','You must set a value for admin_file in config.php');
 define('_ADMINNOTEXISTS','The admin_file you defined in config.php does not exist');
 if (!defined('FORUM_ADMIN')) {
@@ -173,6 +173,14 @@ if (!defined('FORUM_ADMIN')) {
 }
 
 require_once NUKE_BASE_DIR . 'db/db.php';
+
+/**
+ * Vendor Libraries
+ * Ernest Allen Buffington - 04/23/2023 10:39 AM
+ */
+if (file_exists(NUKE_BASE_DIR . 'vendor/autoload.php')) {
+  require_once NUKE_BASE_DIR . 'vendor/autoload.php';
+}
 
 $result = $db->sql_query("SELECT * FROM `" . $prefix . "_config` LIMIT 0,1");
 $nuke_config = $db->sql_fetchrow($result);
