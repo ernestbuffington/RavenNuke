@@ -8,6 +8,10 @@
 *
 */
 
+/* Applied rules: Ernst Allen Buffington (TheGhost) 04/22/2023 10:18 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 /**
 * All Attachment Functions processing the Deletion Process
 */
@@ -17,7 +21,8 @@
 */
 function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, $user_id = 0)
 {
-	global $db;
+	$lang = [];
+ global $db;
 
 	// Generate Array, if it's not an array
 	if ($post_id_array === 0 && $attach_id_array === 0 && $page === 0)
