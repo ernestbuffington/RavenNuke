@@ -32,21 +32,27 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:57 PM
+ * VarToPublicPropertyRector
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+
 class RNComm_FormBase {
-	var $selModule; // selected module
-	var $modules; // list of other modules we can display
-	var $numComments;
-	var $commentOpts = array(10 => 10, 20 => 20, 50 => 50, 100 => 100, 200 => 200);
-	var $user;
-	var $formAction = '';
-	var $adminFeatures = false;
+	public $selModule; // selected module
+	public $modules; // list of other modules we can display
+	public $numComments;
+	public $commentOpts = array(10 => 10, 20 => 20, 50 => 50, 100 => 100, 200 => 200);
+	public $user;
+	public $formAction = '';
+	public $adminFeatures = false;
 
 	function __construct($selModule, $modules) {
 		$this->selModule = $selModule;
 		$this->modules = $modules;
 		$n = isset($_POST['number']) ? intval($_POST['number']) : 10;
 		$this->numComments = in_array($n, $this->commentOpts) ? $n : current($this->commentOpts);
-		$this->user = isset($_POST['userName']) ? $_POST['userName'] : '';
+		$this->user = $_POST['userName'] ?? '';
 		$this->user = str_replace('*', '%', $this->user);  // convert wildcard to MySQL wildcard
 	}
 
@@ -60,7 +66,7 @@ class RNComm_FormBase {
 
 		$this->displayMenu();
 		$items = $this->_getItems($this->numComments, addslashes($this->user));
-		$itemCount = count($items);
+		$itemCount = is_countable($items) ? count($items) : 0;
 
 		if ($this->adminFeatures && $this->selModule != 'forums') { // forum deletes not supported yet
 			foreach ($items as $key => $value) {
