@@ -8,6 +8,12 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:35 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Remove STFU Operators
+ */
+
 if (stristr(htmlentities($_SERVER['PHP_SELF']), 'nukeFEED.php')) {
     Header('Location: ../../index.php');
     die();
@@ -20,7 +26,7 @@ define('_nf_fb_url', 'feedburner_url');
 function output_nukeFEED($fid, $type) 
 {
   global $prefix, $db, $sitename, $name;
-  @require_once('includes/feedcreator/feedcreator.class.php');
+  require_once('includes/feedcreator/feedcreator.class.php');
 
   switch ($type) {
   case 'ATOM03':
@@ -404,6 +410,7 @@ function listSubscriptions($listtype = 'Feed List', $type = 'aggregator', $subsc
 if ( !function_exists('seoCheckInstall') )
 {
   function seoCheckInstall() {
+    $subscriptions = [];
     # table creation is MySQL-specific
     global $prefix, $sitename;
     define('nF_version', '1.1.0');
