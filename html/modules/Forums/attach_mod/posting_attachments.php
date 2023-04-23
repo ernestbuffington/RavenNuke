@@ -8,6 +8,18 @@
 *
 */
 
+/* Applied rules: Ernst Allen Buffington (TheGhost) 04/22/2023 10:31 PM
+ * VarToPublicPropertyRector
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 /**
 */
 if ( !defined('IN_PHPBB') )
@@ -22,26 +34,26 @@ if ( !defined('IN_PHPBB') )
 */
 class attach_parent
 {
-	var $post_attach = false;
-	var $attach_filename = '';
-	var $filename = '';
-	var $type = '';
-	var $extension = '';
-	var $file_comment = '';
-	var $num_attachments = 0; // number of attachments in message
-	var $filesize = 0;
-	var $filetime = 0;
-	var $thumbnail = 0;
-	var $page = 0; // On which page we are on ? This should be filled by child classes.
+	public $post_attach = false;
+	public $attach_filename = '';
+	public $filename = '';
+	public $type = '';
+	public $extension = '';
+	public $file_comment = '';
+	public $num_attachments = 0; // number of attachments in message
+	public $filesize = 0;
+	public $filetime = 0;
+	public $thumbnail = 0;
+	public $page = 0; // On which page we are on ? This should be filled by child classes.
 
 	// Switches
-	var $add_attachment_body = 0;
-	var $posted_attachments_body = 0;
+	public $add_attachment_body = 0;
+	public $posted_attachments_body = 0;
 
 	/**
 	* Constructor
 	*/
-	function attach_parent()
+	function __construct()
 	{
 		global $HTTP_POST_VARS, $HTTP_POST_FILES;
 		
@@ -748,7 +760,8 @@ class attach_parent
 	*/
 	function do_insert_attachment($mode, $message_type, $message_id)
 	{
-		global $db, $upload_dir;
+		$HTTP_POST_VARS = [];
+  global $db, $upload_dir;
 
 		if (intval($message_id) < 0)
 		{
@@ -790,7 +803,7 @@ class attach_parent
 					// Check if the attachment id is connected to the message
 					$sql = 'SELECT attach_id
 						FROM ' . ATTACHMENTS_TABLE . '
-						WHERE ' . $sql_id . ' = ' . $$sql_id . '
+						WHERE ' . $sql_id . ' = ' . ${$sql_id} . '
 							AND attach_id = ' . $this->attachment_id_list[$i];
 					$result = $db->sql_query($sql);
 
@@ -1117,7 +1130,7 @@ class attach_parent
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
-			$allowed_filesize = ($row['max_filesize']) ? $row['max_filesize'] : $attach_config['max_filesize'];
+			$allowed_filesize = $row['max_filesize'] ?: $attach_config['max_filesize'];
 			$cat_id = intval($row['cat_id']);
 			$auth_cache = trim($row['forum_permissions']);
 
@@ -1203,9 +1216,7 @@ class attach_parent
 					// Remove non-latin characters
 					$this->attach_filename = preg_replace_callback(
 						"/([\xC2\xC3])([\x80-\xBF])/",
-						function($m) {
-							return chr(ord($m[1])<<6&0xC0|ord($m[2])&0x3F);
-						},
+						fn($m) => chr(ord($m[1])<<6&0xC0|ord($m[2])&0x3F),
 						$this->attach_filename
 					);
 					$this->attach_filename = rawurlencode($this->attach_filename);
@@ -1222,7 +1233,7 @@ class attach_parent
 
 					do
 					{
-						$this->attach_filename = $new_filename . '_' . substr(rand(), 0, 3) . '.' . $this->extension;
+						$this->attach_filename = $new_filename . '_' . substr(random_int(0, mt_getrandmax()), 0, 3) . '.' . $this->extension;
 					}
 					while (physical_filename_already_stored($this->attach_filename));
 
@@ -1299,7 +1310,7 @@ class attach_parent
 			}
 
 			// Check image type
-			if ($cat_id == IMAGE_CAT || strpos($this->type, 'image/') === 0)
+			if ($cat_id == IMAGE_CAT || str_starts_with($this->type, 'image/'))
 			{
 				$img_info = @getimagesize($upload_dir . '/' . $this->attach_filename);
 
@@ -1517,7 +1528,7 @@ class attach_parent
 					}
 				}
 
-				$to_user = (isset($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
+				$to_user = $HTTP_POST_VARS['username'] ?? '';
 				
 				// Check Receivers PM Quota
 				if (!empty($to_user) && $userdata['user_level'] != ADMIN)
@@ -1642,7 +1653,7 @@ class attach_posting extends attach_parent
 	/**
 	* Constructor
 	*/
-	function attach_posting()
+	function __construct()
 	{
 		$this->attach_parent();
 		$this->page = 0;
@@ -1668,7 +1679,8 @@ class attach_posting extends attach_parent
 	*/
 	function insert_attachment($post_id)
 	{
-		global $db, $is_auth, $mode, $userdata, $error, $error_msg;
+		$HTTP_POST_VARS = [];
+  global $db, $is_auth, $mode, $userdata, $error, $error_msg;
 
 		// Insert Attachment ?
 		if (!empty($post_id) && ($mode == 'newtopic' || $mode == 'reply' || $mode == 'editpost') && $is_auth['auth_attachments'])
