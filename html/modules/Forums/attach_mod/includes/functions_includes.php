@@ -8,6 +8,10 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:23 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 /**
 * These are functions called directly from phpBB2 Files
 */
@@ -144,7 +148,8 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 */
 function attachment_quota_settings($admin_mode, $submit = false, $mode)
 {
-	global $template, $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
+	$this_userdata = [];
+ global $template, $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
 
 	// Make sure constants got included
 	include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
@@ -564,7 +569,8 @@ function prune_attachments($sql_post)
 */
 function perform_attach_pageregister($session_page, $in_admin = false)
 {
-	global $location, $location_url, $lang;
+	$phpEx = null;
+ global $location, $location_url, $lang;
 
 	switch ($session_page)
 	{
