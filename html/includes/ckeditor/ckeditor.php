@@ -14,17 +14,24 @@
  * $CKEditor = new CKEditor();
  * $CKEditor->editor("editor1", "<p>Initial value.</p>");
  * @endcode
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:07 PM
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * TypedPropertyFromAssignsRector
  */
+ 
 class CKEditor
 {
 	/**
 	 * The version of %CKEditor.
 	 */
-	const version = '3.6.3';
+	public const version = '3.6.3';
 	/**
 	 * A constant string unique for each release of %CKEditor.
 	 */
-	const timestamp = 'C3HA5RM';
+	public const timestamp = 'C3HA5RM';
 
 	/**
 	 * URL to the %CKEditor installation directory (absolute or relative to document root).
@@ -82,11 +89,11 @@ class CKEditor
 	/**
 	 * An array that holds event listeners.
 	 */
-	private $events = array();
+	private array $events = array();
 	/**
 	 * An array that holds global event listeners.
 	 */
-	private $globalEvents = array();
+	private array $globalEvents = array();
 
 	/**
 	 * Main Constructor.
@@ -382,7 +389,7 @@ class CKEditor
 				if (empty($handlers)) {
 					continue;
 				}
-				else if (count($handlers) == 1) {
+				else if ((is_countable($handlers) ? count($handlers) : 0) == 1) {
 					$_config['on'][$eventName] = '@@'.$handlers[0];
 				}
 				else {
@@ -453,7 +460,7 @@ class CKEditor
 		}
 
 		// Skip relative paths...
-		if (strpos($ckeditorPath, '..') !== 0) {
+		if (!str_starts_with($ckeditorPath, '..')) {
 			$out .= $this->script("window.CKEDITOR_BASEPATH='". $ckeditorPath ."';");
 		}
 
@@ -546,7 +553,7 @@ class CKEditor
 			return '{' . implode(',', $temp) . '}';
 		}
 		// String otherwise
-		if (strpos($val, '@@') === 0)
+		if (str_starts_with($val, '@@'))
 			return substr($val, 2);
 		if (strtoupper(substr($val, 0, 9)) == 'CKEDITOR.')
 			return $val;
