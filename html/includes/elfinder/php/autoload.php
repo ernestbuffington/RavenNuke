@@ -1,5 +1,8 @@
 <?php
-
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:26 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 define('ELFINDER_PHP_ROOT_PATH', dirname(__FILE__));
 
 function elFinderAutoloader($name) {
@@ -31,7 +34,7 @@ function elFinderAutoloader($name) {
 		return include_once($map[$name]);
 	}
 	$prefix = substr($name, 0, 14);
-	if (substr($prefix, 0, 8) === 'elFinder') {
+	if (str_starts_with($prefix, 'elFinder')) {
 		if ($prefix === 'elFinderVolume') {
 			$file = ELFINDER_PHP_ROOT_PATH . '/' . $name . '.class.php';
 			return (is_file($file) && include_once($file));
