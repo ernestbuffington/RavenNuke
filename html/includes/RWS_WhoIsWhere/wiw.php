@@ -1,20 +1,25 @@
 <?php
-/**********************************************************************/
-/* PHP-NUKE: Web Portal System								*/
-/* ===========================								*/
-/*													*/
-/* Copyright (c) 2002 by Francisco Burzi							*/
-/* http://phpnuke.org										*/
-/*													*/
-/* This program is free software. You can redistribute it and/or modify		*/
-/* it under the terms of the GNU General Public License as published by		*/
-/* the Free Software Foundation; either version 2 of the License.			*/
+/*************************************************************************/
+/* PHP-NUKE: Web Portal System								             */
+/* ===========================								             */
+/*													                     */
+/* Copyright (c) 2002 by Francisco Burzi							     */
+/* http://phpnuke.org										             */
+/*													                     */
+/* This program is free software. You can redistribute it and/or modify	 */
+/* it under the terms of the GNU General Public License as published by	 */
+/* the Free Software Foundation; either version 2 of the License.		 */
+/*************************************************************************/
 /*********************************************************************/
+/* WhoIsWhere by Gaylen Fraley (aka Raven) 						     */
+/* http://www.ravenwebhosting.com								     */
+/* https://www.ravenphpscripts.com								     */
 /*********************************************************************/
-/* WhoIsWhere by Gaylen Fraley (aka Raven) 						*/
-/* http://www.ravenwebhosting.com								*/
-/* https://www.ravenphpscripts.com								*/
-/*********************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:44 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
 
 isset($_POST['language']) ? $language = basename(strip_tags($_POST['language'])) : $language = 'english';
 if (!defined('INCLUDE_PATH')) define('INCLUDE_PATH', '../../');
@@ -46,11 +51,11 @@ if ($result && $result->num_rows > 0) {
 	}
 }
 
-echo '<span class="thick underline">' . _RWS_WIW_GUESTSONLINE . '</span><br />' . count($guest) . ' ' . _RWS_WIW_GUESTS;
+echo '<span class="thick underline">' . _RWS_WIW_GUESTSONLINE . '</span><br />' . (is_countable($guest) ? count($guest) : 0) . ' ' . _RWS_WIW_GUESTS;
 echo '<br /><br />';
 $reg = '';
 $wol = '';
-$regCount = count($registered);
+$regCount = is_countable($registered) ? count($registered) : 0;
 $notHiddenCount = 0;
 for ($i=0;$i<$regCount;$i++) {
 	if ($i==0) {
@@ -74,7 +79,7 @@ for ($i=0;$i<$regCount;$i++) {
 if (!empty($reg)) {
 	$delSql = 'DELETE FROM ' . _RWS_WIW_TABLE_HEAP . ' WHERE who NOT IN (' . $wol . ')';
 	$db->query($delSql);
-	if (substr($reg,0,2)==', ') $reg = substr($reg,2);
+	if (str_starts_with($reg, ', ')) $reg = substr($reg,2);
 	$reg = '<span class="thick underline">' . $notHiddenCount . ' ' . _RWS_WIW_USERSONLINE . '</span><br />' . $reg;
 	echo $reg;
 	echo '<br /><br />';
