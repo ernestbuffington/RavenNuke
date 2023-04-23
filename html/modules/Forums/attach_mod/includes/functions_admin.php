@@ -8,6 +8,11 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:16 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ */
+ 
 /**
 * All Attachment Functions only needed in Admin
 */
@@ -238,7 +243,8 @@ function entry_exists($attach_id)
 */
 function collect_attachments()
 {
-	global $upload_dir, $attach_config;
+	$dirinfo = [];
+ global $upload_dir, $attach_config;
 
 	$file_attachments = array(); 
 
@@ -305,7 +311,8 @@ function collect_attachments()
 */
 function get_formatted_dirsize()
 {
-	global $attach_config, $upload_dir, $lang;
+	$dirinfo = [];
+ global $attach_config, $upload_dir, $lang;
 
 	$upload_dir_size = 0;
 
@@ -386,7 +393,16 @@ function get_formatted_dirsize()
 */
 function search_attachments($order_by, &$total_rows)
 {
-	global $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang;
+	$search_author = null;
+ $search_keyword_fname = null;
+ $search_keyword_comment = null;
+ $search_count_smaller = null;
+ $search_count_greater = null;
+ $search_size_smaller = null;
+ $search_size_greater = null;
+ $search_days_greater = null;
+ $search_forum = null;
+ global $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang;
 	
 	$where_sql = array();
 
@@ -395,7 +411,7 @@ function search_attachments($order_by, &$total_rows)
 	
 	for ($i = 0; $i < sizeof($search_vars); $i++)
 	{
-		$$search_vars[$i] = get_var($search_vars[$i], '');
+		${$search_vars}[$i] = get_var($search_vars[$i], '');
 	}
 
 	// Author name search 
