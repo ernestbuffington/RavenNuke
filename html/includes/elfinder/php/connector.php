@@ -9,6 +9,9 @@
 * @license http://www.gnu.org/licenses/gpl.html GNU/GPL 3
 *
 * PHP connector for elFinder
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:22 PM
+* AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
 */
 
 define('ELFINDER_PATH', dirname(__FILE__) . '/');
@@ -91,7 +94,8 @@ abstract class elfinderBase {
 	* @return array
 	*/
 	protected function upload() {
-		if (isset($_FILES['upload'])) {
+		$tmp = [];
+  if (isset($_FILES['upload'])) {
 			if (is_array($_FILES['upload']) && !is_array($_FILES['upload']['name'])) {
 				$tmp['name'] = array($_FILES['upload']['name']);
 				$tmp['type'] = array($_FILES['upload']['type']);
@@ -156,7 +160,8 @@ abstract class elfinderBase {
 	 * @license BSD - http://www.dyeager.org/downloads/license-bsd.php
 	 **/
 	public function getDefaultLanguage() {
-		static $languages;
+		$language = null;
+  static $languages;
 		if (!isset($languages)) {
 			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 				$language =  $this->parseDefaultLanguage($_SERVER['HTTP_ACCEPT_LANGUAGE']);
