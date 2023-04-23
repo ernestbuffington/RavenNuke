@@ -25,6 +25,10 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:52 PM
+ * TernaryToNullCoalescingRector
+ */
+
 if (!defined('ADMIN_FILE')) {
 	die('Access Denied');
 }
@@ -61,7 +65,7 @@ if (is_mod_admin($module_name)) {
 	echo '<br />';
 	OpenTable();
 
-	$source = isset($_POST['source']) ? $_POST['source'] : 'news';
+	$source = $_POST['source'] ?? 'news';
 	$factory = new RNComm_FormFactory($modPath);
 	$form = $factory->create($source);
 	$form->setFormAction($admin_file . '.php?op=rnc_comments');
