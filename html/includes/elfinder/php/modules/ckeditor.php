@@ -17,6 +17,10 @@
 * put it in "./includes/elfinder/php/modules/".  You would then access elFinder with the following URL noting the MODULE name.
 * http://localhost/RN25/includes/elfinder/elfinder.php?module=ckeditor
 * Of course you need to edit the $opts configuration array or what is the point!
+*
+* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:15 PM
+* AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+* TernaryToNullCoalescingRector
 */
 
 require dirname(__FILE__) . '/../connector.php';
@@ -214,7 +218,8 @@ class elFinderMain extends elfinderBase {
 	* If you are developing a new "module" for elFinder this function is not required unless you want a quick upload feature separate from elFinder.
 	*/
 	function upload() {
-		$type = (isset($_GET['type'])) ? $_GET['type'] : '';
+		$message = null;
+  $type = $_GET['type'] ?? '';
 		$data = parent::upload();
 		$url = (!empty($data['filename'])) ? 'uploads/' . $type . '/' . $data['filename'] : '';
 		$message = (!empty($data['message'])) ? $message : '';
