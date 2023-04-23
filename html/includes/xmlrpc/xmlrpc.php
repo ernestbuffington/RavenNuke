@@ -34,11 +34,22 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:48 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ArrayKeyFirstLastRector (https://tomasvotruba.com/blog/2018/08/16/whats-new-in-php-73-in-30-seconds-in-diffs/#2-first-and-last-array-key)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * Utf8DecodeEncodeToMbConvertEncodingRector (https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode)
+ */
+
 	if(!function_exists('xml_parser_create'))
 	{
 		// For PHP 4 onward, XML functionality is always compiled-in on windows:
 		// no more need to dl-open it. It might have been compiled out on *nix...
-		if(strtoupper(substr(PHP_OS, 0, 3) != 'WIN'))
+		if(strtoupper(!str_starts_with(PHP_OS, 'WIN')))
 		{
 			dl('xml.so');
 		}
@@ -271,7 +282,7 @@
 				break;
 			case 'ISO-8859-1_UTF-8':
 				$escaped_data = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $data);
-				$escaped_data = utf8_encode($escaped_data);
+				$escaped_data = mb_convert_encoding($escaped_data, 'UTF-8', 'ISO-8859-1');
 				break;
 			case 'ISO-8859-1_ISO-8859-1':
 			case 'US-ASCII_US-ASCII':
@@ -395,7 +406,7 @@
 			// top level element can only be of 2 types
 			/// @todo optimization creep: save this check into a bool variable, instead of using count() every time:
 			///       there is only a single top level element in xml anyway
-			if (count($GLOBALS['_xh']['stack']) == 0)
+			if ((is_countable($GLOBALS['_xh']['stack']) ? count($GLOBALS['_xh']['stack']) : 0) == 0)
 			{
 				if ($name != 'METHODRESPONSE' && $name != 'METHODCALL' && (
 					$name != 'VALUE' && !$accept_single_vals))
@@ -492,7 +503,7 @@
 					$GLOBALS['_xh']['isf']=1;
 					break;
 				case 'MEMBER':
-					$GLOBALS['_xh']['valuestack'][count($GLOBALS['_xh']['valuestack'])-1]['name']=''; // set member name to null, in case we do not find in the xml later on
+					$GLOBALS['_xh']['valuestack'][(is_countable($GLOBALS['_xh']['valuestack']) ? count($GLOBALS['_xh']['valuestack']) : 0)-1]['name']=''; // set member name to null, in case we do not find in the xml later on
 					//$GLOBALS['_xh']['ac']='';
 					// Drop trough intentionally
 				case 'PARAM':
@@ -570,7 +581,7 @@
 							$temp->_php_class = $GLOBALS['_xh']['php_class'];
 						// check if we are inside an array or struct:
 						// if value just built is inside an array, let's move it into array on the stack
-						$vscount = count($GLOBALS['_xh']['valuestack']);
+						$vscount = is_countable($GLOBALS['_xh']['valuestack']) ? count($GLOBALS['_xh']['valuestack']) : 0;
 						if ($vscount && $GLOBALS['_xh']['valuestack'][$vscount-1]['type']=='ARRAY')
 						{
 							$GLOBALS['_xh']['valuestack'][$vscount-1]['values'][] = $temp;
@@ -591,7 +602,7 @@
 
 						// check if we are inside an array or struct:
 						// if value just built is inside an array, let's move it into array on the stack
-						$vscount = count($GLOBALS['_xh']['valuestack']);
+						$vscount = is_countable($GLOBALS['_xh']['valuestack']) ? count($GLOBALS['_xh']['valuestack']) : 0;
 						if ($vscount && $GLOBALS['_xh']['valuestack'][$vscount-1]['type']=='ARRAY')
 						{
 							$GLOBALS['_xh']['valuestack'][$vscount-1]['values'][] = $GLOBALS['_xh']['value'];
@@ -683,7 +694,7 @@
 					$GLOBALS['_xh']['lv']=3; // indicate we've found a value
 					break;
 				case 'NAME':
-					$GLOBALS['_xh']['valuestack'][count($GLOBALS['_xh']['valuestack'])-1]['name'] = $GLOBALS['_xh']['ac'];
+					$GLOBALS['_xh']['valuestack'][(is_countable($GLOBALS['_xh']['valuestack']) ? count($GLOBALS['_xh']['valuestack']) : 0)-1]['name'] = $GLOBALS['_xh']['ac'];
 					break;
 				case 'MEMBER':
 					//$GLOBALS['_xh']['ac']=''; // is this necessary?
@@ -691,7 +702,7 @@
 					// unless no VALUE was found
 					if ($GLOBALS['_xh']['vt'])
 					{
-						$vscount = count($GLOBALS['_xh']['valuestack']);
+						$vscount = is_countable($GLOBALS['_xh']['valuestack']) ? count($GLOBALS['_xh']['valuestack']) : 0;
 						$GLOBALS['_xh']['valuestack'][$vscount-1]['values'][$GLOBALS['_xh']['valuestack'][$vscount-1]['name']] = $GLOBALS['_xh']['value'];
 					} else
 						error_log('XML-RPC: missing VALUE inside STRUCT in received xml');
@@ -788,7 +799,7 @@
 		// skip processing if xml fault already detected
 		if ($GLOBALS['_xh']['isf'] < 2)
 		{
-			if(substr($data, 0, 1) == '&' && substr($data, -1, 1) == ';')
+			if(str_starts_with($data, '&') && substr($data, -1, 1) == ';')
 			{
 				// G. Giunta 2006-08-25: useless change of 'lv' from 1 to 2
 				//if($GLOBALS['_xh']['lv']==1)
@@ -803,33 +814,33 @@
 
 	class xmlrpc_client
 	{
-		var $path;
-		var $server;
-		var $port=0;
-		var $method='http';
-		var $errno;
-		var $errstr;
-		var $debug=0;
-		var $username='';
-		var $password='';
-		var $authtype=1;
-		var $cert='';
-		var $certpass='';
-		var $cacert='';
-		var $cacertdir='';
-		var $key='';
-		var $keypass='';
-		var $verifypeer=true;
-		var $verifyhost=1;
-		var $sslversion=0; // corresponds to CURL_SSLVERSION_DEFAULT
-		var $no_multicall=false;
-		var $proxy='';
-		var $proxyport=0;
-		var $proxy_user='';
-		var $proxy_pass='';
-		var $proxy_authtype=1;
-		var $cookies=array();
-		var $extracurlopts=array();
+		public $path;
+		public $server;
+		public $port=0;
+		public $method='http';
+		public $errno;
+		public $errstr;
+		public $debug=0;
+		public $username='';
+		public $password='';
+		public $authtype=1;
+		public $cert='';
+		public $certpass='';
+		public $cacert='';
+		public $cacertdir='';
+		public $key='';
+		public $keypass='';
+		public $verifypeer=true;
+		public $verifyhost=1;
+		public $sslversion=0; // corresponds to CURL_SSLVERSION_DEFAULT
+		public $no_multicall=false;
+		public $proxy='';
+		public $proxyport=0;
+		public $proxy_user='';
+		public $proxy_pass='';
+		public $proxy_authtype=1;
+		public $cookies=array();
+		public $extracurlopts=array();
 
 		/**
 		* List of http compression methods accepted by the client for responses.
@@ -840,32 +851,32 @@
 		* it supports. You might check for the presence of 'zlib' in the output of
 		* curl_version() to determine wheter compression is supported or not
 		*/
-		var $accepted_compression = array();
+		public $accepted_compression = array();
 		/**
 		* Name of compression scheme to be used for sending requests.
 		* Either null, gzip or deflate
 		*/
-		var $request_compression = '';
+		public $request_compression = '';
 		/**
 		* CURL handle: used for keep-alive connections (PHP 4.3.8 up, see:
 		* http://curl.haxx.se/docs/faq.html#7.3)
 		*/
-		var $xmlrpc_curl_handle = null;
+		public $xmlrpc_curl_handle = null;
 		/// Whether to use persistent connections for http 1.1 and https
-		var $keepalive = false;
+		public $keepalive = false;
 		/// Charset encodings that can be decoded without problems by the client
-		var $accepted_charset_encodings = array();
+		public $accepted_charset_encodings = array();
 		/// Charset encoding to be used in serializing request. NULL = use ASCII
-		var $request_charset_encoding = '';
+		public $request_charset_encoding = '';
 		/**
 		* Decides the content of xmlrpcresp objects returned by calls to send()
 		* valid strings are 'xmlrpcvals', 'phpvals' or 'xml'
 		*/
-		var $return_type = 'xmlrpcvals';
+		public $return_type = 'xmlrpcvals';
 		/**
 		* Sent to servers in http headers
 		*/
-		var $user_agent;
+		public $user_agent;
 
 		/**
 		* @param string $path either the complete server URL or the PATH part of the xmlrc server URL, e.g. /xmlrpc/server.php
@@ -880,7 +891,7 @@
 			{
 				$parts = parse_url($path);
 				$server = $parts['host'];
-				$path = isset($parts['path']) ? $parts['path'] : '';
+				$path = $parts['path'] ?? '';
 				if(isset($parts['query']))
 				{
 					$path .= '?'.$parts['query'];
@@ -1256,7 +1267,8 @@
 			$username='', $password='', $authtype=1, $proxyhost='',
 			$proxyport=0, $proxyusername='', $proxypassword='', $proxyauthtype=1)
 		{
-			if($port==0)
+			$encoding_hdr = null;
+   if($port==0)
 			{
 				$port=80;
 			}
@@ -1462,7 +1474,9 @@
 			$proxyhost='', $proxyport=0, $proxyusername='', $proxypassword='', $proxyauthtype=1, $method='https',
 			$keepalive=false, $key='', $keypass='', $sslVersion = 0)
 		{
-			if(!function_exists('curl_init'))
+			$encoding_hdr = null;
+   $info = [];
+   if(!function_exists('curl_init'))
 			{
 				$this->errstr='CURL unavailable on this install';
 				$r=new xmlrpcresp(0, $GLOBALS['xmlrpcerr']['no_curl'], $GLOBALS['xmlrpcstr']['no_curl']);
@@ -1877,7 +1891,7 @@
 					return false;		// bad return type from system.multicall
 				}
 				$numRets = count($rets);
-				if($numRets != count($msgs))
+				if($numRets != (is_countable($msgs) ? count($msgs) : 0))
 				{
 					return false;		// wrong number of return values.
 				}
@@ -1927,7 +1941,7 @@
 					return false;		// bad return type from system.multicall
 				}
 				$numRets = $rets->arraysize();
-				if($numRets != count($msgs))
+				if($numRets != (is_countable($msgs) ? count($msgs) : 0))
 				{
 					return false;		// wrong number of return values.
 				}
@@ -1970,15 +1984,15 @@
 
 	class xmlrpcresp
 	{
-		var $val = 0;
-		var $valtyp;
-		var $errno = 0;
-		var $errstr = '';
-		var $payload;
-		var $hdrs = array();
-		var $_cookies = array();
-		var $content_type = 'text/xml';
-		var $raw_data = '';
+		public $val = 0;
+		public $valtyp;
+		public $errno = 0;
+		public $errstr = '';
+		public $payload;
+		public $hdrs = array();
+		public $_cookies = array();
+		public $content_type = 'text/xml';
+		public $raw_data = '';
 
 		/**
 		* @param mixed $val either an xmlrpcval obj, a php value or the xml serialization of an xmlrpcval (a string)
@@ -2143,11 +2157,11 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 
 	class xmlrpcmsg
 	{
-		var $payload;
-		var $methodname;
-		var $params=array();
-		var $debug=0;
-		var $content_type = 'text/xml';
+		public $payload;
+		public $methodname;
+		public $params=array();
+		public $debug=0;
+		public $content_type = 'text/xml';
 
 		/**
 		* @param string $meth the name of the method to invoke
@@ -2473,7 +2487,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 
 				$data = substr($data, $bd);
 
-				if($this->debug && count($GLOBALS['_xh']['headers']))
+				if($this->debug && (is_countable($GLOBALS['_xh']['headers']) ? count($GLOBALS['_xh']['headers']) : 0))
 				{
 					print '<PRE>';
 					foreach($GLOBALS['_xh']['headers'] as $header => $value)
@@ -2574,7 +2588,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 
 			$raw_data = $data;
 			// parse the HTTP headers of the response, if present, and separate them from data
-			if(substr($data, 0, 4) == 'HTTP')
+			if(str_starts_with($data, 'HTTP'))
 			{
 				$r =& $this->parseResponseHeaders($data, $headers_processed);
 				if ($r)
@@ -2644,7 +2658,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			//if (!is_valid_charset($resp_encoding, array('UTF-8')))
 			if (!in_array($resp_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($data)) {
 				if ($resp_encoding == 'ISO-8859-1') {
-					$data = utf8_encode($data);
+					$data = mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1');
 				} else {
 					if (extension_loaded('mbstring')) {
 						$data = mb_convert_encoding($data, 'UTF-8', $resp_encoding);
@@ -2785,9 +2799,9 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 
 	class xmlrpcval
 	{
-		var $me=array();
-		var $mytype=0;
-		var $_php_class=null;
+		public $me=array();
+		public $mytype=0;
+		public $_php_class=null;
 
 		/**
 		* @param mixed $val
@@ -3098,7 +3112,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 				case 2:
 					// array
 					$rs.="<array>\n<data>\n";
-					for($i=0; $i<count($val); $i++)
+					for($i=0; $i<(is_countable($val) ? count($val) : 0); $i++)
 					{
 						//$rs.=$this->serializeval($val[$i]);
 						$rs.=$val[$i]->serialize($charset_encoding);
@@ -3239,8 +3253,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		*/
 		function scalartyp()
 		{
-			reset($this->me);
-            $a = key($this->me);
+			$a = array_key_first($this->me);
 			if($a==$GLOBALS['xmlrpcI4'])
 			{
 				$a=$GLOBALS['xmlrpcInt'];
@@ -3266,7 +3279,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		*/
 		function arraysize()
 		{
-			return count($this->me['array']);
+			return is_countable($this->me['array']) ? count($this->me['array']) : 0;
 		}
 
 		/**
@@ -3276,7 +3289,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		*/
 		function structsize()
 		{
-			return count($this->me['struct']);
+			return is_countable($this->me['struct']) ? count($this->me['struct']) : 0;
 		}
 	}
 
@@ -3624,7 +3637,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		//if (!is_valid_charset($val_encoding, array('UTF-8')))
 		if (!in_array($val_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($xml_val)) {
 			if ($val_encoding == 'ISO-8859-1') {
-				$xml_val = utf8_encode($xml_val);
+				$xml_val = mb_convert_encoding($xml_val, 'UTF-8', 'ISO-8859-1');
 			} else {
 				if (extension_loaded('mbstring')) {
 					$xml_val = mb_convert_encoding($xml_val, 'UTF-8', $val_encoding);
@@ -3681,7 +3694,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 				return $r;
 			case 'methodcall':
 				$m = new xmlrpcmsg($GLOBALS['_xh']['method']);
-				for($i=0; $i < count($GLOBALS['_xh']['params']); $i++)
+				for($i=0; $i < (is_countable($GLOBALS['_xh']['params']) ? count($GLOBALS['_xh']['params']) : 0); $i++)
 				{
 					$m->addParam($GLOBALS['_xh']['params'][$i]);
 				}
