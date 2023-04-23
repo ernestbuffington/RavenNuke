@@ -19,6 +19,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:03 PM
+ * TernaryToNullCoalescingRector
+ */ 
 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: index.php');
@@ -26,7 +30,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 }
 
 if ( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = ( isset($_GET['mode']) ) ? $_GET['mode'] : $_POST['mode'];
+	$mode = $_GET['mode'] ?? $_POST['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 	if ($mode == 'editprofile') {
 		addJSToHead('includes/jquery/jquery.js', 'file');
@@ -106,7 +110,7 @@ function gen_rand_string($hash) {
 // Start of program proper
 //
 if ( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = ( isset($_GET['mode']) ) ? $_GET['mode'] : $_POST['mode'];
+	$mode = $_GET['mode'] ?? $_POST['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 	if ( $mode == 'viewprofile' ) {
 		include_once 'modules/' . $module_name . '/includes/usercp_viewprofile.php';
