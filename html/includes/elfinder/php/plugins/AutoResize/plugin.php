@@ -53,6 +53,9 @@
  * @package elfinder
  * @author Naoki Sawada
  * @license New BSD
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:18 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
  */
 class elFinderPluginAutoResize extends elFinderPlugin {
 
@@ -85,7 +88,7 @@ class elFinderPluginAutoResize extends elFinderPlugin {
 		$srcImgInfo = null;
 		if (extension_loaded('fileinfo') && function_exists('mime_content_type')) {
 			$mime = mime_content_type($src);
-			if (substr($mime, 0, 5) !== 'image') {
+			if (!str_starts_with($mime, 'image')) {
 				return false;
 			}
 		}
