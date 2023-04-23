@@ -11,38 +11,43 @@
 # the Free Software Foundation; either version 2 of the License.                      #
 # ################################################################################### #
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:41 PM
+ * VarToPublicPropertyRector
+ * Php4ConstructorRector (https://wiki.php.net/rfc/remove_php4_constructors)
+ */
+
 class paginationSystem {
 	//==============================
 	//DEFAULT CONFIGURATION
 	//==============================
 	/*Use CSS style*/
-	var $use_style = true;
+	public $use_style = true;
 
 	/*Show the page position label: "Page N of TOT"*/
-	var $positon_label = true;
+	public $positon_label = true;
 
 	/*Show first and last page links*/
-	var $show_limits = true;
+	public $show_limits = true;
 
 	/*Page url: "index.php?page=name&op=example&pg={{N}}&salute=bye..."*/
-	var $url = '';
+	public $url = '';
 
 	/*Num items per page*/
-	var $items = '';
+	public $items = '';
 
 	/*Indicate manually the pages number*/
-	var $override_query = false;
+	public $override_query = false;
 
 	/*Style*/
-	var $box_style = 'pagenavi';
-	var $box_align = 'center';
+	public $box_style = 'pagenavi';
+	public $box_align = 'center';
 
 	//==============================
 	//DO NOT EDIT
 	//==============================
-	var $actpg;
-	var $query;
-	var $tot_items;
+	public $actpg;
+	public $query;
+	public $tot_items;
 
 	//PHP5 Constructor
 	function __construct() {
