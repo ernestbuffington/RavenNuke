@@ -8,6 +8,11 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:17 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * ListEachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ */
+
 /**
 * All Attachment Functions needed everywhere
 */
@@ -232,7 +237,8 @@ function attach_init_ftp($mode = false)
 */
 function unlink_attach($filename, $mode = false)
 {
-	global $upload_dir, $attach_config, $lang;
+	$deleted = null;
+ global $upload_dir, $attach_config, $lang;
 
 	$filename = basename($filename);
 	
@@ -323,7 +329,8 @@ function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = fal
 */
 function attachment_exists($filename)
 {
-	global $upload_dir, $attach_config;
+	$dirinfo = [];
+ global $upload_dir, $attach_config;
 
 	$filename = basename($filename);
 
@@ -379,7 +386,8 @@ function attachment_exists($filename)
 */
 function thumbnail_exists($filename)
 {
-	global $upload_dir, $attach_config;
+	$dirinfo = [];
+ global $upload_dir, $attach_config;
 
 	$filename = basename($filename);
 
@@ -937,7 +945,9 @@ function get_var($var_name, $default, $multibyte = false)
 	}
 	else
 	{
-		list($key_type, $type) = each($default);
+		$key_type = key($default);
+  $type = current($default);
+  next($default);
 		$type = gettype($type);
 		$key_type = gettype($key_type);
 	}
