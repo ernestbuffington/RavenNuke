@@ -15,6 +15,11 @@
 /*      http://www.nukefixes.com -- http://www.nukeresources.com        */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/23/2023 9:53 AM
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ */
+
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
 $index = 0;
@@ -310,7 +315,7 @@ function theindex($new_topic = 0) {
 			$longUrl = $gooarticleurl;
 			$apiKey = $googlapi;
 			$postData = array('longUrl' => $longUrl, 'key' => $apiKey);
-			$jsonData = json_encode($postData);
+			$jsonData = json_encode($postData, JSON_THROW_ON_ERROR);
 			$curlObj = curl_init();
 			curl_setopt($curlObj, CURLOPT_URL, 'https://www.googleapis.com/urlshortener/v1/url');
 			curl_setopt($curlObj, CURLOPT_RETURNTRANSFER, 1);
@@ -320,7 +325,7 @@ function theindex($new_topic = 0) {
 			curl_setopt($curlObj, CURLOPT_POST, 1);
 			curl_setopt($curlObj, CURLOPT_POSTFIELDS, $jsonData);
 			$response = curl_exec($curlObj);
-			$json = json_decode($response);
+			$json = json_decode($response, null, 512, JSON_THROW_ON_ERROR);
 			curl_close($curlObj);
 			$goourl = $json->id;
 			}
@@ -394,7 +399,7 @@ function rate_article($sid, $score) {
 		} else {
 			$result = $db->sql_query('update ' . $prefix . '_stories set score=score+' . $score . ', ratings=ratings+1 where sid=\'' . $sid . '\'');
 			$info = base64_encode($rcookie . $sid . ':');
-			setcookie('ratecookie', $info, time() +3600);
+			setcookie('ratecookie', $info, ['expires' => time() +3600]);
 			update_points(7);
 			Header('Location: modules.php?name=News&op=rate_complete&sid=' . $sid);
 		}
