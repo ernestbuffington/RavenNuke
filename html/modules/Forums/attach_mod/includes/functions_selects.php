@@ -8,6 +8,10 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:24 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 /**
 * Functions to build select boxes ;)
 */
@@ -113,7 +117,8 @@ function download_select($select_name, $group_id = 0)
 */
 function category_select($select_name, $group_id = 0)
 {
-	global $db, $types_category, $modes_category;
+	$category_type = null;
+ global $db, $types_category, $modes_category;
 		
 	$sql = 'SELECT group_id, cat_id
 		FROM ' . EXTENSION_GROUPS_TABLE;
@@ -198,7 +203,8 @@ function size_select($select_name, $size_compare)
 */
 function quota_limit_select($select_name, $default_quota = 0)
 {
-	global $db, $lang;
+	$quota_name = [];
+ global $db, $lang;
 		
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
@@ -234,7 +240,8 @@ function quota_limit_select($select_name, $default_quota = 0)
 */
 function default_quota_limit_select($select_name, $default_quota = 0)
 {
-	global $db, $lang;
+	$quota_name = [];
+ global $db, $lang;
 		
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
