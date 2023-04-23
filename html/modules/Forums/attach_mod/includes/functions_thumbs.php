@@ -8,6 +8,10 @@
 *
 */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:25 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 /**
 * All Attachment Functions needed to create Thumbnails
 */
@@ -110,7 +114,8 @@ function get_supported_image_types($type)
 */
 function create_thumbnail($source, $new_file, $mimetype) 
 {
-	global $attach_config, $imagick;
+	$image = null;
+ global $attach_config, $imagick;
 
 	$source = amod_realpath($source);
 	$min_filesize = (int) $attach_config['img_min_thumb_filesize'];
