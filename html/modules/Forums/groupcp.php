@@ -19,6 +19,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:52 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if ( !defined('MODULE_FILE') )
 {
 	die("You can't access this file directly...");
@@ -38,7 +45,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
 
         $from = ( !empty($row['user_from']) ) ? $row['user_from'] : '&nbsp;';
         $joined = create_date($date_format, $row['user_regdate'], $board_config['board_timezone']);
-        $posts = ( $row['user_posts'] ) ? $row['user_posts'] : 0;
+        $posts = $row['user_posts'] ?: 0;
 
         $poster_avatar = '';
         if ( $row['user_avatar_type'] && $row['user_id'] != ANONYMOUS && $row['user_allowavatar'] )
@@ -140,7 +147,7 @@ else
 
 if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
 {
-        $mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+        $mode = $HTTP_POST_VARS['mode'] ?? $HTTP_GET_VARS['mode'];
 	$mode = htmlspecialchars($mode, ENT_COMPAT);
 }
 else
@@ -150,7 +157,7 @@ else
 
 $confirm = ( isset($HTTP_POST_VARS['confirm']) ) ? TRUE : 0;
 $cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? TRUE : 0;
-$sid = ( isset($HTTP_POST_VARS['sid']) ) ? $HTTP_POST_VARS['sid'] : '';
+$sid = $HTTP_POST_VARS['sid'] ?? '';
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
 $start = ($start < 0) ? 0 : $start;  // v2.0.22
 
@@ -613,7 +620,7 @@ else if ( $group_id )
                                         $members = ( isset($HTTP_POST_VARS['approve']) || isset($HTTP_POST_VARS['deny']) ) ? $HTTP_POST_VARS['pending_members'] : $HTTP_POST_VARS['members'];
 
                                         $sql_in = '';
-                                        for($i = 0; $i < count($members); $i++)
+                                        for($i = 0; $i < (is_countable($members) ? count($members) : 0); $i++)
                                         {
                                                 $sql_in .= ( ( $sql_in != '' ) ? ', ' : '' ) . intval($members[$i]);
                                         }
@@ -669,7 +676,7 @@ else if ( $group_id )
 
                                                                 while( list($user_id, $group_list) = @each($group_check) )
                                                                 {
-                                                                        if ( count($group_list) == 1 )
+                                                                        if ( (is_countable($group_list) ? count($group_list) : 0) == 1 )
                                                                         {
                                                                                 $remove_mod_sql .= ( ( $remove_mod_sql != '' ) ? ', ' : '' ) . $user_id;
                                                                         }
@@ -811,7 +818,7 @@ else if ( $group_id )
         }
 
         $group_members = $db->sql_fetchrowset($result);
-        $members_count = count($group_members);
+        $members_count = is_countable($group_members) ? count($group_members) : 0;
         $db->sql_freeresult($result);
 
         $sql = "SELECT u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm
