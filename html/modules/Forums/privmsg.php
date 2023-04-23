@@ -19,6 +19,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:02 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ */ 
 
 define('IN_PHPBB', true);
 $phpbb_root_path = './';
@@ -57,7 +63,7 @@ $mark_list = ( !empty($HTTP_POST_VARS['mark']) ) ? $HTTP_POST_VARS['mark'] : 0;
 
 if ( isset($HTTP_POST_VARS['folder']) || isset($HTTP_GET_VARS['folder']) )
 {
-	$folder = ( isset($HTTP_POST_VARS['folder']) ) ? $HTTP_POST_VARS['folder'] : $HTTP_GET_VARS['folder'];
+	$folder = $HTTP_POST_VARS['folder'] ?? $HTTP_GET_VARS['folder'];
 	$folder = htmlspecialchars($folder, ENT_COMPAT);
 
 	if ( $folder != 'inbox' && $folder != 'outbox' && $folder != 'sentbox' && $folder != 'savebox' )
@@ -667,7 +673,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 		$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 		$s_hidden_fields .= ( isset($HTTP_POST_VARS['delete']) ) ? '<input type="hidden" name="delete" value="true" />' : '<input type="hidden" name="deleteall" value="true" />';
 
-		for($i = 0; $i < count($mark_list); $i++)
+		for($i = 0; $i < (is_countable($mark_list) ? count($mark_list) : 0); $i++)
 		{
 			$s_hidden_fields .= '<input type="hidden" name="mark[]" value="' . intval($mark_list[$i]) . '" />';
 		}
@@ -682,7 +688,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 		);
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['Information'],
-			'MESSAGE_TEXT' => ( count($mark_list) == 1 ) ? $lang['Confirm_delete_pm'] : $lang['Confirm_delete_pms'],
+			'MESSAGE_TEXT' => ( (is_countable($mark_list) ? count($mark_list) : 0) == 1 ) ? $lang['Confirm_delete_pm'] : $lang['Confirm_delete_pms'],
 
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
@@ -702,7 +708,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 
 		if (!$delete_all)
 		{
-			for ($i = 0; $i < count($mark_list); $i++)
+			for ($i = 0; $i < (is_countable($mark_list) ? count($mark_list) : 0); $i++)
 			{
 				$delete_sql_id .= (($delete_sql_id != '') ? ', ' : '') . intval($mark_list[$i]);
 			}
@@ -802,41 +808,35 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 
 					if (sizeof($update_users))
 					{
-						while (list($type, $users) = each($update_users))
-						{
-							while (list($user_id, $dec) = each($users))
-							{
-								$update_list[$type][$dec][] = $user_id;
-							}
-						}
+						foreach ($update_users as $type => $users) {
+          foreach ($users as $user_id => $dec) {
+              $update_list[$type][$dec][] = $user_id;
+          }
+      }
 						unset($update_users);
 
-						while (list($type, $dec_ary) = each($update_list))
-						{
-							switch ($type)
-							{
-								case 'new':
-									$type = "user_new_privmsg";
-									break;
-
-								case 'unread':
-									$type = "user_unread_privmsg";
-									break;
-							}
-
-							while (list($dec, $user_ary) = each($dec_ary))
-							{
-								$user_ids = implode(', ', $user_ary);
-
-								$sql = "UPDATE " . USERS_TABLE . "
+						foreach ($update_list as $type => $dec_ary) {
+          switch ($type)
+   							{
+   								case 'new':
+   									$type = "user_new_privmsg";
+   									break;
+   
+   								case 'unread':
+   									$type = "user_unread_privmsg";
+   									break;
+   							}
+          foreach ($dec_ary as $dec => $user_ary) {
+              $user_ids = implode(', ', $user_ary);
+              $sql = "UPDATE " . USERS_TABLE . "
 									SET $type = $type - $dec
 									WHERE user_id IN ($user_ids)";
-								if ( !$db->sql_query($sql) )
-								{
-									message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
-								}
-							}
-						}
+              if ( !$db->sql_query($sql) )
+      								{
+      									message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+      								}
+          }
+      }
 						unset($update_list);
 					}
 				}
@@ -996,41 +996,35 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
 
 				if (sizeof($update_users))
 				{
-					while (list($type, $users) = each($update_users))
-					{
-						while (list($user_id, $dec) = each($users))
-						{
-							$update_list[$type][$dec][] = $user_id;
-						}
-					}
+					foreach ($update_users as $type => $users) {
+         foreach ($users as $user_id => $dec) {
+             $update_list[$type][$dec][] = $user_id;
+         }
+     }
 					unset($update_users);
 
-					while (list($type, $dec_ary) = each($update_list))
-					{
-						switch ($type)
-						{
-							case 'new':
-								$type = "user_new_privmsg";
-								break;
-
-							case 'unread':
-								$type = "user_unread_privmsg";
-								break;
-						}
-
-						while (list($dec, $user_ary) = each($dec_ary))
-						{
-							$user_ids = implode(', ', $user_ary);
-
-							$sql = "UPDATE " . USERS_TABLE . "
+					foreach ($update_list as $type => $dec_ary) {
+         switch ($type)
+   						{
+   							case 'new':
+   								$type = "user_new_privmsg";
+   								break;
+   
+   							case 'unread':
+   								$type = "user_unread_privmsg";
+   								break;
+   						}
+         foreach ($dec_ary as $dec => $user_ary) {
+             $user_ids = implode(', ', $user_ary);
+             $sql = "UPDATE " . USERS_TABLE . "
 								SET $type = $type - $dec
 								WHERE user_id IN ($user_ids)";
-							if ( !$db->sql_query($sql) )
-							{
-								message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
-							}
-						}
-					}
+             if ( !$db->sql_query($sql) )
+      							{
+      								message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+      							}
+         }
+     }
 					unset($update_list);
 				}
 			}
