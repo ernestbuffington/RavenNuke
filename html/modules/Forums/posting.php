@@ -20,6 +20,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:00 PM
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ */
+  
 if ( !defined('MODULE_FILE') )
 {
    die("You can't access this file directly...");
@@ -47,26 +56,26 @@ foreach($params as $var => $param)
 {
    if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
    {
-      $$var = ( !empty($HTTP_POST_VARS[$param]) ) ? htmlspecialchars($HTTP_POST_VARS[$param]) : htmlspecialchars($HTTP_GET_VARS[$param]);
+      ${$var} = ( !empty($HTTP_POST_VARS[$param]) ) ? htmlspecialchars($HTTP_POST_VARS[$param]) : htmlspecialchars($HTTP_GET_VARS[$param]);
    }
    else
    {
-      $$var = '';
+      ${$var} = '';
    }
 }
 
 $confirm = isset($HTTP_POST_VARS['confirm']) ? true : false;
-$sid = (isset($HTTP_POST_VARS['sid'])) ? $HTTP_POST_VARS['sid'] : 0;
+$sid = $HTTP_POST_VARS['sid'] ?? 0;
 $params = array('forum_id' => POST_FORUM_URL, 'topic_id' => POST_TOPIC_URL, 'post_id' => POST_POST_URL);
 foreach($params as $var => $param)
 {
    if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
    {
-      $$var = ( !empty($HTTP_POST_VARS[$param]) ) ? intval($HTTP_POST_VARS[$param]) : intval($HTTP_GET_VARS[$param]);
+      ${$var} = ( !empty($HTTP_POST_VARS[$param]) ) ? intval($HTTP_POST_VARS[$param]) : intval($HTTP_GET_VARS[$param]);
    }
    else
    {
-      $$var = '';
+      ${$var} = '';
    }
 }
 
@@ -616,7 +625,7 @@ else if ( $submit || $confirm )
          $tracking_topics = ( !empty($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) : array();
          $tracking_forums = ( !empty($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : array();
 
-         if ( count($tracking_topics) + count($tracking_forums) == 100 && empty($tracking_topics[$topic_id]) )
+         if ( (is_countable($tracking_topics) ? count($tracking_topics) : 0) + count($tracking_forums) == 100 && empty($tracking_topics[$topic_id]) )
          {
             asort($tracking_topics);
             unset($tracking_topics[key($tracking_topics)]);
@@ -624,7 +633,7 @@ else if ( $submit || $confirm )
 
          $tracking_topics[$topic_id] = time();
 
-         setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+         setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), ['expires' => 0, 'path' => $board_config['cookie_path'], 'domain' => $board_config['cookie_domain'], 'secure' => $board_config['cookie_secure']]);
       }
 
       $template->assign_vars(array(
@@ -1125,13 +1134,12 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 
    if( !empty($poll_options) )
    {
-      while( list($option_id, $option_text) = each($poll_options) )
-      {
-         $template->assign_block_vars('poll_option_rows', array(
-            'POLL_OPTION' => str_replace('"', '&quot;', $option_text),
-
-            'S_POLL_OPTION_NUM' => $option_id)
-         );
+      foreach ($poll_options as $option_id => $option_text) {
+          $template->assign_block_vars('poll_option_rows', array(
+             'POLL_OPTION' => str_replace('"', '&quot;', $option_text),
+ 
+             'S_POLL_OPTION_NUM' => $option_id)
+          );
       }
    }
 
