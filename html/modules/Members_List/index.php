@@ -18,6 +18,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/23/2023 12:22 AM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ */
+ 
 if ( !defined('MODULE_FILE') )
 {
     die ("You can't access this file directly...");
@@ -170,13 +176,13 @@ if ( $row = $db->sql_fetchrow($result) )
                 if (( $row['user_website'] == "http:///") || ( $row['user_website'] == "http://")){
                     $row['user_website'] =  "";
                 }
-                if (($row['user_website'] != "" ) && (substr($row['user_website'],0, 7) != "http://")) {
+                if (($row['user_website'] != "" ) && (!str_starts_with($row['user_website'], "http://"))) {
                     $row['user_website'] = "http://".$row['user_website'];
                 }
                 $row['user_from'] = str_replace(".gif", "", $row['user_from']);
 		$from = ( !empty($row['user_from']) ) ? $row['user_from'] : '&nbsp;';
                 $joined = $row['user_regdate'];
-		$posts = ( $row['user_posts'] ) ? $row['user_posts'] : 0;
+		$posts = $row['user_posts'] ?: 0;
 
 		$poster_avatar = '';
 		if ( $row['user_avatar_type'] && $user_id != ANONYMOUS && $row['user_allowavatar'] )
