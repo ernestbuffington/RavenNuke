@@ -1,5 +1,9 @@
 <?php
-
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:36 PM
+ * TernaryToNullCoalescingRector
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+ 
 use \League\Flysystem\Filesystem;
 use \League\Flysystem\Adapter\Local;
 use \League\Flysystem\Cached\CachedAdapter;
@@ -175,7 +179,7 @@ class elFinderVolumeFlysystemGoogleDriveNetmount extends \Hypweb\elFinderFlysyst
                     }
                     natcasesort($folders);
                     $folders = ['root' => $rootObj->getName()] + $folders;
-                    $folders = json_encode($folders);
+                    $folders = json_encode($folders, JSON_THROW_ON_ERROR);
                     $json = '{"protocol": "googledrive", "mode": "done", "folders": '.$folders.'}';
                     $options['pass'] = 'return';
                     $html = 'Google.com';
@@ -207,7 +211,7 @@ class elFinderVolumeFlysystemGoogleDriveNetmount extends \Hypweb\elFinderFlysyst
             $file = $service->files->get($options['path']);
             $options['alias'] = sprintf($this->options['gdAlias'], $file->getName());
         } catch (Google_Service_Exception $e) {
-            $err = json_decode($e->getMessage(), true);
+            $err = json_decode($e->getMessage(), true, 512, JSON_THROW_ON_ERROR);
             if (isset($err['error']) && $err['error']['code'] == 404) {
                 return array('exit' => true, 'error' => [elFinder::ERROR_TRGDIR_NOT_FOUND, $options['path']]);
             } else {
@@ -260,7 +264,7 @@ class elFinderVolumeFlysystemGoogleDriveNetmount extends \Hypweb\elFinderFlysyst
     {
         $creds = null;
         if (isset($opts['access_token'])) {
-            $this->netMountKey = md5(join('-', array('googledrive', $opts['path'], (isset($opts['access_token']['refresh_token'])? $opts['access_token']['refresh_token'] : $opts['access_token']['access_token']))));
+            $this->netMountKey = md5(join('-', array('googledrive', $opts['path'], ($opts['access_token']['refresh_token'] ?? $opts['access_token']['access_token']))));
         }
 
         $client = new \Google_Client();
