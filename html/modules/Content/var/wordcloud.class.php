@@ -21,11 +21,16 @@
 	 *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	02111-1307	USA
 	 *
 	 \************************************************************/
+	 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:42 PM
+ * VarToPublicPropertyRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
 	
 	class wordCloud
 	{
-		var $version = '2.0';
-		var $wordsArray = array();
+		public $version = '2.0';
+		public $wordsArray = array();
 		
 		/*
 		 * PHP 5 Constructor
@@ -42,7 +47,7 @@
 				// If we have a string
 				if (is_string($words)) {
 					$this->addString($words);
-				} elseif (count($words)) {
+				} elseif (is_countable($words) ? count($words) : 0) {
 					foreach ($words as $key => $value) {
 						$this->addWord($value);
 					}
