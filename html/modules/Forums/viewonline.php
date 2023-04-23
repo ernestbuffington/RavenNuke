@@ -19,6 +19,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:08 PM
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ */
+  
 if ( !defined('MODULE_FILE') )
 {
 	die("You can't access this file directly...");
@@ -211,8 +216,8 @@ while ( $row = $db->sql_fetchrow($result) )
                         $location = $forum_data[$row['session_page']];
                 }
 
-                $row_color = ( $$which_counter % 2 ) ? $theme['td_color1'] : $theme['td_color2'];
-                $row_class = ( $$which_counter % 2 ) ? $theme['td_class1'] : $theme['td_class2'];
+                $row_color = ( ${$which_counter} % 2 ) ? $theme['td_color1'] : $theme['td_color2'];
+                $row_class = ( ${$which_counter} % 2 ) ? $theme['td_class1'] : $theme['td_class2'];
 
                 $template->assign_block_vars("$which_row", array(
                         'ROW_COLOR' => '#' . $row_color,
@@ -225,7 +230,7 @@ while ( $row = $db->sql_fetchrow($result) )
                         'U_FORUM_LOCATION' => append_sid($location_url))
                 );
 
-                $$which_counter++;
+                ${$which_counter}++;
         }
 }
 
