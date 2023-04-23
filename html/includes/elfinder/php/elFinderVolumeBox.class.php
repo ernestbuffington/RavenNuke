@@ -1,5 +1,14 @@
 <?php
-
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:39 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * TypedPropertyFromAssignsRector
+ */
+ 
 elFinder::$netDrivers['box'] = 'Box';
 
 /**
@@ -23,29 +32,29 @@ class elFinderVolumeBox extends elFinderVolumeDriver
     /**
      * @var string The base URL for API requests
      */
-    const API_URL = 'https://api.box.com/2.0';
+    public const API_URL = 'https://api.box.com/2.0';
 
     /**
      * @var string The base URL for authorization requests
      */
-    const AUTH_URL = 'https://www.box.com/api/oauth2/authorize';
+    public const AUTH_URL = 'https://www.box.com/api/oauth2/authorize';
 
     /**
      * @var string The base URL for token requests
      */
-    const TOKEN_URL = 'https://www.box.com/api/oauth2/token';
+    public const TOKEN_URL = 'https://www.box.com/api/oauth2/token';
 
     /**
      * @var string The base URL for upload requests
      */
-    const UPLOAD_URL = 'https://upload.box.com/api/2.0';
+    public const UPLOAD_URL = 'https://upload.box.com/api/2.0';
 
     /**
      * Fetch fields list.
      *
      * @var string
      */
-    const FETCHFIELDS = 'type,id,name,created_at,modified_at,description,size,parent,permissions,file_version,shared_link';
+    public const FETCHFIELDS = 'type,id,name,created_at,modified_at,description,size,parent,permissions,file_version,shared_link';
 
     /**
      * Box.com token object.
@@ -71,10 +80,8 @@ class elFinderVolumeBox extends elFinderVolumeDriver
 
     /**
      * Thumbnail prefix.
-     *
-     * @var string
      **/
-    private $tmbPrefix = '';
+    private string $tmbPrefix = '';
 
     /**
      * hasCache by folders.
@@ -250,7 +257,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
                 );
 
             $this->session->set('BoxTokens', $token);
-            $this->options['accessToken'] = json_encode($token);
+            $this->options['accessToken'] = json_encode($token, JSON_THROW_ON_ERROR);
             $this->token = $token;
 
             if (!empty($this->options['netkey'])) {
@@ -301,7 +308,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
 
             if (isset($result->entries)) {
                 $res = $result->entries;
-                $cnt = count($res);
+                $cnt = is_countable($res) ? count($res) : 0;
                 $total = $result->total_count;
                 $offset = $result->offset;
                 $single = ($result->limit == 1) ? true : false;
@@ -352,7 +359,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
             return $result;
         }
 
-        $decoded = json_decode($result);
+        $decoded = json_decode($result, null, 512, JSON_THROW_ON_ERROR);
 
         if (!empty($decoded->error_code)) {
             $errmsg = $decoded->error_code;
@@ -464,7 +471,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
     {
         $stat = array();
 
-        $stat['rev'] = isset($raw->id) ? $raw->id : 'root';
+        $stat['rev'] = $raw->id ?? 'root';
         $stat['name'] = $raw->name;
         if (!empty($raw->modified_at)) {
             $stat['ts'] = strtotime($raw->modified_at);
@@ -599,7 +606,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
                 } catch (Exception $e) {
                     $out = array(
                             'node' => $options['id'],
-                            'json' => json_encode(array('error' => $e->getMessage())),
+                            'json' => json_encode(array('error' => $e->getMessage()), JSON_THROW_ON_ERROR),
                     );
 
                     return array('exit' => 'callback', 'out' => $out);
@@ -684,7 +691,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
                     }
 
                     $folders = ['root' => 'My Box'] + $folders;
-                    $folders = json_encode($folders);
+                    $folders = json_encode($folders, JSON_THROW_ON_ERROR);
 
                     $expires = empty($this->token->data->refresh_token) ? (int) $this->token->expires : 0;
                     $json = '{"protocol": "box", "mode": "done", "folders": '.$folders.', "expires": '.$expires.'}';
@@ -701,7 +708,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
         }
 
         if ($_aToken = $this->session->get('BoxTokens')) {
-            $options['accessToken'] = json_encode($_aToken);
+            $options['accessToken'] = json_encode($_aToken, JSON_THROW_ON_ERROR);
         } else {
             $this->setError(elFinder::ERROR_NETMOUNT, $options['host'], implode(' ', $this->error()));
 
@@ -744,7 +751,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
         if (! empty($this->options['accessToken'])) {
             $res['accessToken'] = $this->options['accessToken'];
         }
-    
+
         return $res;
     }
 
@@ -763,12 +770,13 @@ class elFinderVolumeBox extends elFinderVolumeDriver
      **/
     protected function init()
     {
+        $options = [];
         if (!$this->options['accessToken']) {
             return $this->setError('Required option `accessToken` is undefined.');
         }
 
         try {
-            $this->token = json_decode($this->options['accessToken']);
+            $this->token = json_decode($this->options['accessToken'], null, 512, JSON_THROW_ON_ERROR);
             $this->_bd_refreshToken();
         } catch (Exception $e) {
             $this->token = null;
@@ -779,7 +787,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
 
         if (empty($options['netkey'])) {
             // make net mount key
-            $_tokenKey = isset($this->token->data->refresh_token) ? $this->token->data->refresh_token : $this->token->data->access_token;
+            $_tokenKey = $this->token->data->refresh_token ?? $this->token->data->access_token;
             $this->netMountKey = md5(implode('-', array('box', $this->options['path'], $_tokenKey)));
         } else {
             $this->netMountKey = $options['netkey'];
@@ -1140,6 +1148,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
      **/
     public function getContentUrl($hash, $options = array())
     {
+        $params = [];
         if (!empty($options['temporary'])) {
             // try make temporary file
             $url = parent::getContentUrl($hash, $options);
@@ -1299,7 +1308,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
      **/
     protected function _inpath($path, $parent)
     {
-        return $path == $parent || strpos($path, $parent.'/') === 0;
+        return $path == $parent || str_starts_with($path, $parent.'/');
     }
 
     /***************** file stat ********************/
@@ -1372,7 +1381,8 @@ class elFinderVolumeBox extends elFinderVolumeDriver
      **/
     protected function _dimensions($path, $mime)
     {
-        if (strpos($mime, 'image') !== 0) {
+        $cache = [];
+        if (!str_starts_with($mime, 'image')) {
             return '';
         }
 
@@ -1407,9 +1417,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
      **/
     protected function _scandir($path)
     {
-        return isset($this->dirsCache[$path])
-            ? $this->dirsCache[$path]
-            : $this->cacheDir($path);
+        return $this->dirsCache[$path] ?? $this->cacheDir($path);
     }
 
     /**
@@ -1477,7 +1485,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
             $curl = $this->_bd_prepareCurl(array(
                 CURLOPT_URL => $url,
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => json_encode($params),
+                CURLOPT_POSTFIELDS => json_encode($params, JSON_THROW_ON_ERROR),
             ));
 
             //create the Folder in the Parent
@@ -1548,7 +1556,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
             $curl = $this->_bd_prepareCurl(array(
                 CURLOPT_URL => $url,
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
             ));
 
             //copy File in the Parent
@@ -1600,7 +1608,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
             $curl = $this->_bd_prepareCurl(array(
                 CURLOPT_URL => $url,
                 CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
             ));
 
             $result = $this->_bd_curlExec($curl, $targetDir, array(
@@ -1669,7 +1677,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
                 if (isset($stat['name'])) {
                     $name = $stat['name'];
                 }
-                if (isset($stat['rev']) && strpos($stat['hash'], $this->id) === 0) {
+                if (isset($stat['rev']) && str_starts_with($stat['hash'], $this->id)) {
                     $itemId = $stat['rev'];
                 }
             }
@@ -1680,7 +1688,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
         try {
             //Create or Update a file
             $metaDatas = stream_get_meta_data($fp);
-            $tmpFilePath = isset($metaDatas['uri']) ? $metaDatas['uri'] : '';
+            $tmpFilePath = $metaDatas['uri'] ?? '';
             // remote contents
             if (!$tmpFilePath || empty($metaDatas['seekable'])) {
                 $tmpHandle = $this->tmpfile();
@@ -1704,7 +1712,7 @@ class elFinderVolumeBox extends elFinderVolumeDriver
             } else {
                 $cfile = '@'.$tmpFilePath;
             }
-            $params = array('attributes' => json_encode($properties), 'file' => $cfile);
+            $params = array('attributes' => json_encode($properties, JSON_THROW_ON_ERROR), 'file' => $cfile);
             $curl = $this->_bd_prepareCurl(array(
                     CURLOPT_URL => $url,
                     CURLOPT_POST => true,
