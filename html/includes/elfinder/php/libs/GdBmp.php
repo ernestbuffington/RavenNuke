@@ -63,6 +63,10 @@
  *   BITMAPV4HEADER と BITMAPV5HEADER に含まれる色空間に関する様々な機能
  * @param $filename_or_stream_or_binary
  * @return bool|resource
+ *
+ * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 8:12 PM
+ * TernaryToElvisRector (http://php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary https://stackoverflow.com/a/1993455/1348344)
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
  */
 
 if (! function_exists('imagecreatefrombmp')) {
@@ -142,7 +146,23 @@ class elFinderLibGdBmp{
 	}
 
 	public static function loadFromStreamAndFileHeader($stream, array $bitmap_file_header){
-		if ($bitmap_file_header["type"] != 0x4d42){
+		$width = null;
+  $height = null;
+  $x_pels_per_meter = null;
+  $y_pels_per_meter = null;
+  $bit_count = null;
+  $clr_used = null;
+  $size_image = null;
+  $compression = null;
+  $red_mask = null;
+  $green_mask = null;
+  $blue_mask = null;
+  $planes = null;
+  $alpha_mask = null;
+  $r = null;
+  $g = null;
+  $b = null;
+  if ($bitmap_file_header["type"] != 0x4d42){
 			return false;
 		}
 
@@ -207,8 +227,8 @@ class elFinderLibGdBmp{
 			//自分でファイルサイズを元に逆算することで回避できることもあるので再計算できそうなら正当性を調べる
 			//シークできないストリームの場合全体のファイルサイズは取得できないので、$bitmap_file_headerにサイズ申告がなければやらない
 			if ($bitmap_file_header["size"] != 0){
-				$colorsize = $bit_count == 1 || $bit_count == 4 || $bit_count == 8 ? ($clr_used ? $clr_used : pow(2, $bit_count))<<2 : 0;
-				$bodysize = $size_image ? $size_image : ((($width * $bit_count + 31) >> 3) & ~3) * abs($height);
+				$colorsize = $bit_count == 1 || $bit_count == 4 || $bit_count == 8 ? ($clr_used ?: pow(2, $bit_count))<<2 : 0;
+				$bodysize = $size_image ?: ((($width * $bit_count + 31) >> 3) & ~3) * abs($height);
 				$calcsize = $bitmap_file_header["size"] - $bodysize - $colorsize - 14;
 
 				//本来であれば一致するはずなのに合わない時は、値がおかしくなさそうなら（BITMAPV5HEADERの範囲内なら）計算して求めた値を採用する
@@ -299,7 +319,7 @@ class elFinderLibGdBmp{
 
 			//画像データの前にパレットデータがあるのでパレットを作成する
 			$palette_size = $header_size == 12 ? 3 : 4; //OS/2形式の場合は x に相当する箇所のデータは最初から確保されていない
-			$colors = $clr_used ? $clr_used : pow(2, $bit_count); //色数
+			$colors = $clr_used ?: pow(2, $bit_count); //色数
 			$palette = array();
 			for($i = 0; $i < $colors; ++$i){
 				$buf = fread($stream, $palette_size);
