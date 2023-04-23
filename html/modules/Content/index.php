@@ -19,6 +19,11 @@
  *  MA 02110-1301, USA.
  */
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:17 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * Utf8DecodeEncodeToMbConvertEncodingRector (https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode)
+ */
+ 
 if (!defined('MODULE_FILE')) { die ('You can\'t access this file directly...'); }
 require_once('mainfile.php');
 $module_name = basename(dirname(__FILE__));
@@ -212,8 +217,8 @@ global $prefix, $user_prefix, $db, $sitename, $admin, $module_name, $locale, $da
 			}
 
 			$pageurl = $nukeurl.'/modules.php?name='.$module_name.'&pa=showpage&pid='.$pid;
-			$bookmark_title_anchor = rawurlencode(utf8_encode($mytitle));
-			$bookmark_url_anchor = rawurlencode(utf8_encode($pageurl));
+			$bookmark_title_anchor = rawurlencode(mb_convert_encoding($mytitle, 'UTF-8', 'ISO-8859-1'));
+			$bookmark_url_anchor = rawurlencode(mb_convert_encoding($pageurl, 'UTF-8', 'ISO-8859-1'));
 
 			$bookmark_title_js = real_escape_content($mytitle);
 			$bookmark_url_js = str_replace('&amp;','&', $pageurl);
@@ -380,7 +385,9 @@ function list_pages() {
 }
 
 function list_pages_categories($cid, $ofsbgn, $ofsppg, $order) {
-	global $prefix, $db, $sitename, $slogan, $admin, $multilingual, $module_name, $admin_file, $datetime, $bgcolor1, $bgcolor4, $page;
+	$selected = [];
+ $orderby = null;
+ global $prefix, $db, $sitename, $slogan, $admin, $multilingual, $module_name, $admin_file, $datetime, $bgcolor1, $bgcolor4, $page;
 	include('header.php');
 	cpheader();
 	OpenTable();
