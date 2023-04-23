@@ -5,6 +5,12 @@
 * Date:    2003-12-30                                                          *
 *******************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 11:19 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+
 function ReadMap($enc)
 {
 	//Read a map file
@@ -15,7 +21,7 @@ function ReadMap($enc)
 	$cc2gn=array();
 	foreach($a as $l)
 	{
-		if($l{0}=='!')
+		if($l[0]=='!')
 		{
 			$e=preg_split('/[ \\t]+/',chop($l));
 			$cc=hexdec(substr($e[0],1));
@@ -130,11 +136,12 @@ function ReadAFM($file,&$map)
 
 function MakeFontDescriptor($fm,$symbolic)
 {
-	//Ascent
-	$asc=(isset($fm['Ascender']) ? $fm['Ascender'] : 1000);
+	$des = null;
+ //Ascent
+	$asc=($fm['Ascender'] ?? 1000);
 	$fd="array('Ascent'=>".$asc;
 	//Descent
-	$desc=(isset($fm['Descender']) ? $fm['Descender'] : -200);
+	$desc=($fm['Descender'] ?? -200);
 	$fd.=",'Descent'=>".$desc;
 	//CapHeight
 	if(isset($fm['CapHeight']))
@@ -162,7 +169,7 @@ function MakeFontDescriptor($fm,$symbolic)
 		$fbb=array(0,$des-100,1000,$asc+100);
 	$fd.=",'FontBBox'=>'[".$fbb[0].' '.$fbb[1].' '.$fbb[2].' '.$fbb[3]."]'";
 	//ItalicAngle
-	$ia=(isset($fm['ItalicAngle']) ? $fm['ItalicAngle'] : 0);
+	$ia=($fm['ItalicAngle'] ?? 0);
 	$fd.=",'ItalicAngle'=>".$ia;
 	//StemV
 	if(isset($fm['StdVW']))
@@ -293,7 +300,9 @@ function CheckTTF($file)
 *******************************************************************************/
 function MakeFont($fontfile,$afmfile,$enc='cp1252',$patch=array(),$type='TrueType')
 {
-	//Generate a font definition file
+	$size1 = null;
+ $size2 = null;
+ //Generate a font definition file
 	set_magic_quotes_runtime(0);
 	if($enc)
 	{
