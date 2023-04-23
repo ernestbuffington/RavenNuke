@@ -19,6 +19,16 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 10:05 PM
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ */
+  
 if ( !defined('MODULE_FILE') )
 {
 	die("You can't access this file directly...");
@@ -52,7 +62,7 @@ init_userprefs($userdata);
 //
 if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
 {
-	$mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+	$mode = $HTTP_POST_VARS['mode'] ?? $HTTP_GET_VARS['mode'];
 }
 else
 {
@@ -61,7 +71,7 @@ else
 
 if ( isset($HTTP_POST_VARS['search_keywords']) || isset($HTTP_GET_VARS['search_keywords']) )
 {
-	$search_keywords = ( isset($HTTP_POST_VARS['search_keywords']) ) ? $HTTP_POST_VARS['search_keywords'] : $HTTP_GET_VARS['search_keywords'];
+	$search_keywords = $HTTP_POST_VARS['search_keywords'] ?? $HTTP_GET_VARS['search_keywords'];
 }
 else
 {
@@ -70,7 +80,7 @@ else
 
 if ( isset($HTTP_POST_VARS['search_author']) || isset($HTTP_GET_VARS['search_author']))
 {
-	$search_author = ( isset($HTTP_POST_VARS['search_author']) ) ? $HTTP_POST_VARS['search_author'] : $HTTP_GET_VARS['search_author'];
+	$search_author = $HTTP_POST_VARS['search_author'] ?? $HTTP_GET_VARS['search_author'];
 	$search_author = phpbb_clean_username($search_author);
 }
 else
@@ -78,9 +88,9 @@ else
 	$search_author = '';
 }
 
-$search_id = ( isset($HTTP_GET_VARS['search_id']) ) ? $HTTP_GET_VARS['search_id'] : '';
+$search_id = $HTTP_GET_VARS['search_id'] ?? '';
 
-$show_results = ( isset($HTTP_POST_VARS['show_results']) ) ? $HTTP_POST_VARS['show_results'] : 'posts';
+$show_results = $HTTP_POST_VARS['show_results'] ?? 'posts';
 $show_results = ($show_results == 'topics') ? 'topics' : 'posts';
 
 if ( isset($HTTP_POST_VARS['search_terms']) )
@@ -286,10 +296,10 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
-			$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : preg_split('/ /', $search_keywords);
+			$split_search = ( !strstr($multibyte_charset, (string) $lang['ENCODING']) ) ?  split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : preg_split('/ /', $search_keywords);
 			unset($stripped_keywords);
 
-			$search_msg_only = ( !$search_fields ) ? "AND m.title_match = 0" : ( ( strstr($multibyte_charset, $lang['ENCODING']) ) ? '' : '' );
+			$search_msg_only = ( !$search_fields ) ? "AND m.title_match = 0" : ( ( strstr($multibyte_charset, (string) $lang['ENCODING']) ) ? '' : '' );
 
 			$word_count = 0;
 			$current_match_type = 'or';
@@ -297,7 +307,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			$word_match = array();
 			$result_list = array();
 
-			for($i = 0; $i < count($split_search); $i++)
+			for($i = 0; $i < (is_countable($split_search) ? count($split_search) : 0); $i++)
 			{
 				if ( strlen(str_replace(array('*', '%'), '', trim($split_search[$i]))) < $board_config['search_min_chars'] )
 				{
@@ -325,7 +335,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 							$current_match_type = 'and';
 						}
 
-						if ( !strstr($multibyte_charset, $lang['ENCODING']) )
+						if ( !strstr($multibyte_charset, (string) $lang['ENCODING']) )
 						{
 							$match_word = str_replace('*', '%', $split_search[$i]);
                                                         $sql = "SELECT m.post_id
@@ -389,13 +399,12 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			@reset($result_list);
 
 			$search_ids = array();
-			while( list($post_id, $matches) = each($result_list) )
-			{
-				if ( $matches )
-				{
-					$search_ids[] = $post_id;
-				}
-			}
+			foreach ($result_list as $post_id => $matches) {
+       if ( $matches )
+   				{
+   					$search_ids[] = $post_id;
+   				}
+   }
 
 			unset($result_list);
 			$total_match_count = count($search_ids);
@@ -429,13 +438,12 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			}
 
 			$ignore_forum_sql = '';
-			while( list($key, $value) = each($is_auth_ary) )
-			{
-				if ( !$value['auth_read'] )
-				{
-					$ignore_forum_sql .= ( ( $ignore_forum_sql != '' ) ? ', ' : '' ) . $key;
-				}
-			}
+			foreach ($is_auth_ary as $key => $value) {
+       if ( !$value['auth_read'] )
+   				{
+   					$ignore_forum_sql .= ( ( $ignore_forum_sql != '' ) ? ', ' : '' ) . $key;
+   				}
+   }
 
 			if ( $ignore_forum_sql != '' )
 			{
@@ -467,9 +475,9 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 				$count = 0;
 				$chunk = 0;
 
-				if (count($search_ids) > $limiter)
+				if ((is_countable($search_ids) ? count($search_ids) : 0) > $limiter)
 				{
-                                        for ($i = 0; $i < count($search_ids); $i++)
+                                        for ($i = 0; $i < (is_countable($search_ids) ? count($search_ids) : 0); $i++)
 					{
 						if ($count == $limiter)
 						{
@@ -549,9 +557,9 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 				$count = 0;
 				$chunk = 0;
 
-				if (count($search_ids) > $limiter)
+				if ((is_countable($search_ids) ? count($search_ids) : 0) > $limiter)
 				{
-                                        for ($i = 0; $i < count($search_ids); $i++)
+                                        for ($i = 0; $i < (is_countable($search_ids) ? count($search_ids) : 0); $i++)
 					{
 						if ($count == $limiter)
 						{
@@ -694,14 +702,14 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 		for($i = 0; $i < count($store_vars); $i++)
 		{
-			$store_search_data[$store_vars[$i]] = $$store_vars[$i];
+			$store_search_data[$store_vars[$i]] = ${$store_vars}[$i];
 		}
 
 		$result_array = serialize($store_search_data);
 		unset($store_search_data);
 
 		mt_srand ((double) microtime() * 1000000);
-		$search_id = mt_rand();
+		$search_id = random_int(0, mt_getrandmax());
 
                 $sql = "UPDATE " . SEARCH_TABLE . "
 			SET search_id = $search_id, search_time = $current_time, search_array = '" . str_replace("\'", "''", $result_array) . "'
@@ -735,7 +743,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 				$search_data = unserialize($row['search_array']);
 				for($i = 0; $i < count($store_vars); $i++)
 				{
-					$$store_vars[$i] = $search_data[$store_vars[$i]];
+					${$store_vars}[$i] = $search_data[$store_vars[$i]];
 				}
 			}
 		}
@@ -857,7 +865,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 				$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $split_word) . ')\b#is';
 				$highlight_active .= " " . $split_word;
 
-				for ($k = 0; $k < count($synonym_array); $k++)
+				for ($k = 0; $k < (is_countable($synonym_array) ? count($synonym_array) : 0); $k++)
                                 {
                                         list($replace_synonym, $match_synonym) = preg_split('/ /', trim(strtolower($synonym_array[$k])));
 
