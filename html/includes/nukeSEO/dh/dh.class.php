@@ -22,44 +22,50 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 9:17 PM
+ * VarToPublicPropertyRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 class dhclass  {
 /*
  * Configurable options:
  */
-	var $dt_sDelim = ' - ';				// You may change this to whatever you wish to use
+	public $dt_sDelim = ' - ';				// You may change this to whatever you wish to use
 	// If a title is generated, the suffix will be preceeded by $dt_sDelim
-	var $dh_sModSuffix     = '%module% - %slogan% - %sitename%';
-	var $dh_sCatSuffix     = '%sitename%';
-	var $dh_sSubCatSuffix  = '%sitename%';
-	var $dh_sContentSuffix = '%sitename%';
-	var $dh_bLinkCatSubcat = true; // Subcategory is linked to Category, if false subcategory and category are unrelated
-	var $dt_iTextSize = 90;				// This will restrict the total size of the Page Title (yes, it will chop off words)
-	var $dt_bUseCustNm = true;		// true = will use custom module name - default; false = use regular module name
-	var $dt_bUseBBCensor = true;	// true = will use the phpBB word censor pairs for the forum Page Titles
+	public $dh_sModSuffix     = '%module% - %slogan% - %sitename%';
+	public $dh_sCatSuffix     = '%sitename%';
+	public $dh_sSubCatSuffix  = '%sitename%';
+	public $dh_sContentSuffix = '%sitename%';
+	public $dh_bLinkCatSubcat = true; // Subcategory is linked to Category, if false subcategory and category are unrelated
+	public $dt_iTextSize = 90;				// This will restrict the total size of the Page Title (yes, it will chop off words)
+	public $dt_bUseCustNm = true;		// true = will use custom module name - default; false = use regular module name
+	public $dt_bUseBBCensor = true;	// true = will use the phpBB word censor pairs for the forum Page Titles
 
 /*
  * Variables:
  */
-	var $content_id;
-	var $content_table;
-	var $contentTitleArray;
-	var $contentDescArray;
-	var $contentKeysArray;
-	var $cat_id;
-	var $cat_table;
-	var $cat_table_id;
-	var $catTitleArray;
-	var $catDescArray;
-	var $catKeysArray;
-	var $subcat_id;
-	var $subcat_table;
-	var $subcat_table_id;
-	var $subcatTitleArray;
-	var $subcatDescArray;
-	var $subcatKeysArray;
-	var $activeWhere;
-	var $dt_mod_name;
-	var $dt_mod_title;
+	public $content_id;
+	public $content_table;
+	public $contentTitleArray;
+	public $contentDescArray;
+	public $contentKeysArray;
+	public $cat_id;
+	public $cat_table;
+	public $cat_table_id;
+	public $catTitleArray;
+	public $catDescArray;
+	public $catKeysArray;
+	public $subcat_id;
+	public $subcat_table;
+	public $subcat_table_id;
+	public $subcatTitleArray;
+	public $subcatDescArray;
+	public $subcatKeysArray;
+	public $activeWhere;
+	public $dt_mod_name;
+	public $dt_mod_title;
 	
 /* 
  * These functions ARE often overriden in the content-specific class
@@ -153,7 +159,7 @@ class dhclass  {
 */
 		if ($id > 0 and ($meta['title'][2]< 4 or $meta['DESCRIPTION'][2] < 4 or $meta['KEYWORDS'][2] < 4)) {
 			// If we didn't get $contentTDK above, get it now
-			if (count($contentTDK) == 0) {
+			if ((is_countable($contentTDK) ? count($contentTDK) : 0) == 0) {
 				$where =  ' WHERE ';
 				if ($this->activeWhere > '') $where .= $this->activeWhere . ' AND ';
 				$where .= $this->content_id . '=' . $id;
@@ -345,7 +351,8 @@ class dhclass  {
 }
 
 function seoGetAutoKeys($content) {
-	require_once('includes/class.autokeyword.php');
+	$params = [];
+ require_once('includes/class.autokeyword.php');
 	$params['content'] = $content;            //page content
 	$params['min_word_length'] = 5;           //minimum length of single words
 	$params['min_word_occur'] = 2;            //minimum occur of single words
