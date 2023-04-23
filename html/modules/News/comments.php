@@ -1,22 +1,25 @@
 <?php
 /***************************************************************************/
-/* PHP-NUKE: Web Portal System									*/
+/* PHP-NUKE: Web Portal System									           */
 /* ========================================================================*/
-/* 														*/
-/* Copyright (c) 2002 by Francisco Burzi								*/
-/* http://phpnuke.org											*/
-/*														*/
-/* This program is free software. You can redistribute it and/or modify			*/
-/* it under the terms of the GNU General Public License as published by			*/
-/* the Free Software Foundation; either version 2 of the License.				*/
+/* 														                   */
+/* Copyright (c) 2002 by Francisco Burzi								   */
+/* http://phpnuke.org											           */
+/*														                   */
+/* This program is free software. You can redistribute it and/or modify	   */
+/* it under the terms of the GNU General Public License as published by	   */
+/* the Free Software Foundation; either version 2 of the License.		   */
 /***************************************************************************/
-/*	Additional security & Abstraction layer conversion 					*/
-/*			2003 chatserv									*/
-/*	http://www.nukefixes.com -- http://www.nukeresources.com				*/
+/*	Additional security & Abstraction layer conversion 					   */
+/*			2003 chatserv									               */
+/*	http://www.nukefixes.com -- http://www.nukeresources.com			   */
 /***************************************************************************/
+
 /***************************************************************************/
-/* Additional code clean-up, performance enhancements, and W3C and 			*/
-/* XHTML compliance fixes by Raven and Montego.						*/
+/* Additional code clean-up, performance enhancements, and W3C and 		   */
+/* XHTML compliance fixes by Raven and Montego.						       */
+/***************************************************************************/
+
 /*
 tid = topic id, it is the unique id of the comments table and is auto-incremented.  Every record in the topics
 table has one of course
@@ -29,7 +32,12 @@ the thold field is stored in the users table (stands for threshold ... if a user
 will not see comments with a score below that threshold  setting accessed through your account on
 a per user basis ... trap ... if you are signed on as admin you will see all comments regardless of user setting
 */
-/***************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/23/2023 9:51 AM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
+ */
+
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 require_once 'mainfile.php';
 $module_name = basename(dirname(__FILE__));
@@ -152,30 +160,30 @@ switch ($op) {
 				$admintest = 0;
 			}
 		if (($admintest == 1 && is_admin($admin)) || ($admintest == 2 && $moderate == 1 && is_admin($admin)) || ($moderate == 2 && is_user($user))) {
-			while (list($tdw, $emp) = each($_POST)) {
-				if (stripos_clone($tdw, 'dkn')) {
-					$emp = explode(':', $emp);
-					if ($emp[1] != 0) {
-						$tdw = str_replace('dkn', '', $tdw);
-						$emp[0] = intval($emp[0]);
-						$emp[1] = intval($emp[1]);
-						$tdw = intval($tdw);
-						$q = 'UPDATE ' . $prefix . '_comments SET';
-						if (($emp[1] == 9) && ($emp[0] >= 0)) { // Overrated
-							$q .= ' score=score-1 WHERE tid=\'' . $tdw . '\'';
-						} elseif (($emp[1] == 10) && ($emp[0] <= 4)) { // Underrated
-							$q .= ' score=score+1 WHERE tid=\'' . $tdw . '\'';
-						} elseif (($emp[1] > 4) && ($emp[0] <= 4)) {
-							$q .= ' score=score+1, reason=\'' . $emp[1] . '\' WHERE tid=\'' . $tdw . '\'';
-						} elseif (($emp[1] < 5) && ($emp[0] > -1)) {
-							$q .= ' score=score-1, reason=\'' . $emp[1] . '\' WHERE tid=\'' . $tdw . '\'';
-						} elseif (($emp[0] == -1) || ($emp[0] == 5)) {
-							$q .= ' reason=' . $emp[1] . ' WHERE tid=\'' . $tdw . '\'';
-						}
-						if (strlen($q) > 20) $db->sql_query($q);
-					}
-				}
-			}
+			foreach ($_POST as $tdw => $emp) {
+       if (stripos_clone($tdw, 'dkn')) {
+   					$emp = explode(':', $emp);
+   					if ($emp[1] != 0) {
+   						$tdw = str_replace('dkn', '', $tdw);
+   						$emp[0] = intval($emp[0]);
+   						$emp[1] = intval($emp[1]);
+   						$tdw = intval($tdw);
+   						$q = 'UPDATE ' . $prefix . '_comments SET';
+   						if (($emp[1] == 9) && ($emp[0] >= 0)) { // Overrated
+   							$q .= ' score=score-1 WHERE tid=\'' . $tdw . '\'';
+   						} elseif (($emp[1] == 10) && ($emp[0] <= 4)) { // Underrated
+   							$q .= ' score=score+1 WHERE tid=\'' . $tdw . '\'';
+   						} elseif (($emp[1] > 4) && ($emp[0] <= 4)) {
+   							$q .= ' score=score+1, reason=\'' . $emp[1] . '\' WHERE tid=\'' . $tdw . '\'';
+   						} elseif (($emp[1] < 5) && ($emp[0] > -1)) {
+   							$q .= ' score=score-1, reason=\'' . $emp[1] . '\' WHERE tid=\'' . $tdw . '\'';
+   						} elseif (($emp[0] == -1) || ($emp[0] == 5)) {
+   							$q .= ' reason=' . $emp[1] . ' WHERE tid=\'' . $tdw . '\'';
+   						}
+   						if (strlen($q) > 20) $db->sql_query($q);
+   					}
+   				}
+   }
 		}
 		Header('Location: modules.php?name=' . $module_name . '&file=article&sid=' . $sid);
 		break;
@@ -251,7 +259,8 @@ switch ($op) {
 }
 //Only functions below this line
 function format_url($comment) {
-	global $nukeurl;
+	$linkpos = null;
+ global $nukeurl;
 	unset($location);
 	$links = array();
 	$hrefs = array();
@@ -504,7 +513,9 @@ function DisplayKids($tid, $mode, $order = 0, $thold = 0, $level = 0, $dummy = 0
 	}
 }
 function DisplayTopic($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0, $level=0, $nokids=0) {
-	global $title, $bgcolor1, $bgcolor2, $bgcolor3, $hr, $user, $datetime, $cookie, $admin, $commentlimit, $anonymous, $anonymousname, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, $acomm, $articlecomm, $db, $module_name, $nukeurl, $admin_file, $userinfo, $user_prefix;
+	$r_sid = null;
+ $r_tid = null;
+ global $title, $bgcolor1, $bgcolor2, $bgcolor3, $hr, $user, $datetime, $cookie, $admin, $commentlimit, $anonymous, $anonymousname, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, $acomm, $articlecomm, $db, $module_name, $nukeurl, $admin_file, $userinfo, $user_prefix;
 	cookiedecode($user);
 	getusrinfo($user);
 	include_once('header.php');
@@ -818,9 +829,9 @@ function reply($pid, $sid, $mode, $order, $thold) {
 		wysiwyg_textarea('comment', '', 'NukeUser', '50', '12');
 		if (!isset($advanced_editor) || $advanced_editor == 0) {
 			echo '<p>'. _ALLOWEDHTML . '<br />';
-			while (list($key) = each($AllowableHTML)) {
-				echo ' &lt;' . $key . '&gt;';
-			}
+			foreach (array_keys($AllowableHTML) as $key) {
+       echo ' &lt;' . $key . '&gt;';
+   }
 			echo '</p>';
 		}
 		if (is_user($user) AND ($anonpost == 1)) {
