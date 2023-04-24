@@ -23,7 +23,7 @@ if ($op == 'nfSaveConfig')
   $xfeedcount_body = strip_tags(html_entity_decode($xfeedcount_body, ENT_QUOTES, _CHARSET));
   $xfeedcount_text = strip_tags(html_entity_decode($xfeedcount_text, ENT_QUOTES, _CHARSET));
   $xfeedburner_url = strip_tags(html_entity_decode($xfeedburner_url, ENT_QUOTES, _CHARSET));
-  if(!@get_magic_quotes_gpc())
+  if (!function_exists('get_magic_quotes_runtime'))
   {
     $xfeedcount_body  = addslashes($xfeedcount_body);
     $xfeedcount_text  = addslashes($xfeedcount_text);
@@ -40,7 +40,7 @@ if ($op == 'nfDisableMod' or $op == 'nfEnableMod')
 {
   $contentName  = strip_tags(html_entity_decode($contentName, ENT_QUOTES, _CHARSET));
   $module_name  = strip_tags(html_entity_decode($module_name, ENT_QUOTES, _CHARSET));
-  if(!@get_magic_quotes_gpc())
+  if (!function_exists('get_magic_quotes_runtime'))
   {
     $contentName  = addslashes($contentName);
     $module_name  = addslashes($module_name);
