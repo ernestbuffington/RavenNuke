@@ -17,25 +17,25 @@ if(!defined('ADMIN_FILE')) {
 }
 
 $module_name = basename(substr(__FILE__, 0, -15));
-@require_once('includes/nukeSEO/nukeSEOfunctions.php');
+require_once('includes/nukeSEO/nukeSEOfunctions.php');
 seoGetLang($module_name);
 
 switch($op) {
 	case 'nukeFEED':
 	case 'nfEditFeed':
 	case 'nfSaveFeed':
-  case 'nfEditFeedSave':
+    case 'nfEditFeedSave':
 	case 'nfDeleteFeed':
-  case 'nfDeleteConfirm':
+    case 'nfDeleteConfirm':
 	case 'nfConfigMod':
 	case 'nfSaveConfig':
 	case 'nfDisableMod':
 	case 'nfEnableMod':
-  case 'nfDelSubscript':
+    case 'nfDelSubscript':
 	case 'nfEditSubscript':
 	case 'nfSaveSubscript':
-		include("modules/$module_name/admin/index.php");
-		break;
+	include("modules/$module_name/admin/index.php");
+	break;
 }
 
 ?>
