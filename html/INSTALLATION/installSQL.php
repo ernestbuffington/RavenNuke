@@ -89,7 +89,7 @@ if(!isset($_GET['setup'])) $_GET['setup'] = '';
 <script type="text/javascript" src="modalfiles/modal.js"></script>
 <script type="text/javascript">
 	//<![CDATA[
-	/* DHTML Window Widget© Dynamic Drive Visit http://www.dynamicdrive.com/ for full source code
+	/* DHTML Window Widget? Dynamic Drive Visit http://www.dynamicdrive.com/ for full source code
 	* DHTML Modal window Dynamic Drive Visit http://www.dynamicdrive.com/ for full source code */
 	//]]>
 </script>
