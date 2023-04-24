@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/23/2023 1:27 AM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 global $admin_file;
 if(!isset($admin_file)) { $admin_file = 'admin'; }
 if(!defined('ADMIN_FILE')) {
@@ -32,11 +36,11 @@ if ($op == 'nfSaveSubscript')
   if ($url == '') $error .= _nF_URLREQUIRED.'<br />';
   if ($tagline == '') $error .= _nF_TAGLINEREQUIRED.'<br />';
   if ($error == '') {
-    $name     = strip_tags(html_entity_decode($name, ENT_QUOTES, _CHARSET));
-    $tagline  = strip_tags(html_entity_decode($tagline, ENT_QUOTES, _CHARSET));
-    $image    = strip_tags(html_entity_decode($image, ENT_QUOTES, _CHARSET));
-    $icon     = strip_tags(html_entity_decode($icon, ENT_QUOTES, _CHARSET));
-    $url      = strip_tags(html_entity_decode($url, ENT_QUOTES, _CHARSET));
+    $name     = strip_tags(html_entity_decode((string) $name, ENT_QUOTES, _CHARSET));
+    $tagline  = strip_tags(html_entity_decode((string) $tagline, ENT_QUOTES, _CHARSET));
+    $image    = strip_tags(html_entity_decode((string) $image, ENT_QUOTES, _CHARSET));
+    $icon     = strip_tags(html_entity_decode((string) $icon, ENT_QUOTES, _CHARSET));
+    $url      = strip_tags(html_entity_decode((string) $url, ENT_QUOTES, _CHARSET));
     if(!@get_magic_quotes_gpc()) {
       $name     = addslashes($name);
       $tagline  = addslashes($tagline);
@@ -82,11 +86,11 @@ if ($op == 'nfEditSubscript' and $sid > 0)
 else
 {
   if(!@get_magic_quotes_gpc()) {
-    if (strlen($name) > 0)    $name     = stripslashes($name);
-    if (strlen($tagline) > 0) $tagline  = stripslashes($tagline);
-    if (strlen($image) > 0)   $image    = stripslashes($image);
-    if (strlen($icon) > 0)    $icon     = stripslashes($icon);
-    if (strlen($url) > 0)     $url      = stripslashes($url);
+    if (strlen((string) $name) > 0)    $name     = stripslashes((string) $name);
+    if (strlen((string) $tagline) > 0) $tagline  = stripslashes((string) $tagline);
+    if (strlen((string) $image) > 0)   $image    = stripslashes((string) $image);
+    if (strlen((string) $icon) > 0)    $icon     = stripslashes((string) $icon);
+    if (strlen((string) $url) > 0)     $url      = stripslashes((string) $url);
   }
 }
 if ($sid > 0)
