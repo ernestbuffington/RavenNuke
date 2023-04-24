@@ -8,181 +8,185 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventListener.php';
-
 /**
- * Redudantly and rotationally uses several Transports when sending.
- * 
- * @package Swift
- * @subpackage Transport
+ * Redundantly and rotationally uses several Transports when sending.
+ *
  * @author Chris Corbyn
  */
 class Swift_Transport_LoadBalancedTransport implements Swift_Transport
 {
-  
-  /** Transports which are deemed useless */
-  private $_deadTransports = array();
-  
-  /**
-   * The Transports which are used in rotation.
-   * 
-   * @var array Swift_Transport
-   * @access protected
-   */
-  protected $_transports = array();
-  
-  /**
-   * Creates a new LoadBalancedTransport.
-   */
-  public function __construct()
-  {
-  }
-  
-  /**
-   * Set $transports to delegate to.
-   * 
-   * @param array $transports Swift_Transport
-   */
-  public function setTransports(array $transports)
-  {
-    $this->_transports = $transports;
-    $this->_deadTransports = array();
-  }
-  
-  /**
-   * Get $transports to delegate to.
-   * 
-   * @return array Swift_Transport
-   */
-  public function getTransports(array $transports)
-  {
-    return array_merge($this->_transports, $this->_deadTransports);
-  }
-  
-  /**
-   * Test if this Transport mechanism has started.
-   * 
-   * @return boolean
-   */
-  public function isStarted()
-  {
-    return count($this->_transports) > 0;
-  }
-  
-  /**
-   * Start this Transport mechanism.
-   */
-  public function start()
-  {
-    $this->_transports = array_merge($this->_transports, $this->_deadTransports);
-  }
-  
-  /**
-   * Stop this Transport mechanism.
-   */
-  public function stop()
-  {
-    foreach ($this->_transports as $transport)
+    /**
+     * Transports which are deemed useless.
+     *
+     * @var Swift_Transport[]
+     */
+    private $deadTransports = [];
+
+    /**
+     * The Transports which are used in rotation.
+     *
+     * @var Swift_Transport[]
+     */
+    protected $transports = [];
+
+    /**
+     * The Transport used in the last successful send operation.
+     *
+     * @var Swift_Transport
+     */
+    protected $lastUsedTransport = null;
+
+    // needed as __construct is called from elsewhere explicitly
+    public function __construct()
     {
-      $transport->stop();
     }
-  }
-  
-  /**
-   * Send the given Message.
-   * 
-   * Recipient/sender data will be retreived from the Message API.
-   * The return value is the number of recipients who were accepted for delivery.
-   * 
-   * @param Swift_Mime_Message $message
-   * @param string[] &$failedRecipients to collect failures by-reference
-   * @return int
-   */
-  public function send(Swift_Mime_Message $message, &$failedRecipients = null)
-  {
-    $maxTransports = count($this->_transports);
-    $sent = 0;
-    
-    for ($i = 0; $i < $maxTransports
-      && $transport = $this->_getNextTransport(); ++$i)
+
+    /**
+     * Set $transports to delegate to.
+     *
+     * @param Swift_Transport[] $transports
+     */
+    public function setTransports(array $transports)
     {
-      try
-      {
-        if (!$transport->isStarted())
-        {
-          $transport->start();
+        $this->transports = $transports;
+        $this->deadTransports = [];
+    }
+
+    /**
+     * Get $transports to delegate to.
+     *
+     * @return Swift_Transport[]
+     */
+    public function getTransports()
+    {
+        return array_merge($this->transports, $this->deadTransports);
+    }
+
+    /**
+     * Get the Transport used in the last successful send operation.
+     *
+     * @return Swift_Transport
+     */
+    public function getLastUsedTransport()
+    {
+        return $this->lastUsedTransport;
+    }
+
+    /**
+     * Test if this Transport mechanism has started.
+     *
+     * @return bool
+     */
+    public function isStarted()
+    {
+        return \count($this->transports) > 0;
+    }
+
+    /**
+     * Start this Transport mechanism.
+     */
+    public function start()
+    {
+        $this->transports = array_merge($this->transports, $this->deadTransports);
+    }
+
+    /**
+     * Stop this Transport mechanism.
+     */
+    public function stop()
+    {
+        foreach ($this->transports as $transport) {
+            $transport->stop();
         }
-        if ($sent = $transport->send($message, $failedRecipients))
-        {
-          break;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function ping()
+    {
+        foreach ($this->transports as $transport) {
+            if (!$transport->ping()) {
+                $this->killCurrentTransport();
+            }
         }
-      }
-      catch (Swift_TransportException $e)
-      {
-        $this->_killCurrentTransport();
-      }
+
+        return \count($this->transports) > 0;
     }
-    
-    if (count($this->_transports) == 0)
+
+    /**
+     * Send the given Message.
+     *
+     * Recipient/sender data will be retrieved from the Message API.
+     * The return value is the number of recipients who were accepted for delivery.
+     *
+     * @param string[] $failedRecipients An array of failures by-reference
+     *
+     * @return int
+     */
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
-      throw new Swift_TransportException(
-        'All Transports in LoadBalancedTransport failed, or no Transports available'
-        );
+        $maxTransports = \count($this->transports);
+        $sent = 0;
+        $this->lastUsedTransport = null;
+
+        for ($i = 0; $i < $maxTransports
+            && $transport = $this->getNextTransport(); ++$i) {
+            try {
+                if (!$transport->isStarted()) {
+                    $transport->start();
+                }
+                if ($sent = $transport->send($message, $failedRecipients)) {
+                    $this->lastUsedTransport = $transport;
+                    break;
+                }
+            } catch (Swift_TransportException $e) {
+                $this->killCurrentTransport();
+            }
+        }
+
+        if (0 == \count($this->transports)) {
+            throw new Swift_TransportException('All Transports in LoadBalancedTransport failed, or no Transports available');
+        }
+
+        return $sent;
     }
-    
-    return $sent;
-  }
-  
-  /**
-   * Register a plugin.
-   * 
-   * @param Swift_Events_EventListener $plugin
-   */
-  public function registerPlugin(Swift_Events_EventListener $plugin)
-  {
-    foreach ($this->_transports as $transport)
+
+    /**
+     * Register a plugin.
+     */
+    public function registerPlugin(Swift_Events_EventListener $plugin)
     {
-      $transport->registerPlugin($plugin);
+        foreach ($this->transports as $transport) {
+            $transport->registerPlugin($plugin);
+        }
     }
-  }
-  
-  // -- Protected methods
-  
-  /**
-   * Rotates the transport list around and returns the first instance.
-   * 
-   * @return Swift_Transport
-   * @access protected
-   */
-  protected function _getNextTransport()
-  {
-    if ($next = array_shift($this->_transports))
+
+    /**
+     * Rotates the transport list around and returns the first instance.
+     *
+     * @return Swift_Transport
+     */
+    protected function getNextTransport()
     {
-      $this->_transports[] = $next;
+        if ($next = array_shift($this->transports)) {
+            $this->transports[] = $next;
+        }
+
+        return $next;
     }
-    return $next;
-  }
-  
-  /**
-   * Tag the currently used (top of stack) transport as dead/useless.
-   * 
-   * @access protected
-   */
-  protected function _killCurrentTransport()
-  {
-    if ($transport = array_pop($this->_transports))
+
+    /**
+     * Tag the currently used (top of stack) transport as dead/useless.
+     */
+    protected function killCurrentTransport()
     {
-      try
-      {
-        $transport->stop();
-      }
-      catch (Exception $e)
-      {
-      }
-      $this->_deadTransports[] = $transport;
+        if ($transport = array_pop($this->transports)) {
+            try {
+                $transport->stop();
+            } catch (Exception $e) {
+            }
+            $this->deadTransports[] = $transport;
+        }
     }
-  }
-  
 }

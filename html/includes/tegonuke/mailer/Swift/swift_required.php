@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-/*
- * Autoloader and dependency injection initialization for Swift Mailer.
- */
+require __DIR__.'/classes/Swift.php';
 
-//Load Swift utility class
-require_once dirname(__FILE__) . '/classes/Swift.php';
+Swift::registerAutoload(function () {
+    // Load in dependency maps
+    require __DIR__.'/dependency_maps/cache_deps.php';
+    require __DIR__.'/dependency_maps/mime_deps.php';
+    require __DIR__.'/dependency_maps/message_deps.php';
+    require __DIR__.'/dependency_maps/transport_deps.php';
 
-//Start the autoloader
-Swift::registerAutoload();
-
-//Load the init script to set up dependency injection
-require_once dirname(__FILE__) . '/swift_init.php';
+    // Load in global library preferences
+    require __DIR__.'/preferences.php';
+});
