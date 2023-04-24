@@ -668,6 +668,19 @@ INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 4, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 5, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 6, -1);
 
+DROP TABLE IF EXISTS $prefix.`_spam_log`;
+CREATE TABLE IF NOT EXISTS $prefix.`_spam_log` (
+  `slid` int(11) NOT NULL AUTO_INCREMENT,
+  `request` char(6) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `ip` int(10) UNSIGNED NOT NULL,
+  `matched` varchar(255) NOT NULL,
+  `added` int(11) NOT NULL,
+  `count` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`slid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS $prefix.`_seo_config`;
 CREATE TABLE $prefix.`_seo_config` (`config_type` varchar(150) NOT NULL, `config_name` varchar(150) NOT NULL, `config_value` text NOT NULL, PRIMARY KEY  (`config_type`,`config_name`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
