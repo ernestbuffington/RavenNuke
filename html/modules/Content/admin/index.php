@@ -1101,15 +1101,16 @@ the Free Software Foundation; either version 2 of the License, or (at your optio
 
 <p>Special thanks to the following people/entities for their great and valuable input and support. Thank you for helping this happen...</p>
 
-<p>* <span class="thick">Francisco Burzi</span>: Creator of the original module &amp; former PHP-Nuke developer (<a href="http://www.phpnuke.org">www.phpnuke.org</a>)<br />
-* <span class="thick">Chatserv</span>: Creator of the Chatserv Content Hack for PHP-Nuke 7.5 (<a href="http://www.nukeresources.com">www.nukeresources.com</a>)<br />
-* <span class="thick">Silvestre</span>: Designer of old icons (<a href="http://www.silvestre.com.ar">www.silvestre.com.ar</a>)<br />
-* <span class="thick">Trubador</span>: Bugfixing (<a href="http://yrf.org.uk">http://yrf.org.uk</a>)<br />
-* <span class="thick">THoTH</span>: Bugfixing and brainstorming (<a href="http://www.book-of-thoth.com">http://www.book-of-thoth.com</a>)<br />
-* <span class="thick">Vecchio Joe</span>: Heavy testing, bugfixing, brainstorming and italian translation (<a href="http://vecchiojoe.it">http://vecchiojoe.it</a>)<br />
-* <span class="thick">GANYANCI</span>: Heavy testing, bugfixing and turkish translation (<a href="http://alberbalci.com">http://alperbalci.com</a>)<br />
-* <span class="thick">Function Design &amp; Development Studio</span>: Creators of the new icon theme (<a href="http://www.wefunction.com">http://www.wefunction.com</a>)<br />
-* <span class="thick">RavenNuke Team</span>: For including the module as part of your distro and for your feedback and bug reporting/fixing (<a href="https://www.ravenphpscripts.com">www.ravenphpscripts.com</a>)<br />
+<p>* <span class="thick">Francisco Burzi</span>: Creator of the original module &amp; former PHP-Nuke developer (<a href="https://www.phpnuke.org" target="_blank">www.phpnuke.org</a>)<br />
+* <span class="thick">Chatserv</span>: Creator of the Chatserv Content Hack for PHP-Nuke 7.5 (former websit: www.nukeresources.com)<br />
+* <span class="thick">Silvestre</span>: Designer of old icons (former websit: www.silvestre.com.ar)<br />
+* <span class="thick">Trubador</span>: Bugfixing (former websit: yrf.org.uk)<br />
+* <span class="thick">THoTH</span>: Bugfixing and brainstorming (former websit: www.book-of-thoth.com)<br />
+* <span class="thick">TheGhost</span>: Bugfixing and brainstorming (<a href="https://www.theghost.86it.us" target="_blank">https://www.theghost.86it.us</a>)<br />
+* <span class="thick">Vecchio Joe</span>: Heavy testing, bugfixing, brainstorming and italian translation (former websit: vecchiojoe.it)<br />
+* <span class="thick">GANYANCI</span>: Heavy testing, bugfixing and turkish translation (former websit: alberbalci.com)<br />
+* <span class="thick">Function Design &amp; Development Studio</span>: Creators of the new icon theme (former websit: www.wefunction.com)<br />
+* <span class="thick">RavenNuke Team</span>: For including the module as part of your distro and for your feedback and bug reporting/fixing (<a href="https://www.ravenphpscripts.com" target="_blank">www.ravenphpscripts.com</a>)<br />
 * <span class="thick">All Nukers around the world</span>: you are who made this possible</p>
 <p style="text-align: center;"><span class="thick">'._CP_GOBACK.'</span></p>';
 CloseTable();
