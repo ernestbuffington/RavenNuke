@@ -668,6 +668,15 @@ INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 4, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 5, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 6, -1);
 
+DROP TABLE IF EXISTS $prefix.`_spam_whitelist`;
+CREATE TABLE IF NOT EXISTS $prefix.`_spam_whitelist` (
+  `wlid` int(11) NOT NULL AUTO_INCREMENT,
+  `wltype` char(1) NOT NULL,
+  `wlvalue` varchar(255) NOT NULL,
+  PRIMARY KEY (`wlid`),
+  KEY `wltype` (`wltype`,`wlvalue`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS $prefix.`_spam_log`;
 CREATE TABLE IF NOT EXISTS $prefix.`_spam_log` (
   `slid` int(11) NOT NULL AUTO_INCREMENT,
