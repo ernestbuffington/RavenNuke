@@ -1,23 +1,24 @@
 <?php
 /**
  *
- * @package RavenNuke 2.5
+ * @package RavenNuke 2.5.x
  * @subpackage Core
  * @version $Id$
  * @copyright (c) 2011 Raven Web Services, LLC
- * @link http://www.ravennuke.com
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link https://www.ravennuke.com
+ * @license https://opensource.org/licenses/gpl-license.php GNU Public License
  *
  * PHP-NUKE: Advanced Content Management System
  * Copyright (c) 2002 by Francisco Burzi
- * http://phpnuke.org
+ * https://www.phpnuke.coders.exchange
  *
  * Additional Security and Code Cleanup for Patched 3.1
  * Commited by the Nuke Patched Development Team 2005
  * chatserv, Evaders99, Quake
- * http://www.nukeresources.com - Download location
- * http://www.nukefixes.com - Development location
- * http://sourceforge.net/projects/nukepatched/ - CVS Last file update: 30/07/05
+ * former website: https://www.nukeresources.com - Download location
+ * former website: https://www.nukefixes.com - Development location
+ * https://sourceforge.net/projects/nukepatched/ - CVS Last file update: 30/07/05
+ * chatserv: https://sourceforge.net/u/chatserv/profile/
  *
  * Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:02 PM
  * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
@@ -30,19 +31,19 @@
 
 /**
  * End the transaction
-*/
+ */
 if (!defined('END_TRANSACTION')) {
 	define('END_TRANSACTION', 2);
 }
 
 /**
  * Get PHP Version
-*/
+ */
 $phpver = phpversion();
 
 /**
  * convert superglobals - Modified by Raven 5/12/2006 - from http://www.php.net/manual/en/language.variables.predefined.php
-*/
+ */
 if (!isset($_SERVER)) {
 	$_GET = &$HTTP_GET_VARS;
 	$_POST = &$HTTP_POST_VARS;
@@ -55,7 +56,7 @@ $PHP_SELF = $_SERVER['PHP_SELF'];
 
 /**
  * After doing those superglobals we can now use one and check if this file isnt being accessed directly
-*/
+ */
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: index.php');
 	exit('Access Denied');
@@ -79,7 +80,7 @@ if (!ini_get('register_globals')) {
 
 /**
  * This block of code makes sure $admin and $user are COOKIES
-*/
+ */
 if ((isset($admin) && $admin != $_COOKIE['admin']) OR (isset($user) && $user != $_COOKIE['user'])) {
 	die('Illegal Operation');
 }
@@ -110,7 +111,7 @@ if (!function_exists('stripos')) {
 
 /**
  * GFX Code  v1.0.0
-*/
+ */
 define('GDSUPPORT', extension_loaded('gd'));
 if (function_exists('imagecreatetruecolor') && function_exists('imageftbbox')) {
 	define('VISUAL_CAPTCHA',true);
@@ -131,7 +132,7 @@ if (isset($user) && $user == $_COOKIE['user']) {
 //This isn't used do we need it?
 /**
  * Die message for not allowed HTML tags
-*/
+ */
 define('_HTMLTAGSNOTALLOWED','The html tags you attempted to use are not allowed.');
 define('_MAINFILEGOBACK','Go Back');
 $htmltags  = '<div class="text-center"><img src="images/logo.gif" alt="" /><br /><br /><span class="thick">';
@@ -151,7 +152,7 @@ require_once dirname(__FILE__) . '/config.php';
 /**
  * Error reporting, to be set in rnconfig.php
  * Default is error_reporting(E_ALL^E_NOTICE);
-*/
+ */
 error_reporting($error_reporting);
 if ($display_errors) {
 	ini_set('display_errors', 1);
@@ -212,7 +213,7 @@ include_once NUKE_INCLUDE_DIR . 'tegonuke/mailer/mailer.php';
 require_once NUKE_INCLUDE_DIR . 'nukesentinel.php';
 /**
  * For RNYA to check for suspended users, TOS, etc.
-*/
+ */
 require_once NUKE_MODULES_DIR . 'Your_Account/includes/mainfileend.php';
 
 if ((isset($name) && isset($file)) && ($name == 'Forums' && $file == 'modcp')) {
@@ -274,14 +275,14 @@ $pagetitle = '';
 
 /**
  * GFX Code  v1.0.0
-*/
+ */
 include_once NUKE_INCLUDE_DIR . 'gfx_check.php';
 
 /**
  * WYSIWYG class
  *
  * Needs to be before theme is included.
-*/
+ */
 require_once NUKE_CLASSES_DIR . 'class.wysiwyg.php';
 
 if (!defined('FORUM_ADMIN')) {
@@ -389,7 +390,7 @@ if (!defined('ADMIN_FILE') && !file_exists('includes/nukesentinel.php')) {
 
 /**
  * GFX Code  v1.0.0
-*/
+ */
 if (isset($gfx)){
 	switch($gfx) {
 		case 'gfx':
@@ -422,14 +423,13 @@ if (!defined('LGL_MENU_HTML')) define('LGL_MENU_HTML', $lgl_legalMenu);
 
 /**
  * Check programmed news
-*/
+ */
 automated_news();
 
 /**
  * Since PHP compiles all the functions first, placing all the functions at the end of
  * the logic helps to better organize the code
-*/
-
+ */
 function get_lang($module) {
 	global $currentlang, $language;
 	$lang = 'english';
@@ -950,7 +950,7 @@ function FixQuotes ($what = '') {
 
 /**
  * text filter
-*/
+ */
 function check_words($Message = '') {
 	global $CensorMode, $CensorReplace, $CensorList;
 	$EditedMessage = $Message;
@@ -976,7 +976,7 @@ function check_words($Message = '') {
 
 /*
  * As of RN 2.4 this function is not used
-*/
+ */
 function delQuotes($string) {
 	/* no recursive function to add quote to an HTML tag if needed */
 	/* and delete duplicate spaces between attribs. */
@@ -1326,7 +1326,7 @@ function getTopics($s_sid) {
  * nukePIE
  * http://www.nukeSEO.com
  * Copyright 2007 by Kevin Guske
-*/
+ */
 include_once NUKE_INCLUDE_DIR . 'nukeSEO/nukeSEOfunctions.php';
 
 function headlines($bid, $side) {
@@ -1600,7 +1600,7 @@ function validIP($ip, $type='') {
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * File: functions/validateemailformat.php
-*/
+ */
 function validateEmailFormat ($email) {
 	// This is based on page 295 of the book 'Mastering Regular Expressions' - the most
 	// definitive RFC-compliant email regex.
@@ -1816,7 +1816,7 @@ function paid() {
 
 /*
  * Added for Advertizing module from v7.8
-*/
+ */
 function makePass() {
 	$con = [];
     $voc = [];
