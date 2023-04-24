@@ -26,7 +26,7 @@
  * Utf8DecodeEncodeToMbConvertEncodingRector (https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode)
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -245,23 +245,20 @@ function renumber_order($mode, $cat = 0)
 //
 // Begin program proper
 //
-if( isset($HTTP_POST_VARS['addforum']) || isset($HTTP_POST_VARS['addcategory']) )
+if( isset($_POST['addforum']) || isset($_POST['addcategory']) )
 {
-        $mode = ( isset($HTTP_POST_VARS['addforum']) ) ? "addforum" : "addcat";
-
+        $mode = ( isset($_POST['addforum']) ) ? "addforum" : "addcat";
         if( $mode == "addforum" )
         {
-                (list($cat_id))[1] = current($HTTP_POST_VARS['addforum']);
-    (list($cat_id))['value'] = current($HTTP_POST_VARS['addforum']);
-    (list($cat_id))[0] = key($HTTP_POST_VARS['addforum']);
-    (list($cat_id))['key'] = key($HTTP_POST_VARS['addforum']);
-    next($HTTP_POST_VARS['addforum']);
-    $cat_id = intval($cat_id);
+                //list($cat_id) = each($_POST['addforum']);
+				foreach (array_keys($_POST['addforum']) as $cat_id)
+                $cat_id = intval($cat_id);
                 //
                 // stripslashes needs to be run on this because slashes are added when the forum name is posted
                 //
-                $forumname = stripslashes($HTTP_POST_VARS['forumname'][$cat_id]);
+               $forumname = stripslashes($_POST['forumname'][$cat_id]);
         }
+
 }
 
 if( !empty($mode) )

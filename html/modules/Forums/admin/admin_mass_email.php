@@ -21,7 +21,7 @@
  * CountOnNullRector (https://3v4l.org/Bndc9)
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -43,7 +43,7 @@ require_once('./pagestart.' . $phpEx);
 // Increase maximum execution time in case of a lot of users, but don't complain about it if it isn't
 // allowed.
 //
-@set_time_limit(1200);
+set_time_limit(1200);
 
 $message = '';
 $subject = '';

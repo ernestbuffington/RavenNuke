@@ -26,7 +26,7 @@
  * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {

@@ -6,7 +6,7 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   $Id: index.php,v 1.40.2.8 2005/09/18 16:17:20 acydburn Exp $
+ *   Id: index.php,v 1.40.2.7 2005/02/21 18:37:02 acydburn Exp
  *
  *
  ***************************************************************************/
@@ -18,22 +18,26 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
- * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:20 PM
+ ***************************************************************************/
+
+/* Applied rules:
+ * ReplaceHttpServerVarsByServerRector (https://blog.tigertech.net/posts/php-5-3-http-server-vars/)
  * CountOnNullRector (https://3v4l.org/Bndc9)
  * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
- * Remove STFU Operators
- ***************************************************************************/
-
-define('IN_PHPBB', 1);
-
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
+define('INSIDE_MOD', 1);
 //
 // Load default header
 //
 $no_page_header = TRUE;
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : realpath(dirname(dirname(__FILE__))).'/';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+require($phpbb_root_path .'extension.inc');
+require($phpbb_root_path .'admin/pagestart.'.$phpEx);
 
 // ---------------
 // Begin functions
@@ -56,7 +60,7 @@ function inarray($needle, $haystack)
 //
 // Generate relevant output
 //
-if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
+if( isset($_GET['pane']) && $_GET['pane'] == 'left' )
 {
         $dir = opendir(".");
 
@@ -65,7 +69,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
         {
                 if( preg_match("/^admin_.*?\." . $phpEx . "$/", $file) )
                 {
-                        include_once($file);
+                        include($file);
                 }
         }
 
@@ -73,7 +77,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         unset($setmodules);
 
-        include_once('./page_header_admin.'.$phpEx);
+        include('./page_header_admin.'.$phpEx);
 
         $template->set_filenames(array(
                 "body" => "admin/index_navigate.tpl")
@@ -81,7 +85,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         $template->assign_vars(array(
                 "U_FORUM_INDEX" => append_sid("index.$phpEx"),
-                "U_FORUM_PREINDEX" => append_sid("modules.$phpEx?name=Forums&amp;file=index"),
+                "U_FORUM_PREINDEX" => append_sid("modules.$phpEx?name=Forums&file=index"),
                 "U_ADMIN_INDEX" => append_sid("index.$phpEx?pane=right"),
 
                 "L_FORUM_INDEX" => $lang['Main_index'],
@@ -92,7 +96,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
         ksort($module);
 
         foreach ($module as $cat => $action_array) {
-            $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
+            $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", (string) $cat);
             $template->assign_block_vars("catrow", array(
                     "ADMIN_CATEGORY" => $cat)
             );
@@ -101,7 +105,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
             foreach ($action_array as $action => $file) {
                 $row_color = ( !($row_count%2) ) ? $theme['td_color1'] : $theme['td_color2'];
                 $row_class = ( !($row_count%2) ) ? $theme['td_class1'] : $theme['td_class2'];
-                $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
+                $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", (string) $action);
                 $template->assign_block_vars("catrow.modulerow", array(
                         "ROW_COLOR" => "#" . $row_color,
                         "ROW_CLASS" => $row_class,
@@ -115,12 +119,12 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         $template->pparse("body");
 
-        include_once('./page_footer_admin.'.$phpEx);
+        include('./page_footer_admin.'.$phpEx);
 }
-elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
+elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 {
 
-        include_once('./page_header_admin.'.$phpEx);
+        include('./page_header_admin.'.$phpEx);
 
         $template->set_filenames(array(
                 "body" => "admin/index_body.tpl")
@@ -168,13 +172,18 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
         $avatar_dir_size = 0;
 
-        if ($avatar_dir = opendir($phpbb_root_path . $board_config['avatar_path']))
+        // This is the variable that points to the path of the avatars
+        // You may need to ajust this to meet your needs ;)
+        $real_avatar_dir = $phpbb_root_path . '../../' . $board_config['avatar_path'];
+		
+	  if (is_dir($real_avatar_dir)){
+        if ($avatar_dir = opendir($real_avatar_dir))
         {
                 while( $file = readdir($avatar_dir) )
                 {
                         if( $file != "." && $file != ".." )
                         {
-                                $avatar_dir_size += filesize($phpbb_root_path . $board_config['avatar_path'] . "/" . $file);
+                                $avatar_dir_size += filesize($real_avatar_dir . "/" . $file);
                         }
                 }
                 closedir($avatar_dir);
@@ -201,9 +210,13 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
         else
         {
                 // Couldn't open Avatar dir.
-                $avatar_dir_size = $lang['Not_available'];
+           $avatar_dir_size = $lang['Not_available'];
         }
-
+	  }
+	  else 
+	  { 
+	    echo 'Your Config Path For The Avatar Directory Is Wrong - The directory you have configured does not exists!';
+	  }
         if($posts_per_day > $total_posts)
         {
                 $posts_per_day = $total_posts;
@@ -225,7 +238,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
         // This code is heavily influenced by a similar routine
         // in phpMyAdmin 2.2.0
         //
-        if( preg_match("/^mysql/", SQL_LAYER) || preg_match("/^mysqli/", SQL_LAYER) )
+        if( preg_match("/^mysql/", (string) SQL_LAYER) )
         {
                 $sql = "SELECT VERSION() AS mysql_version";
                 if($result = $db->sql_query($sql))
@@ -233,9 +246,9 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                         $row = $db->sql_fetchrow($result);
                         $version = $row['mysql_version'];
 
-                        if( preg_match("/^(3\.23|4\.)/", $version) )
+                        if( preg_match("/^(3\.23|4\.)/", (string) $version) )
                         {
-                                $db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$dbname`" : $dbname;
+                                $db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", (string) $version) ) ? "`$dbname`" : $dbname;
 
                                 $sql = "SHOW TABLE STATUS
                                         FROM " . $db_name;
@@ -250,7 +263,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                                                 {
                                                         if( $table_prefix != "" )
                                                         {
-                                                                if( strstr($tabledata_ary[$i]['Name'], (string) $table_prefix) )
+                                                                if( strstr((string) $tabledata_ary[$i]['Name'], (string) $table_prefix) )
                                                                 {
                                                                         $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                                 }
@@ -273,7 +286,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                         $dbsize = $lang['Not_available'];
                 }
         }
-        else if( preg_match("/^mssql/", SQL_LAYER) )
+        else if( preg_match("/^mssql/", (string) SQL_LAYER) )
         {
                 $sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize
                         FROM sysfiles";
@@ -337,7 +350,6 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
         {
                 message_die(GENERAL_ERROR, "Couldn't obtain regd user/online information.", "", __LINE__, __FILE__, $sql);
         }
-        $count_onlinerow_reg = $db->sql_numrows($result);
         $onlinerow_reg = $db->sql_fetchrowset($result);
 
         $sql = "SELECT session_page, session_logged_in, session_time, session_ip, session_start
@@ -349,7 +361,6 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
         {
                 message_die(GENERAL_ERROR, "Couldn't obtain guest user/online information.", "", __LINE__, __FILE__, $sql);
         }
-        $count_onlinerow_guest = $db->sql_numrows($result);
         $onlinerow_guest = $db->sql_fetchrowset($result);
 
         $sql = "SELECT forum_name, forum_id
@@ -368,25 +379,28 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
         $reg_userid_ary = array();
 
-        if($count_onlinerow_reg > 0)
+        if( is_countable($onlinerow_reg) ? count($onlinerow_reg) : 0 )
         {
                 $registered_users = 0;
 
-                for($i = 0; $i < $count_onlinerow_reg; $i++)
+                for($i = 0; $i < (is_countable($onlinerow_reg) ? count($onlinerow_reg) : 0); $i++)
                 {
                         if( !inarray($onlinerow_reg[$i]['user_id'], $reg_userid_ary) )
                         {
                                 $reg_userid_ary[] = $onlinerow_reg[$i]['user_id'];
 
                                 $username = $onlinerow_reg[$i]['username'];
-
+                                if(!isset($onlinerow_reg[$i]['user_allow_viewonline'])) { $onlinerow_reg[$i]['user_allow_viewonline'] = ''; }
                                 if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN )
                                 {
-                                        $registered_users++;
+                                        if(!isset($registered_users)) { $registered_users = 0; }
+										$registered_users++;
                                         $hidden = FALSE;
                                 }
                                 else
+
                                 {
+									    if(!isset($hidden_users)) { $hidden_users = 0; }
                                         $hidden_users++;
                                         $hidden = TRUE;
                                 }
@@ -456,7 +470,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                                         "FORUM_LOCATION" => $location,
                                         "IP_ADDRESS" => $reg_ip,
 
-                                        "U_WHOIS_IP" => "http://www.geektools.com/cgi-bin/proxy.cgi?query=$reg_ip&amp;targetnic=auto",
+                                        "U_WHOIS_IP" => "http://www.geektools.com/cgi-bin/proxy.cgi?query=$reg_ip&targetnic=auto",
                                         "U_USER_PROFILE" => append_sid("admin_users.$phpEx?mode=edit&amp;" . POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
                                         "U_FORUM_LOCATION" => append_sid($location_url))
                                 );
@@ -474,11 +488,11 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
         //
         // Guest users
         //
-        if( $count_onlinerow_guest > 0 )
+        if( is_countable($onlinerow_guest) ? count($onlinerow_guest) : 0 )
         {
                 $guest_users = 0;
 
-                for($i = 0; $i < $count_onlinerow_guest; $i++)
+                for($i = 0; $i < (is_countable($onlinerow_guest) ? count($onlinerow_guest) : 0); $i++)
                 {
                         $guest_userip_ary[] = $onlinerow_guest[$i]['session_ip'];
                         $guest_users++;
@@ -509,6 +523,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                                                 break;
                                         case PAGE_VIEWONLINE:
                                                 $location = $lang['Viewing_online'];
+
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_VIEWMEMBERS:
@@ -548,7 +563,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                                 "FORUM_LOCATION" => $location,
                                 "IP_ADDRESS" => $guest_ip,
 
-                                "U_WHOIS_IP" => "http://www.geektools.com/cgi-bin/proxy.cgi?query=$guest_ip&amp;targetnic=auto",
+                                "U_WHOIS_IP" => "http://www.geektools.com/cgi-bin/proxy.cgi?query=$guest_ip&targetnic=auto",
                                 "U_FORUM_LOCATION" => append_sid($location_url))
                         );
                 }
@@ -560,11 +575,65 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
                         "L_NO_GUESTS_BROWSING" => $lang['No_users_browsing'])
                 );
         }
-
-	# Check for new version
+	// Check for new version
 	$current_version = explode('.', '2' . $board_config['version']);
 	$minor_revision = (int) $current_version[2];
-	$version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . ' ' . sprintf($lang['Current_version_info'], '2' . $board_config['version']) . '</p>';
+
+	$errno = 0;
+	$errstr = $version_info = '';
+
+	if ($fsock = fsockopen('www.phpbb.com', 80, $errno, $errstr))
+	{
+		fputs($fsock, "GET /updatecheck/20x.txt HTTP/1.1\r\n");
+		fputs($fsock, "HOST: www.phpbb.com\r\n");
+		fputs($fsock, "Connection: close\r\n\r\n");
+
+		$get_info = false;
+		while (!feof($fsock))
+		{
+			if ($get_info)
+			{
+				$version_info .= fread($fsock, 1024);
+			}
+			else
+			{
+				if (fgets($fsock, 1024) == "\r\n")
+				{
+					$get_info = true;
+				}
+			}
+		}
+		fclose($fsock);
+
+		$version_info = explode("\n", $version_info);
+		$latest_head_revision = (int) $version_info[0];
+		$latest_minor_revision = (int) $version_info[2];
+		$latest_version = (int) $version_info[0] . '.' . (int) $version_info[1] . '.' . (int) $version_info[2];
+
+		if ($latest_head_revision == 2 && $minor_revision == $latest_minor_revision)
+		{
+			$version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . '</p>';
+		}
+		else
+		{
+			$version_info = '<p style="color:red">' . $lang['Version_not_up_to_date'];
+			$version_info .= '<br />' . sprintf($lang['Latest_version_info'], $latest_version) . sprintf($lang['Current_version_info'], '2' . $board_config['version']) . '</p>';
+		}
+	}
+	else
+	{
+		if ($errstr)
+		{
+			$version_info = '<p style="color:red">' . sprintf($lang['Connect_socket_error'], $errstr) . '</p>';
+		}
+		else
+		{
+			$version_info = '<p>' . $lang['Socket_functions_disabled'] . '</p>';
+		}
+	}
+	
+	$version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
+	
 
 	$template->assign_vars(array(
 		'VERSION_INFO'	=> $version_info,
@@ -573,7 +642,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
         $template->pparse("body");
 
-        include_once('./page_footer_admin.'.$phpEx);
+        include('./page_footer_admin.'.$phpEx);
 
 }
 else
@@ -586,7 +655,6 @@ else
         );
 
         $template->assign_vars(array(
-				'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
                 "S_FRAME_NAV" => append_sid("index.$phpEx?pane=left"),
                 "S_FRAME_MAIN" => append_sid("index.$phpEx?pane=right"))
         );
@@ -596,9 +664,8 @@ else
 
         $template->pparse("body");
 
-        // $db->sql_close();
+        $db->sql_close();
         exit;
 
 }
 
-?>

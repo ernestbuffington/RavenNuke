@@ -26,7 +26,7 @@
 *	This file will be used for modifying the smiley settings for a board.
 **************************************************************************/
 
-define('IN_PHPBB', 1);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 //
 // First we do the setmodules stuff for the admin cp.

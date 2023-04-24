@@ -18,9 +18,13 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
- * Applied rules: Ernest Allen Buffington (TheGhost) 04/21/2023 5:30 PM
- * TernaryToNullCoalescingRector
  ***************************************************************************/
+
+/* Applied rules:
+ * ReplaceHttpServerVarsByServerRector (https://blog.tigertech.net/posts/php-5-3-http-server-vars/)
+ * TernaryToNullCoalescingRector
+ * NullToStrictStringFuncCallArgRector
+ */
 
 if ( !defined('IN_PHPBB') )
 {
@@ -37,9 +41,9 @@ if ( $board_config['gzip_compress'] )
 {
         $phpver = phpversion();
 
-	$useragent = $HTTP_SERVER_VARS['HTTP_USER_AGENT'] ?? getenv('HTTP_USER_AGENT');
+	$useragent = $_SERVER['HTTP_USER_AGENT'] ?? getenv('HTTP_USER_AGENT');
 
-        if ( $phpver >= '4.0.4pl1' && ( strstr($useragent,'compatible') || strstr($useragent,'Gecko') ) )
+        if ( $phpver >= '4.0.4pl1' && ( strstr((string) $useragent,'compatible') || strstr((string) $useragent,'Gecko') ) )
         {
                 if ( extension_loaded('zlib') )
                 {
@@ -48,7 +52,7 @@ if ( $board_config['gzip_compress'] )
         }
         else if ( $phpver > '4.0' )
         {
-                if ( strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip') )
+                if ( strstr((string) $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') )
                 {
                         if ( extension_loaded('zlib') )
                         {
@@ -67,7 +71,7 @@ $template->set_filenames(array(
 );
 
 // Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
-$l_timezone = explode('.', $board_config['board_timezone']);
+$l_timezone = explode('.', (string) $board_config['board_timezone']);
 $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 
 //
@@ -77,7 +81,7 @@ $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0)
 //
 $template->assign_vars(array(
         'SITENAME' => $board_config['sitename'],
-        'PAGE_TITLE' => $page_title,
+        'PAGE_TITLE' => $page_title ?? '',
 
         'L_ADMIN' => $lang['Admin'],
         'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
@@ -137,7 +141,7 @@ $template->assign_vars(array(
 
 // Work around for "current" Apache 2 + PHP module which seems to not
 // cope with private cache control setting
-if (!empty($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Apache/2'))
+if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr((string) $_SERVER['SERVER_SOFTWARE'], 'Apache/2'))
 {
 	header ('Cache-Control: no-cache, pre-check=0, post-check=0');
 }
@@ -150,4 +154,4 @@ header ('Pragma: no-cache');
 
 $template->pparse('header');
 
-?>
+

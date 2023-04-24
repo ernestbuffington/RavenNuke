@@ -25,7 +25,7 @@
  * WhileEachToForeachRector (https://wiki.php.net/rfc/deprecations_php_7_2#each)
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {

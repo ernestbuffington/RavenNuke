@@ -12,7 +12,7 @@
 
 /**
 */
-define('IN_PHPBB', true);
+defined('IN_PHPBB') or define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
