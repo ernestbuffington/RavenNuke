@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/23/2023 1:12 AM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 global $admin_file;
 if(!isset($admin_file)) { $admin_file = 'admin'; }
 if(!defined('ADMIN_FILE')) {
@@ -20,9 +24,9 @@ if ($op == 'nfSaveConfig')
   $xuse_fb         = intval($xuse_fb);
   $xshow_circgraph = intval($xshow_circgraph);
   $xshow_feedcount = intval($xshow_feedcount);
-  $xfeedcount_body = strip_tags(html_entity_decode($xfeedcount_body, ENT_QUOTES, _CHARSET));
-  $xfeedcount_text = strip_tags(html_entity_decode($xfeedcount_text, ENT_QUOTES, _CHARSET));
-  $xfeedburner_url = strip_tags(html_entity_decode($xfeedburner_url, ENT_QUOTES, _CHARSET));
+  $xfeedcount_body = strip_tags(html_entity_decode((string) $xfeedcount_body, ENT_QUOTES, _CHARSET));
+  $xfeedcount_text = strip_tags(html_entity_decode((string) $xfeedcount_text, ENT_QUOTES, _CHARSET));
+  $xfeedburner_url = strip_tags(html_entity_decode((string) $xfeedburner_url, ENT_QUOTES, _CHARSET));
   if (!function_exists('get_magic_quotes_runtime'))
   {
     $xfeedcount_body  = addslashes($xfeedcount_body);
@@ -38,8 +42,8 @@ if ($op == 'nfSaveConfig')
 }
 if ($op == 'nfDisableMod' or $op == 'nfEnableMod') 
 {
-  $contentName  = strip_tags(html_entity_decode($contentName, ENT_QUOTES, _CHARSET));
-  $module_name  = strip_tags(html_entity_decode($module_name, ENT_QUOTES, _CHARSET));
+  $contentName  = strip_tags(html_entity_decode((string) $contentName, ENT_QUOTES, _CHARSET));
+  $module_name  = strip_tags(html_entity_decode((string) $module_name, ENT_QUOTES, _CHARSET));
   if (!function_exists('get_magic_quotes_runtime'))
   {
     $contentName  = addslashes($contentName);
