@@ -182,6 +182,14 @@ if (file_exists(NUKE_BASE_DIR . 'includes/vendor/autoload.php')) {
   require_once NUKE_BASE_DIR . 'includes/vendor/autoload.php';
 }
 
+/**
+ * Rector Vendor Libraries
+ * Ernest Allen Buffington - 04/23/2023 10:39 AM
+ */
+if (file_exists(NUKE_BASE_DIR . 'vendor/autoload.php')) {
+  require_once NUKE_BASE_DIR . 'vendor/autoload.php';
+}
+
 $result = $db->sql_query("SELECT * FROM `" . $prefix . "_config` LIMIT 0,1");
 $nuke_config = $db->sql_fetchrow($result);
 
