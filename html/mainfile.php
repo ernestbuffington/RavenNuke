@@ -1537,9 +1537,10 @@ function get_theme($refresh = false) {
 		return $theme;
 	}
 
+	$user2 = [];
 	$user2 = explode(':', base64_decode(addslashes($user)));
 	$user_id = intval($user2[0]);
-	if($user2[9]) {
+	if(isset($user2[9])) {
 		if(!file_exists('themes/' . $user2[9] . '/theme.php')) {
 			$theme = $Default_Theme;
 		} else {
