@@ -12,9 +12,9 @@
 /*                                                                      */
 /************************************************************************/
 /********************************************************************/
-/* NukeSentinel(tm)                                                 */
-/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
-/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* NukeSentinel™                                                    */
+/* By: NukeScripts(tm) (https://www.nukescripts.coders.exchange)    */
+/* Copyright © 2000-2023 by NukeScripts™                            */
 /* See CREDITS.txt for ALL contributors                             */
 /********************************************************************/
 /************************************************************************/
