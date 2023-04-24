@@ -41,7 +41,7 @@ if ($op == 'nfSaveSubscript')
     $image    = strip_tags(html_entity_decode((string) $image, ENT_QUOTES, _CHARSET));
     $icon     = strip_tags(html_entity_decode((string) $icon, ENT_QUOTES, _CHARSET));
     $url      = strip_tags(html_entity_decode((string) $url, ENT_QUOTES, _CHARSET));
-    if(!@get_magic_quotes_gpc()) {
+    if (!function_exists('get_magic_quotes_runtime')) {
       $name     = addslashes($name);
       $tagline  = addslashes($tagline);
       $image    = addslashes($image);
@@ -85,7 +85,7 @@ if ($op == 'nfEditSubscript' and $sid > 0)
 }
 else
 {
-  if(!@get_magic_quotes_gpc()) {
+  if (!function_exists('get_magic_quotes_runtime')) {
     if (strlen((string) $name) > 0)    $name     = stripslashes((string) $name);
     if (strlen((string) $tagline) > 0) $tagline  = stripslashes((string) $tagline);
     if (strlen((string) $image) > 0)   $image    = stripslashes((string) $image);
