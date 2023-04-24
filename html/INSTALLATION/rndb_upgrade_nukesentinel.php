@@ -566,7 +566,7 @@ function doupdate($config_value) {
 						$harvesterlist[$i+1] = "";
 					}
 					if($harvesterlist[$i] > "") {
-						if(!get_magic_quotes_runtime()) {
+						if (!function_exists('get_magic_quotes_runtime')) {
 							$harvesterlist[$i] = addslashes($harvesterlist[$i]);
 						}
 						$result = $db->sql_query("INSERT INTO `".$prefix."_nsnst_harvesters` (`harvester`) VALUES ('".$harvesterlist[$i]."')");
@@ -606,7 +606,7 @@ function doupdate($config_value) {
 						$refererlist[$i+1] = "";
 					}
 					if($refererlist[$i] > "") {
-						if(!get_magic_quotes_runtime()) {
+						if (!function_exists('get_magic_quotes_runtime')) {
 							$refererlist[$i] = addslashes($refererlist[$i]);
 						}
 						$result = $db->sql_query("INSERT INTO `".$prefix."_nsnst_referers` (`referer`) VALUES ('".$refererlist[$i]."')");
@@ -647,7 +647,7 @@ function doupdate($config_value) {
 						$stringlist[$i+1] = "";
 					}
 					if($stringlist[$i] > "") {
-						if(!get_magic_quotes_runtime()) {
+						if (!function_exists('get_magic_quotes_runtime')) {
 							$stringlist[$i] = addslashes($stringlist[$i]);
 						}
 						$result = $db->sql_query("INSERT INTO `".$prefix."_nsnst_strings` (`string`) VALUES ('".$stringlist[$i]."')");

@@ -8,7 +8,7 @@
 /********************************************************/
 
 if(!defined('NUKESENTINEL_ADMIN')) { header("Location: ../../../".$admin_file.".php"); }
-if(!@get_magic_quotes_gpc()) { $string = addslashes($string); }
+if (!function_exists('get_magic_quotes_runtime')) { $string = addslashes($string); }
 $testnum1 = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_strings` WHERE `string`='$string'"));
 if($testnum1 > 0) {
   $pagetitle = _AB_NUKESENTINEL.": "._AB_ADDSTRINGERROR;

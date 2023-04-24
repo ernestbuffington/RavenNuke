@@ -414,7 +414,7 @@ function ConfigSave($xsitename,$xnukeurl,$xsite_logo,$xslogan,$xstartdate,$xadmi
 	$xslogan = htmlspecialchars($xslogan, ENT_QUOTES, _CHARSET);
 	$xbackend_title = htmlspecialchars($xbackend_title, ENT_QUOTES, _CHARSET);
 	$xnotify_subject = htmlspecialchars($xnotify_subject, ENT_QUOTES, _CHARSET);
-	if (@get_magic_quotes_gpc() == 0) { //Magic quotes are not on, so need to escape these text entry fields:
+	if (!function_exists('get_magic_quotes_runtime')) { //Magic quotes are not on, so need to escape these text entry fields:
 		$xfoot1 = addslashes($xfoot1);
 		$xfoot2 = addslashes($xfoot2);
 		$xfoot3 = addslashes($xfoot3);

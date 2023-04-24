@@ -30,7 +30,7 @@ $tidinfo['user_agent'] = htmlentities($tidinfo['user_agent'], ENT_QUOTES);
 $tidinfo['notes'] = str_replace("<br />", "\r\n", $tidinfo['notes']);
 $tidinfo['notes'] = str_replace("<br />", "\r\n", $tidinfo['notes']);
 $tidinfo['notes'] = htmlentities($tidinfo['notes'], ENT_QUOTES);
-if(!get_magic_quotes_gpc()) {
+if (!function_exists('get_magic_quotes_runtime')) {
   $tidinfo['notes'] = addslashes($tidinfo['notes']);
   $tidinfo['username'] = addslashes($tidinfo['username']);
 }

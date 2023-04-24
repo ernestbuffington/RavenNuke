@@ -39,7 +39,7 @@ function abget_countrytitle($c2c){
 
 function absave_config($config_name, $config_value){
   global $prefix, $db;
-  if(!@get_magic_quotes_gpc()) {
+  if (!function_exists('get_magic_quotes_runtime')) {
 	 $config_name = addslashes($config_name);
 	 $config_value = addslashes($config_value);
   }

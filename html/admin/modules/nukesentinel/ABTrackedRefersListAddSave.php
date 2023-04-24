@@ -8,7 +8,7 @@
 /********************************************************/
 
 if(!defined('NUKESENTINEL_ADMIN')) { header("Location: ../../../".$admin_file.".php"); }
-if(!@get_magic_quotes_gpc()) { $referer = addslashes($referer); }
+if (!function_exists('get_magic_quotes_runtime')) { $referer = addslashes($referer); }
 $testnum1 = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_referers` WHERE `referer`='$referer'"));
 if($testnum1 > 0) {
   $pagetitle = _AB_NUKESENTINEL.": "._AB_ADDREFERERERROR;

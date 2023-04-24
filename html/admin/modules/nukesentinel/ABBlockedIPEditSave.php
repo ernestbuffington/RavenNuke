@@ -31,7 +31,7 @@ $xuser_agent = htmlentities($xuser_agent, ENT_QUOTES);
 $xnotes = str_replace("<br>", "\r\n", $xnotes);
 $xnotes = str_replace("<br />", "\r\n", $xnotes);
 $xnotes = htmlentities($xnotes, ENT_QUOTES);
-if(!get_magic_quotes_gpc()) {
+if (!function_exists('get_magic_quotes_runtime')) {
   $xnotes = addslashes($xnotes);
   $xusername = addslashes($xusername);
 }

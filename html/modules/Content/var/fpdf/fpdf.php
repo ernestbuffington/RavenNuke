@@ -1385,8 +1385,7 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$paint=true)
 			$type=substr($file,$pos+1);
 		}
 		$type=strtolower($type);
-		$mqr=get_magic_quotes_runtime();
-		@ini_set('magic_quotes_runtime', 0);
+		
 		if($type=='jpg' or $type=='jpeg')	$info=$this->_parsejpg($file);
 		elseif($type=='png') $info=$this->_parsepng($file);
 		elseif($type=='gif') $info=$this->_parsegif($file); //EDITEI - GIF format included
@@ -1397,7 +1396,6 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$paint=true)
 			if(!method_exists($this,$mtd)) $this->Error('Unsupported image type: '.$type);
 			$info=$this->$mtd($file);
 		}
-		@ini_set('magic_quotes_runtime', $mqr);
 		$info['i']=(is_countable($this->images) ? count($this->images) : 0)+1;
 		$this->images[$file]=$info;
 	}
@@ -1820,15 +1818,13 @@ function _putfonts()
 		$this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences ['.$diff.']>>');
 		$this->_out('endobj');
 	}
-	$mqr=get_magic_quotes_runtime();
-	@ini_set('magic_quotes_runtime', 0);
 	foreach($this->FontFiles as $file=>$info)
 	{
 		//Font file embedding
 		$this->_newobj();
 		$this->FontFiles[$file]['n']=$this->n;
 		if(defined('FPDF_FONTPATH'))
-			$file=FPDF_FONTPATH.$file;
+		$file=FPDF_FONTPATH.$file;
 		$size=filesize($file);
 		if(!$size)
 			$this->Error('Font file not found');
@@ -1844,7 +1840,6 @@ function _putfonts()
 		fclose($f);
 		$this->_out('endobj');
 	}
-	@ini_set('magic_quotes_runtime', $mqr);
 	foreach($this->fonts as $k=>$font)
 	{
 		//Font objects
@@ -1887,17 +1882,17 @@ function _putfonts()
 			$cw=&$font['cw'];
 			$s='[';
 			for($i=32;$i<=255;$i++)
-				$s.=$cw[chr($i)].' ';
+			$s.=$cw[chr($i)].' ';
 			$this->_out($s.']');
 			$this->_out('endobj');
 			//Descriptor
 			$this->_newobj();
 			$s='<</Type /FontDescriptor /FontName /'.$name;
 			foreach($font['desc'] as $k=>$v)
-				$s.=' /'.$k.' '.$v;
+			$s.=' /'.$k.' '.$v;
 			$file=$font['file'];
 			if($file)
-				$s.=' /FontFile'.($type=='Type1' ? '' : '2').' '.$this->FontFiles[$file]['n'].' 0 R';
+			$s.=' /FontFile'.($type=='Type1' ? '' : '2').' '.$this->FontFiles[$file]['n'].' 0 R';
 			$this->_out($s.'>>');
 			$this->_out('endobj');
 		}
