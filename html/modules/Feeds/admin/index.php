@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 1:09 AM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 global $admin_file, $db, $prefix;
 if(!isset($admin_file)) { $admin_file = 'admin'; }
 if(!defined('ADMIN_FILE')) {
@@ -39,14 +43,14 @@ if (is_mod_admin($module_name)) {
     $versionInfo = seoGetCurrentVersion('nukeFEED', 0);
     $nFVersion  = $versionInfo['version'];
     $nFVerURL   = $versionInfo['url'];
-    $nFVerNotes = addslashes($versionInfo['notes']);
+    $nFVerNotes = addslashes((string) $versionInfo['notes']);
     seoSaveConfig($seoModule, 'version_check', $checktime);
     seoSaveConfig($seoModule, 'version_newest', $nFVersion);
     seoSaveConfig($seoModule, 'version_url', $nFVerURL);
     seoSaveConfig($seoModule, 'version_notes', $nFVerNotes);
   }
   if ($nFVersion > $seoConfig['version_number']) {  
-    $seoVersionHTML = seoPopUp(_nF_NEWVER.' - '.$nFVersion, $nFVerNotes).' <strong>'._nF_NEWVER.' - <a href="'.htmlentities($nFVerURL).'" title="'._nF_GETNEWVER.$nFVersion.'">'.$nFVersion.'</a></strong>';
+    $seoVersionHTML = seoPopUp(_nF_NEWVER.' - '.$nFVersion, $nFVerNotes).' <strong>'._nF_NEWVER.' - <a href="'.htmlentities((string) $nFVerURL).'" title="'._nF_GETNEWVER.$nFVersion.'">'.$nFVersion.'</a></strong>';
   } else {
     $seoVersionHTML = '<span class="italic">'._nF_CURVER.'</span>';
   }
