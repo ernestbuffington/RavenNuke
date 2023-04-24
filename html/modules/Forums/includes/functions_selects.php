@@ -61,7 +61,7 @@
  *
  ***************************************************************************/
 
-/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 4:32 PM
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 4:38 PM
  * WhileEachToForeachRector
  * EregToPregMatchRector (http://php.net/reference.pcre.pattern.posix https://stackoverflow.com/a/17033826/1348344 https://docstore.mik.ua/orelly/webprog/pcook/ch13_02.htm)
  * ListToArrayDestructRector (https://wiki.php.net/rfc/short_list_syntax https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.symmetric-array-destructuring)
