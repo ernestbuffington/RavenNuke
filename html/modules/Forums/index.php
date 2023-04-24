@@ -292,7 +292,7 @@ if( ( $total_categories = count($category_rows) ) )
         //
         define('SHOW_ONLINE', true);
         $page_title = $lang['Index'];
-        include_once("modules/$module_name/includes/page_header.php");
+        include_once("modules/Forums/includes/page_header.php");
 
         $template->set_filenames(array(
                 'body' => 'index_body.tpl')
