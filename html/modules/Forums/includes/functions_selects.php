@@ -10,6 +10,7 @@
  *
  *
  ***************************************************************************/
+ 
 /***************************************************************************
 * phpbb2 forums port version 2.0.5 (c) 2003 - Nuke Cops (http://nukecops.com)
 *
@@ -31,6 +32,7 @@
 * now reflecting phpbb2 standalone 2.0.5 that fixes some bugs and the
 * invalid_session error message.
 ***************************************************************************/
+
 /***************************************************************************
  *   This file is part of the phpBB2 port to Nuke 6.0 (c) copyright 2002
  *   by Tom Nitzschner (tom@toms-home.com)
@@ -48,6 +50,7 @@
  *   under the GNU GENERAL PUBLIC LICENSE. Please see the README for more information.
  *
  ***************************************************************************/
+
 /***************************************************************************
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -58,6 +61,13 @@
  *
  ***************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 4:32 PM
+ * WhileEachToForeachRector
+ * EregToPregMatchRector (http://php.net/reference.pcre.pattern.posix https://stackoverflow.com/a/17033826/1348344 https://docstore.mik.ua/orelly/webprog/pcook/ch13_02.htm)
+ * ListToArrayDestructRector (https://wiki.php.net/rfc/short_list_syntax https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.symmetric-array-destructuring)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 //
 // Pick a language, any language ...
 //
@@ -70,10 +80,10 @@ function language_select($default, $select_name = "language", $dirname="modules/
 {
         global $phpEx;
 
-        $dir = @opendir($dirname);
+        $dir = opendir($dirname);
 
         $lang = array();
-        while ( $file = @readdir($dir) )
+        while ( $file = readdir($dir) )
         {
                 if ( preg_match("/^lang_/", $file) && !is_file($dirname . "/" . $file) && !is_link($dirname . "/" . $file) )
                 {
@@ -84,16 +94,16 @@ function language_select($default, $select_name = "language", $dirname="modules/
                 }
         }
 
-        @closedir($dir);
+        closedir($dir);
 
-        @asort($lang);
-        @reset($lang);
+        asort($lang);
+        reset($lang);
 
         $lang_select = '<select name="' . $select_name . '">';
-        while ( list($displayname, $filename) = @each($lang) )
+        while ( list($displayname, $filename) = each($lang) )
         {
-                $selected = ( strtolower($default) == strtolower($filename) ) ? ' selected="selected"' : '';
-                $lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
+                $selected = ( strtolower((string) $default) == strtolower((string) $filename) ) ? ' selected="selected"' : '';
+                $lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords((string) $displayname) . '</option>';
         }
         $lang_select .= '</select>';
 
@@ -140,7 +150,7 @@ function tz_select($default, $select_name = 'timezone')
         }
         $tz_select = '<select name="' . $select_name . '">';
 
-        while( list($offset, $zone) = @each($lang['tz']) )
+        while( list($offset, $zone) = each($lang['tz']) )
         {
                 $selected = ( $offset == $default ) ? ' selected="selected"' : '';
                 $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . $zone . '</option>';
