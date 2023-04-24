@@ -1044,7 +1044,7 @@ function bblogin($nukeuser, $session_id) {
                 message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch : session_pagestar');
         }
         $logindata = $db->sql_fetchrow($result);
-        if( $nuid != $logindata['session_user_id'] ) {
+        if(isset($nuid) && $nuid != $logindata['session_user_id'] ) {
             $nusername = $cookie[1];
             $sql = "SELECT user_id, username, user_password, user_active, user_level
                     FROM ".USERS_TABLE."
