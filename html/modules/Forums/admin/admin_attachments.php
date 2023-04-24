@@ -1445,7 +1445,7 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
 }
 
 
-if ($error)
+if (isset($error))
 {
 	$template->set_filenames(array(
 		'reg_header' => 'error_body.tpl')
