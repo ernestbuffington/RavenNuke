@@ -267,8 +267,8 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 function session_pagestart($user_ip, $thispage_id, $nukeuser)
 {
 	$userdata = [];
- $sql = null;
- global $db, $lang, $board_config, $session_id;
+    $sql = null;
+    global $db, $lang, $board_config, $session_id, $userdata;
 	global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
 
 	$cookiename = $board_config['cookie_name'];
@@ -300,7 +300,7 @@ function session_pagestart($user_ip, $thispage_id, $nukeuser)
         if ( ($nukeuser != "") && ($userdata['session_logged_in'] == "" )) {
                 bblogin($nukeuser, $session_id);
         } else {
-	$thispage_id = (int) $thispage_id;
+	            $thispage_id = (int) $thispage_id;
         }
 
 	//
