@@ -366,10 +366,7 @@ INSERT INTO $prefix.`_main` VALUES ('News');
 
 DROP TABLE IF EXISTS $prefix.`_message`;
 CREATE TABLE IF NOT EXISTS $prefix.`_message` ( `mid` int(11) NOT NULL auto_increment, `title` varchar(100) NOT NULL default '', `content` text NOT NULL, `date` varchar(14) NOT NULL default '', `expire` int(7) NOT NULL default '0', `active` int(1) NOT NULL default '1', `view` int(1) NOT NULL default '1', `mlanguage` varchar(30) NOT NULL default '', PRIMARY KEY  (`mid`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO $prefix.`_message` (`mid`, `title`, `content`, `date`, `expire`, `active`, `view`, `groups`, `mlanguage`) VALUES
-(1, 'Welcome to RavenNuke™', '<div class=\"text-center\">\r\n	<a href=\"https://www.ravenphpscripts.com\" target=\"_blank\" title=\"RavenPHPScripts - Home of RavenNuke™\"><img alt=\"\" border=\"0\" src=\"https://ravennuke.coders.exchange/images/ravennuke76/RN_Book_NoVersion.png\" style=\"float: left\" /></a></div>\r\n<p style=\"text-align: left\">\r\n	<span style=\"font-size:12.0pt;font-family:Arial\">RavenNuke&trade; is the smart choice to fulfill your needs; whether you need to build a simple or complex website, whether it is for your personal, organizational or business needs. It comes complete with a variety of great looking themes and a variety of built in modules that we are sure you will find extremely useful. If that is not enough, RavenNuke&trade; is search engine friendly,&nbsp; conforms to security and web standards and has an active support community. There is also a large community dedicated to developing third party modules and other add-ons you can install. In short, RavenNuke&trade; was created with security, ease of use and ease of installation in mind which makes it the CMS of choice for both newcomers and seasoned web developers.</span></p>\r\n<p style=\"text-align: left\">\r\n	<span style=\"font-size:12.0pt;font-family:Arial\">If you have a support question or would just like to discuss RavenNuke&trade; in general please visit our </span><span style=\"color:blue\"><a href=\"https://www.ravenphpscripts.com\" target=\"_blank\"><span style=\"font-family:Arial\">Support Site</span></a></span><span style=\"font-family:Arial\">.</span></p>\r\n<p style=\"text-align: left\">\r\n	<span style=\"font-size:12.0pt;font-family:Arial\">If you would like an in-depth description of the changes in this release please visit the&nbsp;</span><a href=\"https://rnwiki.ravennuke.com/wiki/RavenNuke2:Release_Notes\" target=\"_blank\"><span style=\"font-family:Arial\">RavenNuke Wiki</span></a><span style=\"font-family:Arial\">.</span></p>\r\n<p style=\"text-align: left\">\r\n	<span style=\"font-size:12.0pt;font-family:Arial\">As always your donations to the project are always appreciated, and are needed to keep this project going.&nbsp; If you are able please make a </span><a href=\"https://www.ravenphpscripts.com/donations.html\" target=\"_blank\"><span style=\"font-family:Arial\">donation</span></a><span style=\"font-family:Arial\">.</span></p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n<p style=\"text-align: left\">\r\n	&nbsp;</p>\r\n', '1682308900', 0, 1, 1, '', '');
-
+INSERT INTO $prefix.`_message` VALUES (1, 'Welcome to RavenNuke&trade;!','<div class="text-center"><a href="https://www.ravenphpscripts.com" title="RavenPHPScripts - Home of RavenNuke&trade;"><img border="0" src="images/ravennuke76/RN_Book_NoVersion.png" alt="" /></a></div><p style="text-align: left;"><span style="font-size:12.0pt;font-family:Arial">RavenNuke&trade; is the smart choice to fulfill your needs; whether you need to build a simple or complex website, whether it is for your personal, organizational or business needs. It comes complete with a variety of great looking themes and a variety of built in modules that we are sure you will find extremely useful. If that is not enough, RavenNuke&trade; is search engine friendly,&nbsp; conforms to security and web standards and has an active support community. There is also a large community dedicated to developing third party modules and other add-ons you can install. In short, RavenNuke&trade; was created with security, ease of use and ease of installation in mind which makes it the CMS of choice for both newcomers and seasoned web developers.</span></p><p style="text-align: left;"><span style="font-size:12.0pt;font-family:Arial">If you have a support question or would just like to discuss RavenNuke&trade; in general please visit our </span><span style="color:blue"><a target="_blank" href="https://www.ravenphpscripts.com"><span style="font-family:Arial">Support Site</span></a></span><span style="font-family:Arial">.</span></p><p style="text-align: left;"><span style="font-size:12.0pt;font-family:Arial">If you would like an in-depth description of the changes in this release please visit the&nbsp;</span><a target="_blank" href="http://rnwiki.ravennuke.com/wiki/RavenNuke2:Release_Notes"><span style="font-family:Arial">RavenNuke Wiki</span></a><span style="font-family:Arial">.</span></p><p style="text-align: left;"><span style="font-size:12.0pt;font-family:Arial">As always your donations to the project are always appreciated, and are needed to keep this project going.&nbsp; If you are able please make a </span><a target="_blank" href="https://www.ravenphpscripts.com/donations.html"><span style="font-family:Arial">donation</span></a><span style="font-family:Arial">.</span></p>', '1252991938', 0, 1, 1, '');
 
 DROP TABLE IF EXISTS $prefix.`_modules`;
 CREATE TABLE IF NOT EXISTS $prefix.`_modules` ( `mid` int(10) NOT NULL auto_increment, `title` varchar(255) NOT NULL default '', `custom_title` varchar(255) NOT NULL default '', `active` int(1) NOT NULL default '0', `view` int(1) NOT NULL default '0', `inmenu` tinyint(1) NOT NULL default '1', `mod_group` int(10) default '0', `admins` varchar(255) NOT NULL default '', PRIMARY KEY  (`mid`), KEY `title` (`title`), KEY `custom_title` (`custom_title`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -668,78 +665,60 @@ INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 4, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 5, -1);
 INSERT INTO $prefix.`_gcal_cat_group` VALUES (NULL, 6, -1);
 
-DROP TABLE IF EXISTS $prefix.`_spam_whitelist`;
-CREATE TABLE IF NOT EXISTS $prefix.`_spam_whitelist` (
-  `wlid` int(11) NOT NULL AUTO_INCREMENT,
-  `wltype` char(1) NOT NULL,
-  `wlvalue` varchar(255) NOT NULL,
-  PRIMARY KEY (`wlid`),
-  KEY `wltype` (`wltype`,`wlvalue`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-DROP TABLE IF EXISTS $prefix.`_spam_log`;
-CREATE TABLE IF NOT EXISTS $prefix.`_spam_log` (
-  `slid` int(11) NOT NULL AUTO_INCREMENT,
-  `request` char(6) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `ip` int(10) UNSIGNED NOT NULL,
-  `matched` varchar(255) NOT NULL,
-  `added` int(11) NOT NULL,
-  `count` int(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`slid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 DROP TABLE IF EXISTS $prefix.`_seo_config`;
 CREATE TABLE $prefix.`_seo_config` (`config_type` varchar(150) NOT NULL, `config_name` varchar(150) NOT NULL, `config_value` text NOT NULL, PRIMARY KEY  (`config_type`,`config_name`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'use_fb', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'feedburner_url', 'http://feeds.feedburner.com');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'version_check', '0');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'version_newest', '1.1.1');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'version_number', '1.1.1');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'version_url', 'http://nukeseo.com/modules.php?name=Downloads');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'version_notes', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'show_circgraph', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'show_feedcount', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'feedcount_body', 'A6A6A6');
+INSERT INTO $prefix.`_seo_config` VALUES ('Feeds', 'feedcount_text', '000000');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'baseMatch', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'debug', '0');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'logToDB', '0');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'logToTextFile', '0');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'theme', 'smoothness');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'use_reg', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'usefSpamList', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useStopForumSpam', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useBotScout', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useDNSBL', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useDroneACH', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useHTTPBLACH', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useSpamACH', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useZeusACH', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useAHBL', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useBLDE', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useProjectHoneyPot', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useSorbs', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useSpamHaus', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useSpamCop', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useDroneBL', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useTornevall', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useEFNet', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'useTor', '1');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'keyfSpamList', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'keyStopForumSpam', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'keyBotScout', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'keyProjectHoneyPot', '');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'version_check', '0');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'version_newest', '\" . nukeSPAM_version . \"');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'version_number', '1.0.0');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'version_url', 'http://nukeSEO.com/modules.php?name=Downloads');
+INSERT INTO $prefix.`_seo_config` VALUES ('nukeSPAM', 'version_notes', '');
 
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'baseMatch', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'debug', '0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'logToDB', '0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'logToTextFile', '0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'theme', 'smoothness');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'use_reg', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'usefSpamList', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useStopForumSpam', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useBotScout', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useDNSBL', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useDroneACH', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useHTTPBLACH', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useSpamACH', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useZeusACH', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useAHBL', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useBLDE', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useProjectHoneyPot', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useSorbs', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useSpamHaus', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useSpamCop', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useDroneBL', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useTornevall', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useEFNet', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'useTor', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'keyfSpamList', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'keyStopForumSpam', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'keyBotScout', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'keyProjectHoneyPot', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'version_check', '0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'version_newest', '\" . nukeSPAM_version . \"');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'version_number', '1.0.0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'version_url', 'http://nukeSEO.com/modules.php?name=Downloads');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('nukeSPAM', 'version_notes', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'use_fb', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'feedburner_url', 'http://feeds.feedburner.com');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'version_check', '0');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'version_newest', '1.1.1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'version_number', '1.1.1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'version_url', 'http://nukeseo.com/modules.php?name=Downloads');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'version_notes', '');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'show_circgraph', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'show_feedcount', '1');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'feedcount_body', 'A6A6A6');
-INSERT INTO $prefix.`_seo_config` (`config_type`, `config_name`, `config_value`) VALUES('Feeds', 'feedcount_text', '000000');
+DROP TABLE IF EXISTS $prefix.`_spam_log`;
+CREATE TABLE $prefix.`_spam_log` (`slid` int(11) NOT NULL AUTO_INCREMENT,`request` char(6) NOT NULL,`username` varchar(255) NOT NULL,`email` varchar(255) NOT NULL,`ip` int(10) UNSIGNED NOT NULL,`matched` varchar(255) NOT NULL,`added` int(11) NOT NULL,`count` int(10) UNSIGNED NOT NULL,PRIMARY KEY (`slid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS $prefix.`_spam_whitelist`;
+CREATE TABLE IF NOT EXISTS $prefix.`_spam_whitelist` (`wlid` int(11) NOT NULL AUTO_INCREMENT, `wltype` char(1) NOT NULL, `wlvalue` varchar(255) NOT NULL, PRIMARY KEY (`wlid`), KEY `wltype` (`wltype`,`wlvalue`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_seo_disabled_modules`;
-
 CREATE TABLE $prefix.`_seo_disabled_modules` (`title` varchar(100) NOT NULL, `seo_module` varchar(100) NOT NULL, PRIMARY KEY  (`title`,`seo_module`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS $prefix.`_seo_feed`;
