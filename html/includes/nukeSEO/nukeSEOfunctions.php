@@ -245,8 +245,11 @@ if ( !function_exists('seoCheckUpdateTable') )
   function seoCheckUpdateTable($getValueSQL = '', $newValue, $updateSQL = array()) {
     global $db;
     $existing = $db->sql_fetchrow($db->sql_query($getValueSQL));
-    if ($existing['value'] == $newValue) return true;
-    foreach ($updateSQL as $sql)
+    
+	if ($existing['value'] == $newValue) 
+	return true;
+    
+	foreach ($updateSQL as $sql)
     {
       if(!$db->sql_query($sql)) 
       {

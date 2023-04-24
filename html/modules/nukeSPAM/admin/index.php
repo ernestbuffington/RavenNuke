@@ -18,7 +18,7 @@ if ( !function_exists('seoCheckInstall') ) {
 		// Create seo_config table
 		$existSQL = 'SELECT 1 FROM `'.$prefix.'_seo_config` LIMIT 0';
 		$createSQL = array();
-		$createSQL[] = 'CREATE TABLE `'.$prefix.'_seo_config` (
+		$createSQL[] = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_seo_config` (
 			`config_type` varchar(150) NOT NULL,
 			`config_name` varchar(150) NOT NULL,
 			`config_value` text NOT NULL,
@@ -72,7 +72,7 @@ if ( !function_exists('seoCheckInstall') ) {
 		// Create nukeSPAM log table
 		$existSQL = 'SELECT 1 FROM `' . $prefix . '_spam_log` LIMIT 0';
 		$createSQL = array();
-		$createSQL[] = 'CREATE TABLE `' . $prefix . '_spam_log` (
+		$createSQL[] = 'CREATE TABLE IF NOT EXISTS `' . $prefix . '_spam_log` (
 			`slid` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`request` CHAR(6) NOT NULL ,
 			`username` VARCHAR(255) NOT NULL ,
@@ -87,7 +87,7 @@ if ( !function_exists('seoCheckInstall') ) {
 		// Create nukeSPAM whitelist table
 		$existSQL = 'SELECT 1 FROM `'.$prefix.'_spam_whitelist` LIMIT 0';
 		$createSQL = array();
-		$createSQL[] = 'CREATE TABLE `'.$prefix.'_spam_whitelist` (
+		$createSQL[] = 'CREATE TABLE IF NOT EXISTS `'.$prefix.'_spam_whitelist` (
 			`wlid` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`wltype` CHAR( 1 ) NOT NULL ,
 			`wlvalue` VARCHAR( 255 ) NOT NULL ,
