@@ -1,11 +1,11 @@
 <?php
 
-/********************************************************/
-/* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
-/* Copyright © 2000-2008 by NukeScripts(tm)             */
-/* See CREDITS.txt for ALL contributors                 */
-/********************************************************/
+/********************************************************************/
+/* NukeSentinel(tm)                                                 */
+/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
+/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* See CREDITS.txt for ALL contributors                             */
+/********************************************************************/
 
 if(!defined('NUKESENTINEL_ADMIN')) { header("Location: ../../../".$admin_file.".php"); }
 if(($xip_lo[0] < 0 OR $xip_lo[0] > 255 OR !is_numeric($xip_lo[0])) OR ($xip_lo[1] < 0 OR $xip_lo[1] > 255 OR !is_numeric($xip_lo[1])) OR ($xip_lo[2] < 0 OR $xip_lo[2] > 255 OR !is_numeric($xip_lo[2])) OR ($xip_lo[3] < 0 OR $xip_lo[3] > 255 OR !is_numeric($xip_lo[3]))) {

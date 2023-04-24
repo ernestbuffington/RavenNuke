@@ -1,11 +1,11 @@
 <?php
 
-/********************************************************/
-/* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
-/* Copyright © 2000-2008 by NukeScripts(tm)             */
-/* See CREDITS.txt for ALL contributors                 */
-/********************************************************/
+/********************************************************************/
+/* NukeSentinel(tm)                                                 */
+/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
+/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* See CREDITS.txt for ALL contributors                             */
+/********************************************************************/
 
 if(!defined('NUKE_FILE') && !defined('BLOCK_FILE')) { header("Location: ../index.php"); }
 global $prefix, $db, $user, $admin, $ab_config;

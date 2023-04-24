@@ -1,11 +1,11 @@
 <?php
 
-/********************************************************/
-/* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
-/* Copyright © 2000-2008 by NukeScripts(tm)             */
-/* See CREDITS.txt for ALL contributors                 */
-/********************************************************/
+/********************************************************************/
+/* NukeSentinel(tm)                                                 */
+/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
+/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* See CREDITS.txt for ALL contributors                             */
+/********************************************************************/
 
 /* Applied rules: Ernest Allen Buffington (TheGhost) 04/22/2023 4:42 PM
  * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)

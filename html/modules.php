@@ -11,12 +11,12 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /*                                                                      */
 /************************************************************************/
-/********************************************************/
-/* NSN Groups                                           */
-/* By: NukeScripts Network (webmaster@nukescripts.net)  */
-/* http://www.nukescripts.net                           */
-/* Copyright © 2000-2005 by NukeScripts Network         */
-/********************************************************/
+/********************************************************************/
+/* NukeSentinel(tm)                                                 */
+/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
+/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* See CREDITS.txt for ALL contributors                             */
+/********************************************************************/
 /************************************************************************/
 /* Additional code clean-up, performance enhancements, and W3C and      */
 /* XHTML compliance fixes by Raven and Montego.                         */

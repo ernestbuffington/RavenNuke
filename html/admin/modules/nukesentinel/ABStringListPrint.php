@@ -1,11 +1,11 @@
 <?php
 
-/********************************************************/
-/* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
-/* Copyright © 2000-2008 by NukeScripts(tm)             */
-/* See CREDITS.txt for ALL contributors                 */
-/********************************************************/
+/********************************************************************/
+/* NukeSentinel(tm)                                                 */
+/* By: NukeScripts(tm) (http://www.nukescripts.coders.exchange)     */
+/* Copyright © 2000-2008 by NukeScripts(tm)                         */
+/* See CREDITS.txt for ALL contributors                             */
+/********************************************************************/
 
 if(!defined('NUKESENTINEL_ADMIN')) { header("Location: ../../../".$admin_file.".php"); }
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'."\n";
