@@ -60,7 +60,7 @@ die();
 function mod_main($title, $desc) {
 	global $prefix, $db, $admin_file;
 
-	if (@get_magic_quotes_gpc() == 0) {
+	if (!function_exists('get_magic_quotes_runtime')) {
 		$title = addslashes($title);
 		$desc = addslashes($desc);
 	}
@@ -140,7 +140,7 @@ function reviews() {
 function add_review($id, $date, $title, $text, $reviewer, $email, $score, $cover, $url, $url_title, $rlanguage) {
 	global $prefix, $db, $admin_file;
 	$id = intval($id);
-	if (@get_magic_quotes_gpc() == 0) {
+	if (!function_exists('get_magic_quotes_runtime')) {
 		$title = addslashes($title);
 		$text = addslashes($text);
 		$reviewer = addslashes($reviewer);

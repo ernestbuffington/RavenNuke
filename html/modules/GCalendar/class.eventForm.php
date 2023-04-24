@@ -507,7 +507,7 @@ END_FORM;
 	function post($id) { // processes a POSTing of the form
 		$this->eventId = $id == 'new' ? $id : intval($id);
 
-		if (@get_magic_quotes_gpc()) {
+		if (function_exists('get_magic_quotes_runtime')) {
 			$_POST = stripslashesDeep($_POST);
 		}
 

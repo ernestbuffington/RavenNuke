@@ -90,7 +90,7 @@ if(!defined('ADMIN_FILE')) {
   }
   else
   {
-    if(!@get_magic_quotes_gpc()) {
+    if (!function_exists('get_magic_quotes_runtime')) {
       if (strlen($cFContent) > 0) $cFContent  = stripslashes($cFContent);
       if (strlen($contentName) > 0) $contentName  = stripslashes($contentName);
       if (strlen($cFTitle) > 0)   $cFTitle    = stripslashes($cFTitle);

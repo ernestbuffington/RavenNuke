@@ -243,7 +243,7 @@ function ya_fixtext($ya_fixtext) {
 	$ya_fixtext = str_replace('&acute;', '', $ya_fixtext);
 	$ya_fixtext = str_replace('"', '&quot;', $ya_fixtext);
 	$ya_fixtext = strip_tags($ya_fixtext);
-	if (!@get_magic_quotes_gpc()) $ya_fixtext = addslashes($ya_fixtext);
+	if (!function_exists('get_magic_quotes_runtime')) $ya_fixtext = addslashes($ya_fixtext);
 	$ya_fixtext = addslashes($ya_fixtext);
 	return $ya_fixtext;
 }

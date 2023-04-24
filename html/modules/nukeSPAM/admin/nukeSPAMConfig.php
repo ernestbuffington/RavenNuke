@@ -82,7 +82,7 @@ if ($op == 'nukeSPAMSaveConfig') {
 	$useEFNet = intval($useEFNet);
 	$useTor = intval($useTor);
 
-	if(!@get_magic_quotes_gpc()) {
+	if (!function_exists('get_magic_quotes_runtime')) {
 		if (method_exists($db, 'sql_escape_string')) {
 			$baseMatch = $db->sql_escape_string($baseMatch);
 			$spamTheme = $db->sql_escape_string($spamTheme);

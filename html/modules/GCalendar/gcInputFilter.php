@@ -506,7 +506,7 @@ class GCInputFilter {
 		/*
 		 * Strip escaping slashes if necessary
 		 */
-		if (@get_magic_quotes_gpc()) {
+		if (function_exists('get_magic_quotes_runtime')) {
 			$source = stripslashes($source);
 		}
 
