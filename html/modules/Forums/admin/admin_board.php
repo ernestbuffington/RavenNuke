@@ -6,12 +6,13 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   Id: admin_board.php,v 1.51.2.15 2006/02/10 22:19:01 grahamje Exp $
+ *   $Id: admin_board.php,v 1.51.2.16 2006/12/16 13:11:24 acydburn Exp $
+ *   $Id: admin_board.php,v 1.51.2.15 2006/02/10 22:19:01 grahamje Exp $
  *
  *
  ***************************************************************************/
 
-/* Applied rules: 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 4:40 PM
  * ReplaceHttpServerVarsByServerRector (https://blog.tigertech.net/posts/php-5-3-http-server-vars/)
  * TernaryToNullCoalescingRector
  * NullToStrictStringFuncCallArgRector
@@ -22,18 +23,17 @@ defined('IN_PHPBB') or define('IN_PHPBB', 1);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-        $module['General']['Configuration'] = $file;
+    $module['General']['Configuration'] = $file;
 	return;
 }
 
 //
 // Let's set the root dir for phpBB
 //
-//$phpbb_root_path = "./../";
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include("../includes/functions_selects.php");
+$phpbb_root_path = "./../";
+require_once($phpbb_root_path . 'extension.inc');
+require_once('./pagestart.' . $phpEx);
+include_once("../includes/functions_selects.php");
 
 //
 // Pull all config data
@@ -50,26 +50,37 @@ else
 	{
 		$config_name = $row['config_name'];
 		$config_value = $row['config_value'];
-		$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", (string) $config_value) : $config_value;
+		$default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
 
-		$new[$config_name] = $_POST[$config_name] ?? $default_config[$config_name];
+		$new[$config_name] = $HTTP_POST_VARS[$config_name] ?? $default_config[$config_name];
 
 		if ($config_name == 'cookie_name')
 		{
-			$new['cookie_name'] = str_replace('.', '_', (string) $new['cookie_name']);
+			$new['cookie_name'] = str_replace('.', '_', $new['cookie_name']);
 		}
 
 		// Attempt to prevent a common mistake with this value,
 		// http:// is the protocol and not part of the server name
 		if ($config_name == 'server_name')
 		{
-			$new['server_name'] = str_replace('http://', '', (string) $new['server_name']);
-		}
+			$new['server_name'] = str_replace('http://', '', $new['server_name']);
+		}  // introduced for v2.0.22
 
-		if( isset($_POST['submit']) )
+		// Attempt to prevent a mistake with this value.
+		if ($config_name == 'avatar_path')
+		{
+			$new['avatar_path'] = trim($new['avatar_path']);
+			$fullPath = $phpbb_root_path . '../../' . $new['avatar_path'];
+			if (strstr($new['avatar_path'], "\0") || !is_dir($fullPath) || !is_writable($fullPath))
+			{
+				$new['avatar_path'] = $default_config['avatar_path'];
+			}
+		} // end
+
+		if( isset($HTTP_POST_VARS['submit']) )
 		{
 			$sql = "UPDATE " . CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", (string) $new[$config_name]) . "'
+				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
 				WHERE config_name = '$config_name'";
 			if( !$db->sql_query($sql) )
 			{
@@ -78,7 +89,7 @@ else
 		}
 	}
 
-	if( isset($_POST['submit']) )
+	if( isset($HTTP_POST_VARS['submit']) )
 	{
 		$message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_config'], "<a href=\"" . append_sid("admin_board.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
@@ -114,7 +125,6 @@ $activation_admin = ( $new['require_activation'] == USER_ACTIVATION_ADMIN ) ? "c
 $confirm_yes = ($new['enable_confirm']) ? 'checked="checked"' : '';
 $confirm_no = (!$new['enable_confirm']) ? 'checked="checked"' : '';
 
-if(!isset($new['allow_autologin'])) { $new['allow_autologin'] = ''; }
 $allow_autologin_yes = ($new['allow_autologin']) ? 'checked="checked"' : ''; 
 $allow_autologin_no = (!$new['allow_autologin']) ? 'checked="checked"' : '';
 
@@ -157,10 +167,8 @@ $template->set_filenames(array(
 // Escape any quotes in the site description for proper display in the text
 // box on the admin page
 //
-$new['site_desc'] = str_replace('"', '&quot;', (string) $new['site_desc']);
-$new['sitename'] = str_replace('"', '&quot;', strip_tags((string) $new['sitename']));
-if(!isset($new['max_autologin_time']))
-$new['max_autologin_time'] = '';
+$new['site_desc'] = str_replace('"', '&quot;', $new['site_desc']);
+$new['sitename'] = str_replace('"', '&quot;', strip_tags($new['sitename']));
 $template->assign_vars(array(
 	"S_CONFIG_ACTION" => append_sid("admin_board.$phpEx"),
 
@@ -215,8 +223,8 @@ $template->assign_vars(array(
 	'L_MAX_LOGIN_ATTEMPTS_EXPLAIN'	=> $lang['Max_login_attempts_explain'],
 	'L_LOGIN_RESET_TIME'			=> $lang['Login_reset_time'],
 	'L_LOGIN_RESET_TIME_EXPLAIN'	=> $lang['Login_reset_time_explain'],
-	'MAX_LOGIN_ATTEMPTS'			=> $new['max_login_attempts'] ?? 10,
-	'LOGIN_RESET_TIME'				=> $new['login_reset_time'] ?? 15,
+	'MAX_LOGIN_ATTEMPTS'			=> $new['max_login_attempts'],
+	'LOGIN_RESET_TIME'				=> $new['login_reset_time'],
 
 	"L_BOARD_EMAIL_FORM" => $lang['Board_email_form'],
 	"L_BOARD_EMAIL_FORM_EXPLAIN" => $lang['Board_email_form_explain'],
@@ -361,6 +369,6 @@ $template->assign_vars(array(
 
 $template->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include_once('./page_footer_admin.'.$phpEx);
 
-
+?>
