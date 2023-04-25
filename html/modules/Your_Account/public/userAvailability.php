@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:12 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('MODULE_FILE')) {
 	header('Location: ../../index.php');
 	die();
@@ -22,7 +27,7 @@ require_once 'modules/Your_Account/includes/constants.php';
 include_once 'modules/Your_Account/includes/functions.php';
 if (!isset($ya_config)) $ya_config = ya_get_configs();
 get_lang('Your_Account');
-$ya_username = trim(strtolower($_REQUEST['ya_username']));
+$ya_username = trim(strtolower((string) $_REQUEST['ya_username']));
 if ($ya_username == '') echo 'false';
 else echo ya_userCheckB($ya_username);
 ?>
