@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:55 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -23,7 +28,7 @@ $resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig');
 while ($rowbc = $db->sql_fetchrow($resultbc)) {
 	$board_config[$rowbc['config_name']] = $rowbc['config_value'];
 }
-if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+if ((is_user($user)) AND (strtolower((string) $userinfo['username']) == strtolower((string) $cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
 	include_once 'header.php';
 	title(_PERSONALINFO);
 	OpenTable();
@@ -58,16 +63,16 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 	}
 	if ($ya_config['usewebsite'] >= '1') {
 		$user_website_tmp = $userinfo['user_website']; // RN v2.30.01
-		if (!preg_match('#^http[s]?:\/\/#i', $userinfo['user_website'])) {
+		if (!preg_match('#^http[s]?:\/\/#i', (string) $userinfo['user_website'])) {
 			$userinfo['user_website'] = 'http://' . $userinfo['user_website'];
 			$user_website_tmp = $userinfo['user_website']; // RN v2.30.01
 		}
-		if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $userinfo['user_website'])) {
+		if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', (string) $userinfo['user_website'])) {
 			$userinfo['user_website'] = '';
 		}
 
 		if (!empty($user_website_tmp)) { // RN v2.30.01
-			$tmpWebSitePart = explode('/', $user_website_tmp); // RN v2.30.01
+			$tmpWebSitePart = explode('/', (string) $user_website_tmp); // RN v2.30.01
 			if ($tmpWebSitePart[2]=='localhost') $userinfo['user_website']=$user_website_tmp; // RN v2.30.01
 		} // RN v2.30.01
 
@@ -81,7 +86,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 	while ($sqlvalue = $db->sql_fetchrow($result)) {
 		$t = (int)$sqlvalue['fid'];
 		list($value) = $db->sql_fetchrow($db->sql_query('SELECT value FROM ' . $user_prefix . '_users_field_values WHERE fid =\'' . $t . '\' AND uid = \'' . $userinfo['user_id'] . '\''));
-		$value2 = explode('::', $sqlvalue['value']);
+		$value2 = explode('::', (string) $sqlvalue['value']);
 		$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 		echo '<tr><td><strong>' . $name_exit . '</strong>';
 		if (($sqlvalue['need']) == 3) echo '<br />' . _REQUIRED;
@@ -89,12 +94,12 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 		if (count($value2) == 1) {
 			$size = 60;
 			if ($sqlvalue['size'] < 57) $size = $sqlvalue['size']+3;
-			echo '<input type="text" name="nfield[' . $t . ']" value="' . htmlspecialchars($value) . '" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" />';
+			echo '<input type="text" name="nfield[' . $t . ']" value="' . htmlspecialchars((string) $value) . '" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" />';
 		} else {
 			echo '<select name="nfield[' . $t . ']">';
 			$j = count($value2);
 			for ($i = 0;$i < $j;++$i) {
-				if (trim($value) == trim($value2[$i])) $sel = ' selected="selected"';
+				if (trim((string) $value) == trim($value2[$i])) $sel = ' selected="selected"';
 				else $sel = '';
 				echo '<option value="' . trim($value2[$i]) . '"' . $sel . '>' . $value2[$i] . '</option>';
 			}
@@ -110,7 +115,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 		echo '</td><td><input type="text" name="user_aim" value="' . $userinfo['user_aim'] . '" size="30" maxlength="100" ' . $readonly . ' /></td></tr>';
 	}
 	if ($ya_config['useinstantmessicq'] >= '1') {
-		if (!preg_match('/^[0-9]+$/', $userinfo['user_icq'])) { $userinfo['user_icq'] = ''; }
+		if (!preg_match('/^[0-9]+$/', (string) $userinfo['user_icq'])) { $userinfo['user_icq'] = ''; }
 		echo '<tr><td><strong>' . _YICQ . ':</strong>';
 		if ($ya_config['useinstantmessicq'] == '3' or $ya_config['useinstantmessicq'] == '5') echo '<br />' . _REQUIRED;
 		$readonly = '';
@@ -273,14 +278,14 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 	closedir($dir);
 	asort($lang);
 	reset($lang);
-	if (in_array(strtolower($userinfo['user_lang']), $lang)) {
+	if (in_array(strtolower((string) $userinfo['user_lang']), $lang)) {
 		$form_lang = $userinfo['user_lang'];
 	} else {
 		$form_lang = $board_config['default_lang'];
 	}
 	foreach ($lang as $displayname => $filename) {
 	#while ( list($displayname, $filename) = each($lang) ) {
-		$selected = ( strtolower($form_lang) == strtolower($filename) ) ? ' selected="selected"' : '';
+		$selected = ( strtolower((string) $form_lang) == strtolower($filename) ) ? ' selected="selected"' : '';
 		echo '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
 	}
 	echo '</select>';
@@ -313,7 +318,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 		$readonly = '';
 		if ($ya_config['usesignature'] == '5') $readonly = ' readonly="readonly"';
 		$signature = $userinfo['user_sig'];
-		$signature = ($userinfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$userinfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', $signature) : $signature;
+		$signature = ($userinfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$userinfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', (string) $signature) : $signature;
 		echo '</td><td><textarea cols="50" rows="5" name="user_sig">' . $signature . '</textarea><br />' . _255CHARMAX . '</td></tr>';
 	}
 	if ($ya_config['useextrainfo'] >= '1') {
@@ -321,7 +326,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 		if ($ya_config['useextrainfo'] == '3' or $ya_config['useextrainfo'] == '5') echo _REQUIRED;
 		$readonly = '';
 		if ($ya_config['useextrainfo'] == '5') $readonly = ' readonly="readonly"';
-		echo '</td><td><textarea cols="50" rows="5" name="bio">' . htmlspecialchars($userinfo['bio'], ENT_QUOTES, _CHARSET) . '</textarea><br />' . _CANKNOWABOUT . '</td></tr>';
+		echo '</td><td><textarea cols="50" rows="5" name="bio">' . htmlspecialchars((string) $userinfo['bio'], ENT_QUOTES, _CHARSET) . '</textarea><br />' . _CANKNOWABOUT . '</td></tr>';
 	}
 	echo '<tr><td><strong>' . _PASSWORD . '</strong>:</td>';
 	echo '<td><input type="password" name="user_password" size="22" maxlength="' . $ya_config['pass_max'] . '" />&nbsp;&nbsp;&nbsp;<input type="password" name="vpass" size="22" maxlength="' . $ya_config['pass_max'] . '" /><br />' . _TYPENEWPASSWORD . '</td></tr>';
@@ -379,7 +384,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 	echo '<tr><td colspan="2" align="center">';
 	echo '<span class="title">' . _YA_AVCP . '</span><br /></td></tr>';
 	echo '<tr><td>' . _YA_AVINF1 . ' ' . $board_config['avatar_max_width'] . ' ' . _YA_AVINF2 . ' ' . $board_config['avatar_max_height'] . ' ' . _YA_AVINF3 . ' ' . YA_CoolSize($board_config['avatar_filesize']) . '.</td>';
-	if (stristr($userinfo['user_avatar'], 'http')) {
+	if (stristr((string) $userinfo['user_avatar'], 'http')) {
 		//avatarfix by menelaos dot hetnet dot nl
 		echo '<td align="center">' . _YA_CURRAV . '<br /><img alt="" src="' . $userinfo['user_avatar'] . '" width="40" height="50" /></td></tr>';
 	} elseif ($userinfo['user_avatar']) {
