@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (Theghost) 04/24/2023 9:50 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -33,7 +38,7 @@ if ($code == $pass) {
 		$message .= _YA_NOREPLY;
 		ya_mail($to, $subject, $message, $email);
 	}
-	$db->sql_query('UPDATE ' . $user_prefix . '_users SET name=\'' . _MEMDEL . '\', user_email=\'' . md5($email) . '\', user_password=\'\', user_website=\'\', user_sig=\'\', user_regdate=\'Non 0, 0000\', user_level=\'-1\', user_active=\'0\', user_allow_pm=\'0\' WHERE user_id=\'' . $uid . '\'');
+	$db->sql_query('UPDATE ' . $user_prefix . '_users SET name=\'' . _MEMDEL . '\', user_email=\'' . md5((string) $email) . '\', user_password=\'\', user_website=\'\', user_sig=\'\', user_regdate=\'Non 0, 0000\', user_level=\'-1\', user_active=\'0\', user_allow_pm=\'0\' WHERE user_id=\'' . $uid . '\'');
 	$r_uid = $cookie[0];
 	$r_uname = $cookie[1];
 	$result = $db->sql_query('DELETE FROM ' . $prefix . '_session where uname=\'' . $r_uname . '\'');
