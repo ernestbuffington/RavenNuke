@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:20 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN'))
 {
    header('Location: ../../../index.php');
@@ -26,7 +31,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
     if ($ya_config['servermail'] == 1) {
         $message = _SORRYTO." $sitename "._HASSUSPEND;
         if ($suspendreason > "") {
-            $suspendreason = stripslashes($suspendreason);
+            $suspendreason = stripslashes((string) $suspendreason);
             $message .= "\r\n\r\n"._SUSPENDREASON."\r\n$suspendreason";
         }
         $subject = _ACCTSUSPEND;
