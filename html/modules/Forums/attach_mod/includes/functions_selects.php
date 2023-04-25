@@ -118,7 +118,7 @@ function download_select($select_name, $group_id = 0)
 function category_select($select_name, $group_id = 0)
 {
 	$category_type = null;
- global $db, $types_category, $modes_category;
+    global $db, $types_category, $modes_category;
 		
 	$sql = 'SELECT group_id, cat_id
 		FROM ' . EXTENSION_GROUPS_TABLE;
@@ -204,7 +204,7 @@ function size_select($select_name, $size_compare)
 function quota_limit_select($select_name, $default_quota = 0)
 {
 	$quota_name = [];
- global $db, $lang;
+    global $db, $lang;
 		
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
@@ -241,7 +241,7 @@ function quota_limit_select($select_name, $default_quota = 0)
 function default_quota_limit_select($select_name, $default_quota = 0)
 {
 	$quota_name = [];
- global $db, $lang;
+    global $db, $lang;
 		
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
