@@ -14,14 +14,19 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:43 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
 }
 if (!isset($avatarcategory)) die();
 include_once 'header.php';
-$avatarcategory = check_html(basename($avatarcategory),'nohtml');
-$avatarcatname = str_replace('_', '&nbsp;', $avatarcategory);
+$avatarcategory = check_html(basename((string) $avatarcategory),'nohtml');
+$avatarcatname = str_replace('_', '&nbsp;', (string) $avatarcategory);
 title($avatarcategory . ' ' . _YA_AVATARGALL);
 Opentable();
 nav();
