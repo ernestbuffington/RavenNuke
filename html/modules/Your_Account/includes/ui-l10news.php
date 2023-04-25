@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:37 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../../index.php');
 	die();
@@ -22,7 +27,7 @@ if (is_active('News')) {
 	$uid = (int)$usrinfo['user_id'];
 	// Last 10 Comments
 	if ($articlecomm == 1) {
-		$result6 = $db->sql_query('SELECT tid, sid, subject FROM ' . $prefix . '_comments WHERE name=\'' . addslashes($usrinfo['username']) . '\' ORDER BY tid DESC LIMIT 0,10');
+		$result6 = $db->sql_query('SELECT tid, sid, subject FROM ' . $prefix . '_comments WHERE name=\'' . addslashes((string) $usrinfo['username']) . '\' ORDER BY tid DESC LIMIT 0,10');
 		if (($db->sql_numrows($result6) > 0)) {
 			echo '<br />';
 			OpenTable();
@@ -38,7 +43,7 @@ if (is_active('News')) {
 		}
 	}
 	// Last 10 Submissions
-	$result7 = $db->sql_query('SELECT sid, title FROM ' . $prefix . '_stories WHERE informant=\'' . addslashes($usrinfo['username']) . '\' ORDER BY sid DESC LIMIT 0,10');
+	$result7 = $db->sql_query('SELECT sid, title FROM ' . $prefix . '_stories WHERE informant=\'' . addslashes((string) $usrinfo['username']) . '\' ORDER BY sid DESC LIMIT 0,10');
 	if (($db->sql_numrows($result7) > 0)) {
 		echo '<br />';
 		OpenTable();
