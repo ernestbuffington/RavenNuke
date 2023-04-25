@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:09 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -29,7 +34,7 @@ $ccpass = $row['user_password'];
 if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 	// montego - following line commented out as $theme_id is not set in chgtheme.php - old code?
 	//$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_style=\'' . $theme_id . '\' WHERE user_id=\'' . $user_id . '\'');
-	$theme = ((!preg_match('/[.]/', $theme) && file_exists('themes/' . $theme . '/theme.php'))) ? $theme : ''; // RN0001003
+	$theme = ((!preg_match('/[.]/', (string) $theme) && file_exists('themes/' . $theme . '/theme.php'))) ? $theme : ''; // RN0001003
 	$db->sql_query('UPDATE ' . $user_prefix . '_users SET theme=\'' . $theme . '\' WHERE user_id=\'' . $user_id . '\'');
 	getusrinfo($user);
 	yacookie($userinfo['user_id'], $userinfo['username'], $userinfo['user_password'], $userinfo['storynum'], $userinfo['umode'], $userinfo['uorder'], $userinfo['thold'], $userinfo['noscore'], $userinfo['ublockon'], $userinfo['theme'], $userinfo['commentmax']);
