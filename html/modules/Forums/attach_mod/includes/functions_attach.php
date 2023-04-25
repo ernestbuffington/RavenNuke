@@ -203,26 +203,26 @@ function attach_init_ftp($mode = false)
 	
 	$ftp_path = ($mode == MODE_THUMBNAIL) ? trim($attach_config['ftp_path']) . '/' . THUMB_DIR : trim($attach_config['ftp_path']);
 
-	$conn_id = @ftp_connect($server);
+	$conn_id = ftp_connect($server);
 
 	if (!$conn_id)
 	{
 		message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_connect'], $server));
 	}
 
-	$login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
+	$login_result = ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
 
 	if (!$login_result)
 	{
 		message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']));
 	}
 		
-	if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
+	if (!ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
 	{
 		message_die(GENERAL_ERROR, $lang['Ftp_error_pasv_mode']);
 	}
 	
-	$result = @ftp_chdir($conn_id, $ftp_path);
+	$result = ftp_chdir($conn_id, $ftp_path);
 
 	if (!$result)
 	{
@@ -238,7 +238,7 @@ function attach_init_ftp($mode = false)
 function unlink_attach($filename, $mode = false)
 {
 	$deleted = null;
- global $upload_dir, $attach_config, $lang;
+    global $upload_dir, $attach_config, $lang;
 
 	$filename = basename($filename);
 	
@@ -253,7 +253,7 @@ function unlink_attach($filename, $mode = false)
 			$filename = $upload_dir . '/' . $filename;
 		}
 
-		$deleted = @unlink($filename);
+		$deleted = unlink($filename);
 	}
 	else
 	{
@@ -264,7 +264,7 @@ function unlink_attach($filename, $mode = false)
 			$filename = 't_' . $filename;
 		}
 		
-		$res = @ftp_delete($conn_id, $filename);
+		$res = ftp_delete($conn_id, $filename);
 		if (!$res)
 		{
 			if (ATTACH_DEBUG)
@@ -276,7 +276,7 @@ function unlink_attach($filename, $mode = false)
 			return $deleted;
 		}
 
-		@ftp_quit($conn_id);
+		ftp_quit($conn_id);
 
 		$deleted = true;
 	}
@@ -300,7 +300,7 @@ function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = fal
 		$mode = FTP_ASCII;
 	}
 
-	$res = @ftp_put($conn_id, $dest_file, $source_file, $mode);
+	$res = ftp_put($conn_id, $dest_file, $source_file, $mode);
 
 	if (!$res && !$disable_error_mode)
 	{
@@ -310,7 +310,7 @@ function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = fal
 			$error_msg .= '<br />';
 		}
 		$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path']) . '<br />';
-		@ftp_quit($conn_id);
+		ftp_quit($conn_id);
 		return false;
 	}
 
@@ -319,8 +319,8 @@ function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = fal
 		return false;
 	}
 
-	@ftp_site($conn_id, 'CHMOD 0644 ' . $dest_file);
-	@ftp_quit($conn_id);
+	ftp_site($conn_id, 'CHMOD 0644 ' . $dest_file);
+	ftp_quit($conn_id);
 	return true;
 }
 
@@ -336,7 +336,7 @@ function attachment_exists($filename)
 
 	if (!intval($attach_config['allow_ftp_upload']))
 	{
-		if (!@file_exists(@amod_realpath($upload_dir . '/' . $filename)))
+		if (!file_exists(amod_realpath($upload_dir . '/' . $filename)))
 		{
 			return false;
 		}
@@ -353,7 +353,7 @@ function attachment_exists($filename)
 
 		$file_listing = array();
 
-		$file_listing = @ftp_rawlist($conn_id, $filename);
+		$file_listing = ftp_rawlist($conn_id, $filename);
 
 		for ($i = 0, $size = sizeof($file_listing); $i < $size; $i++)
 		{
@@ -375,7 +375,7 @@ function attachment_exists($filename)
 			}
 		}
 
-		@ftp_quit($conn_id);	
+		ftp_quit($conn_id);	
 		
 		return $found;
 	}
@@ -393,7 +393,7 @@ function thumbnail_exists($filename)
 
 	if (!intval($attach_config['allow_ftp_upload']))
 	{
-		if (!@file_exists(@amod_realpath($upload_dir . '/' . THUMB_DIR . '/t_' . $filename)))
+		if (!file_exists(amod_realpath($upload_dir . '/' . THUMB_DIR . '/t_' . $filename)))
 		{
 			return false;
 		}
@@ -411,7 +411,7 @@ function thumbnail_exists($filename)
 		$file_listing = array();
 
 		$filename = 't_' . $filename;
-		$file_listing = @ftp_rawlist($conn_id, $filename);
+		$file_listing = ftp_rawlist($conn_id, $filename);
 
 		for ($i = 0, $size = sizeof($file_listing); $i < $size; $i++)
 		{
@@ -433,7 +433,7 @@ function thumbnail_exists($filename)
 			}
 		}
 
-		@ftp_quit($conn_id);	
+		ftp_quit($conn_id);	
 		
 		return $found;
 	}
@@ -900,7 +900,7 @@ function amod_realpath($path)
 /**
 * _set_var
 *
-* Set variable, used by {@link get_var the get_var function}
+* Set variable, used by {link get_var the get_var function}
 *
 * @private
 */
