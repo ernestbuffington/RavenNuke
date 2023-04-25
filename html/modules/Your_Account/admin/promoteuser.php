@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:12 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN'))
 {
 	header('Location: ../../../index.php');
@@ -44,7 +49,7 @@ if ($radminsuper == 1) {
 	 $result = $db->sql_query('SELECT mid, title FROM '.$prefix.'_modules ORDER BY title ASC');
 	 $a = 0;
 	 while ($row = $db->sql_fetchrow($result)) {
-		  $title = str_replace('_', ' ', $row['title']);
+		  $title = str_replace('_', ' ', (string) $row['title']);
 		  if (file_exists('modules/'.$row['title'].'/admin/index.php') AND file_exists('modules/'.$row['title'].'/admin/links.php') AND file_exists('modules/'.$row['title'].'/admin/case.php')) {
 				echo '<td><input type="checkbox" name="auth_modules[]" value="'.$row['mid'].'" />'.$title.'</td>';
 				if ($a == 2) {
