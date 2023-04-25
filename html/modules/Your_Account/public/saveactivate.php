@@ -14,12 +14,17 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:05 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
 }
-$ya_username = isset($ya_username) ? addslashes(trim(check_html($ya_username, 'nohtml'))) : '';
-$check_num = isset($check_num) ? addslashes(trim(check_html($check_num, 'nohtml'))) : '';
+$ya_username = isset($ya_username) ? addslashes(trim((string) check_html($ya_username, 'nohtml'))) : '';
+$check_num = isset($check_num) ? addslashes(trim((string) check_html($check_num, 'nohtml'))) : '';
 $ya_time = isset($ya_time) ? intval($ya_time) : '';
 if ($forceLowerCaseUserName) $ya_username = strtolower($ya_username); //Added by Raven 7/3/2005  Modified for RN v2.10.00
 $result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_temp WHERE username=\'' . $ya_username . '\' AND check_num=\'' . $check_num . '\' AND time=\'' . $ya_time . '\'');
@@ -65,37 +70,37 @@ if ($db->sql_numrows($result) == 1) {
 //	$user_sig_bbcode_uid = make_bbcode_uid();
 //	$user_sig = prepare_message($user_sig, $board_config['allow_html'], $board_config['allow_bbcode'], $board_config['allow_smilies'], $user_sig_bbcode_uid);
 	// End
-	$user_sig = addslashes(check_html($user_sig, ''));
-	$user_email = addslashes(check_html($user_email, 'nohtml'));
-	$femail = addslashes(check_html($femail, 'nohtml'));
+	$user_sig = addslashes((string) check_html($user_sig, ''));
+	$user_email = addslashes((string) check_html($user_email, 'nohtml'));
+	$femail = addslashes((string) check_html($femail, 'nohtml'));
 	// montego - following $user_website code from original secured RN
 	$user_website = check_html($user_website, 'nohtml');
-	if (!preg_match('#^http[s]?:\/\/#i', $user_website)) {
+	if (!preg_match('#^http[s]?:\/\/#i', (string) $user_website)) {
 		$user_website = 'http://' . $user_website;
 	}
-	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $user_website)) {
+	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', (string) $user_website)) {
 		$user_website = '';
 	}
-	$user_website = addslashes($user_website);
+	$user_website = addslashes((string) $user_website);
 	//$bio = str_replace('<br />', "\r\n", $bio);
-	$bio = addslashes(check_html($bio, 'nohtml'));
-	if (function_exists('ctype_digit')) $user_icq = ctype_digit($user_icq) ? $user_icq : '';
+	$bio = addslashes((string) check_html($bio, 'nohtml'));
+	if (function_exists('ctype_digit')) $user_icq = ctype_digit((string) $user_icq) ? $user_icq : '';
 	else {
-		if (preg_match('/^[0-9]+$/', $user_icq)) $user_icq = intval($user_icq);
+		if (preg_match('/^[0-9]+$/', (string) $user_icq)) $user_icq = intval($user_icq);
 		else {
 			$user_icq = '';
 		}
 	} // fix by Raven to stop  '0' being stored in DB if field is empty
-	$user_aim = addslashes(check_html($user_aim, 'nohtml'));
-	$user_yim = addslashes(check_html($user_yim, 'nohtml'));
-	$user_msnm = addslashes(check_html($user_msnm, 'nohtml'));
-	$user_occ = addslashes(check_html($user_occ, 'nohtml'));
-	$user_from = addslashes(check_html($user_from, 'nohtml'));
-	$user_interests = addslashes(check_html($user_interests, 'nohtml'));
+	$user_aim = addslashes((string) check_html($user_aim, 'nohtml'));
+	$user_yim = addslashes((string) check_html($user_yim, 'nohtml'));
+	$user_msnm = addslashes((string) check_html($user_msnm, 'nohtml'));
+	$user_occ = addslashes((string) check_html($user_occ, 'nohtml'));
+	$user_from = addslashes((string) check_html($user_from, 'nohtml'));
+	$user_interests = addslashes((string) check_html($user_interests, 'nohtml'));
 	$newsletter = intval($newsletter);
 	$user_viewemail = intval($user_viewemail);
 	$user_allow_viewonline = intval($user_allow_viewonline);
-	$user_dateformat = (isset($user_dateformat)) ? addslashes(check_html($user_dateformat, 'nohtml')) : '';
+	$user_dateformat = (isset($user_dateformat)) ? addslashes((string) check_html($user_dateformat, 'nohtml')) : '';
 	$user_timezone = (isset($user_timezone)) ? intval($user_timezone) : 10;
 	$lv = time();
 	$sql = 'INSERT INTO ' . $user_prefix . '_users '
