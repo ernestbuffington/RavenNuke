@@ -116,7 +116,7 @@ if (file_exists($cache_dir) && is_dir($cache_dir) && is_writable($cache_dir))
 	else
 	{
 		$attach_config = get_config();
-		$fp = @fopen($cache_file, 'wt+');
+		$fp = fopen($cache_file, 'wt+');
 		if ($fp)
 		{
 			$lines = array();
@@ -138,7 +138,7 @@ if (file_exists($cache_dir) && is_dir($cache_dir) && is_writable($cache_dir))
 			fwrite($fp, '<?php $attach_config = array(' . implode(',', $lines) . '); ?>');
 			fclose($fp);
 
-			@chmod($cache_file, 0777);
+			chmod($cache_file, 0777);
 		}
 	}
 }
