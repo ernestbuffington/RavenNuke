@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:10 PM
+ * BinaryOpBetweenNumberAndStringRector (https://3v4l.org/XPEEl)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -43,7 +49,7 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 	if ($ya_config['usesignature'] == '0') $user_sig = '';
 	if ($ya_config['usesignature'] == '0') $user_attachsig = '0';
 	if ($ya_config['useextrainfo'] == '0') $bio = '';
-	$tuemail = strtolower($row['user_email']);
+	$tuemail = strtolower((string) $row['user_email']);
 	// Start - Added to allow bbcode encoding to remain upon saving user  - RN v2.40.00
 	$resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig WHERE config_name = "allow_html" OR config_name = "allow_html_tags" OR config_name = "allow_bbcode" OR config_name = "allow_smilies" OR config_name = "smilies_path" OR config_name = "rand_seed"');
 	while ($rowbc = $db->sql_fetchrow($resultbc)) {
@@ -56,41 +62,41 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 	$user_sig_bbcode_uid = make_bbcode_uid();
 	$user_sig = prepare_message($user_sig, $board_config['allow_html'], $board_config['allow_bbcode'], $board_config['allow_smilies'], $user_sig_bbcode_uid);
 	// End
-	$user_sig = addslashes(check_html($user_sig, ''));
-	$user_email = strtolower(check_html($user_email, 'nohtml'));
-	$femail = addslashes(check_html($femail, 'nohtml'));
+	$user_sig = addslashes((string) check_html($user_sig, ''));
+	$user_email = strtolower((string) check_html($user_email, 'nohtml'));
+	$femail = addslashes((string) check_html($femail, 'nohtml'));
 	$user_website = check_html($user_website, 'nohtml');
 	$user_website_tmp = $user_website; // RN v2.30.01
 	if (!empty($user_website)) {
-		if (!preg_match('#^http[s]?:\/\/#i', $user_website)) {
+		if (!preg_match('#^http[s]?:\/\/#i', (string) $user_website)) {
 			$user_website = 'http://' . $user_website;
 			$user_website_tmp = $user_website;
 		}
 	}
 	if (!empty($user_website_tmp)) { // RN v2.30.01
-		$tmpWebSitePart = explode('/', $user_website_tmp); // RN v2.30.01
+		$tmpWebSitePart = explode('/', (string) $user_website_tmp); // RN v2.30.01
 		if ($tmpWebSitePart[2]=='localhost') $user_website=$user_website_tmp; // RN v2.30.01
 	} // RN v2.30.01
-	$user_website = addslashes($user_website);
-	$bio = addslashes(check_words(check_html($bio, 'nohtml')));
-	if (function_exists('ctype_digit')) $user_icq = ctype_digit($user_icq)?$user_icq:'';
+	$user_website = addslashes((string) $user_website);
+	$bio = addslashes((string) check_words(check_html($bio, 'nohtml')));
+	if (function_exists('ctype_digit')) $user_icq = ctype_digit((string) $user_icq)?$user_icq:'';
 	else {
-		if (preg_match('/^[0-9]+$/', $user_icq)) $user_icq = intval($user_icq);
+		if (preg_match('/^[0-9]+$/', (string) $user_icq)) $user_icq = intval($user_icq);
 		else { $user_icq = ''; }
 	} // fix by Raven to stop  '0' being stored in DB if field is empty
-	$user_aim = addslashes(check_html($user_aim, 'nohtml'));
-	$user_yim = addslashes(check_html($user_yim, 'nohtml'));
-	$user_msnm = addslashes(check_html($user_msnm, 'nohtml'));
-	$user_occ = addslashes(check_html($user_occ, 'nohtml'));
-	$user_from = addslashes(check_html($user_from, 'nohtml'));
-	$user_interests = addslashes(check_html($user_interests, 'nohtml'));
-	$realname = addslashes(check_html($realname, 'nohtml'));
+	$user_aim = addslashes((string) check_html($user_aim, 'nohtml'));
+	$user_yim = addslashes((string) check_html($user_yim, 'nohtml'));
+	$user_msnm = addslashes((string) check_html($user_msnm, 'nohtml'));
+	$user_occ = addslashes((string) check_html($user_occ, 'nohtml'));
+	$user_from = addslashes((string) check_html($user_from, 'nohtml'));
+	$user_interests = addslashes((string) check_html($user_interests, 'nohtml'));
+	$realname = addslashes((string) check_html($realname, 'nohtml'));
 	//$user_avatar = check_html($user_avatar, 'nohtml');
-	$user_dateformat = addslashes(check_html($user_dateformat, 'nohtml'));
+	$user_dateformat = addslashes((string) check_html($user_dateformat, 'nohtml'));
 	$newsletter = intval($newsletter);
 	$user_viewemail = intval($user_viewemail);
 	$user_allow_viewonline = intval($user_allow_viewonline);
-	$user_lang = addslashes(check_html($user_lang, 'nohtml'));
+	$user_lang = addslashes((string) check_html($user_lang, 'nohtml'));
 	$user_timezone = intval($user_timezone);
 	if ($ya_config['allowmailchange'] == 1) {
 		if ($tuemail != $user_email) {
@@ -111,9 +117,9 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 	if ($user_from == '' && ($ya_config['uselocation'] == '3' or $ya_config['uselocation'] == '5')) $stop .= _YLOCATION . ' ' . _REQUIRED . '<br />';
 	if ($user_occ == '' && ($ya_config['useoccupation'] == '3' or $ya_config['useoccupation'] == '5')) $stop .= _YOCCUPATION . ' ' . _REQUIRED . '<br />';
 	if ($user_interests == '' && ($ya_config['useinterests'] == '3' or $ya_config['useinterests'] == '5')) $stop .= _YINTERESTS . ' ' . _REQUIRED . '<br />';
-	if ($newsletter == '' && ($ya_config['usenewsletter'] == '3' or $ya_config['usenewsletter'] == '5')) $stop .= _RECEIVENEWSLETTER . ' ' . _REQUIRED . '<br />';
-	if ($user_viewemail == '' && ($ya_config['useviewemail'] == '3' or $ya_config['useviewemail'] == '5')) $stop .= _ALWAYSSHOWEMAIL . ' ' . _REQUIRED . '<br />';
-	if ($user_allow_viewonline == '' && ($ya_config['usehideonline'] == '3' or $ya_config['usehideonline'] == '5')) $stop .= _HIDEONLINE . ' ' . _REQUIRED . '<br />';
+	if ($newsletter == 0 && ($ya_config['usenewsletter'] == '3' or $ya_config['usenewsletter'] == '5')) $stop .= _RECEIVENEWSLETTER . ' ' . _REQUIRED . '<br />';
+	if ($user_viewemail == 0 && ($ya_config['useviewemail'] == '3' or $ya_config['useviewemail'] == '5')) $stop .= _ALWAYSSHOWEMAIL . ' ' . _REQUIRED . '<br />';
+	if ($user_allow_viewonline == 0 && ($ya_config['usehideonline'] == '3' or $ya_config['usehideonline'] == '5')) $stop .= _HIDEONLINE . ' ' . _REQUIRED . '<br />';
 	if ($user_sig == '' && ($ya_config['usesignature'] == '3' or $ya_config['usesignature'] == '5')) $stop .= _SIGNATURE . ' ' . _REQUIRED . '<br />';
 	if ($bio == '' && ($ya_config['useextrainfo'] == '3' or $ya_config['useextrainfo'] == '5')) $stop .= _EXTRAINFO . ' ' . _REQUIRED . '<br />';
 
@@ -136,13 +142,13 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 		if ($user_password != '') {
 			cookiedecode($user);
 			$db->sql_query('LOCK TABLES ' . $user_prefix . '_users WRITE, ' . $user_prefix . '_users_field_values WRITE');
-			$user_password = md5($user_password);
+			$user_password = md5((string) $user_password);
 			if (($ya_config['emailvalidate'] == '0') OR ($tuemail == $user_email)) {
 				$db->sql_query('UPDATE ' . $user_prefix . '_users SET name=\'' . $realname . '\', user_email=\'' . $user_email . '\', femail=\'' . $femail . '\', user_website=\'' . $user_website . '\', user_password=\'' . $user_password . '\', bio=\'' . $bio . '\', user_icq=\'' . $user_icq . '\', user_occ=\'' . $user_occ . '\', user_from=\'' . $user_from . '\', user_interests=\'' . $user_interests . '\', user_sig=\'' . $user_sig . '\', user_sig_bbcode_uid=\'' . $user_sig_bbcode_uid . '\', user_aim=\'' . $user_aim . '\', user_yim=\'' . $user_yim . '\', user_msnm=\'' . $user_msnm . '\', newsletter=\'' . $newsletter . '\', user_viewemail=\'' . $user_viewemail . '\', user_allow_viewonline=\'' . $user_allow_viewonline . '\', user_notify=\'' . $user_notify . '\', user_notify_pm=\'' . $user_notify_pm . '\', user_popup_pm=\'' . $user_popup_pm . '\', user_attachsig=\'' . $user_attachsig . '\', user_allowbbcode=\'' . $user_allowbbcode . '\', user_allowhtml=\'' . $user_allowhtml . '\', user_allowsmile=\'' . $user_allowsmile . '\', user_lang=\'' . $user_lang . '\', user_timezone=\'' . $user_timezone . '\', user_dateformat=\'' . $user_dateformat . '\' WHERE user_id=\'' . $user_id . '\'');
 			} else {
 				$db->sql_query('UPDATE ' . $user_prefix . '_users SET name=\'' . $realname . '\', femail=\'' . $femail . '\', user_website=\'' . $user_website . '\', user_password=\'' . $user_password . '\', bio=\'' . $bio . '\', user_icq=\'' . $user_icq . '\', user_occ=\'' . $user_occ . '\', user_from=\'' . $user_from . '\', user_interests=\'' . $user_interests . '\', user_sig=\'' . $user_sig . '\', user_sig_bbcode_uid=\'' . $user_sig_bbcode_uid . '\', user_aim=\'' . $user_aim . '\', user_yim=\'' . $user_yim . '\', user_msnm=\'' . $user_msnm . '\', newsletter=\'' . $newsletter . '\', user_viewemail=\'' . $user_viewemail . '\', user_allow_viewonline=\'' . $user_allow_viewonline . '\', user_notify=\'' . $user_notify . '\', user_notify_pm=\'' . $user_notify_pm . '\', user_popup_pm=\'' . $user_popup_pm . '\', user_attachsig=\'' . $user_attachsig . '\', user_allowbbcode=\'' . $user_allowbbcode . '\', user_allowhtml=\'' . $user_allowhtml . '\', user_allowsmile=\'' . $user_allowsmile . '\', user_lang=\'' . $user_lang . '\', user_timezone=\'' . $user_timezone . '\', user_dateformat=\'' . $user_dateformat . '\' WHERE user_id=\'' . $user_id . '\'');
 				$datekey = date('F Y');
-				$check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($user_email) * hexdec($tuemail)) , 2, 10);
+				$check_num = substr(md5(hexdec($datekey) * hexdec((string) $cookie[2]) * hexdec((string) $sitekey) * hexdec($user_email) * hexdec($tuemail)) , 2, 10);
 				$finishlink = $nukeurl . '/modules.php?name=' . $module_name . '&op=changemail&id=' . $user_id . '&mail=' . $user_email . '&check_num=' . $check_num;
 				$message = _CHANGEMAIL1 . ' ' . $tuemail . ' ' . _CHANGEMAIL2 . ' ' . $user_email . _CHANGEMAIL3 . ' ' . $sitename . "\r\n\r\n";
 				$message .= _CHANGEMAILFIN . "\r\n\r\n" . $finishlink . "\r\n\r\n";
@@ -151,7 +157,7 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 			}
 			if (count($nfield) > 0) {
 				foreach($nfield as $key => $var) {
-					$nfield[$key] = addslashes(check_html($nfield[$key], 'nohtml'));
+					$nfield[$key] = addslashes((string) check_html($nfield[$key], 'nohtml'));
 					if (($db->sql_numrows($db->sql_query('SELECT * FROM ' . $user_prefix . '_users_field_values WHERE fid=\'' . $key . '\' AND uid = \'' . $user_id . '\''))) == 0) {
 						$sql = 'INSERT INTO ' . $user_prefix . '_users_field_values (uid, fid, value) VALUES (\'' . $user_id . '\', \'' . $key . '\',\'' . $nfield[$key] . '\')';
 						$db->sql_query($sql);
@@ -176,7 +182,7 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 			} else {
 				$db->sql_query('UPDATE ' . $user_prefix . '_users SET name=\'' . $realname . '\', femail=\'' . $femail . '\', user_website=\'' . $user_website . '\', bio=\'' . $bio . '\', user_icq=\'' . $user_icq . '\', user_occ=\'' . $user_occ . '\', user_from=\'' . $user_from . '\', user_interests=\'' . $user_interests . '\', user_sig=\'' . $user_sig . '\', user_sig_bbcode_uid=\'' . $user_sig_bbcode_uid . '\', user_aim=\'' . $user_aim . '\', user_yim=\'' . $user_yim . '\', user_msnm=\'' . $user_msnm . '\', newsletter=\'' . $newsletter . '\', user_viewemail=\'' . $user_viewemail . '\', user_allow_viewonline=\'' . $user_allow_viewonline . '\', user_notify=\'' . $user_notify . '\', user_notify_pm=\'' . $user_notify_pm . '\', user_popup_pm=\'' . $user_popup_pm . '\', user_attachsig=\'' . $user_attachsig . '\', user_allowbbcode=\'' . $user_allowbbcode . '\', user_allowhtml=\'' . $user_allowhtml . '\', user_allowsmile=\'' . $user_allowsmile . '\', user_lang=\'' . $user_lang . '\', user_timezone=\'' . $user_timezone . '\', user_dateformat=\'' . $user_dateformat . '\' WHERE user_id=\'' . $user_id . '\'');
 				$datekey = date('F Y');
-				$check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($user_email) * hexdec($tuemail)) , 2, 10);
+				$check_num = substr(md5(hexdec($datekey) * hexdec((string) $cookie[2]) * hexdec((string) $sitekey) * hexdec($user_email) * hexdec($tuemail)) , 2, 10);
 				$finishlink = $nukeurl . '/modules.php?name=' . $module_name . '&op=changemail&id=' . $user_id . '&mail=' . $user_email . '&check_num=' . $check_num;
 				$message = _CHANGEMAIL1 . ' ' . $tuemail . ' ' . _CHANGEMAIL2 . ' ' . $user_email . _CHANGEMAIL3 . ' ' . $sitename . "\r\n\r\n";
 				$message .= _CHANGEMAILFIN . "\r\n\r\n" . $finishlink . "\r\n\r\n";
@@ -185,7 +191,7 @@ if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 			}
 			if (count($nfield) > 0) {
 				foreach($nfield as $key => $var) {
-					$nfield[$key] = addslashes(check_html($nfield[$key], 'nohtml'));
+					$nfield[$key] = addslashes((string) check_html($nfield[$key], 'nohtml'));
 					if (($db->sql_numrows($db->sql_query('SELECT * FROM ' . $user_prefix . '_users_field_values WHERE fid=\'' . $key . '\' AND uid = \'' . $user_id . '\''))) == 0) {
 						$sql = 'INSERT INTO ' . $user_prefix . '_users_field_values (uid, fid, value) VALUES (\'' . $user_id . '\', \'' . $key . '\',\'' . $nfield[$key] . '\')';
 						$db->sql_query($sql);
