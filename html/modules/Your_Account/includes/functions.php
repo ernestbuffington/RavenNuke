@@ -17,6 +17,16 @@
 /*************************************************************************************/
 // function Show_YA_menu(){ [added by menelaos dot hetnet dot nl]
 /*************************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:26 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 function Show_YA_menu() {
 	global $stop, $module_name, $redirect, $mode, $unwatch, $t, $f, $p, $ya_config;
 	OpenTable();
@@ -51,43 +61,43 @@ function Show_YA_menu() {
 }
 function ya_userCheck($username) {
 	global $stop, $user_prefix, $db, $ya_config;
-	if ((empty($username)) || (preg_match('/[^\p{L}\p{N}\p{Pd}\p{Pc}]/u', $username))) $stop = '<div class="text-center">' . _ERRORINVNICK . '</div><br />';
-	if (strlen($username) > $ya_config['nick_max']) $stop = '<div class="text-center">' . _YA_NICKLENGTH . '</div>';
-	if (strlen($username) < $ya_config['nick_min']) $stop = '<div class="text-center">' . _YA_NICKLENGTH . '</div>';
+	if ((empty($username)) || (preg_match('/[^\p{L}\p{N}\p{Pd}\p{Pc}]/u', (string) $username))) $stop = '<div class="text-center">' . _ERRORINVNICK . '</div><br />';
+	if (strlen((string) $username) > $ya_config['nick_max']) $stop = '<div class="text-center">' . _YA_NICKLENGTH . '</div>';
+	if (strlen((string) $username) < $ya_config['nick_min']) $stop = '<div class="text-center">' . _YA_NICKLENGTH . '</div>';
 	if ($ya_config['bad_nick'] > '') {
-		$BadNickList = explode("\r\n", $ya_config['bad_nick']);
+		$BadNickList = explode("\r\n", (string) $ya_config['bad_nick']);
 		$j = count($BadNickList);
 		for ($i = 0;$i < $j;++$i) {
-			if (preg_match('/' . $BadNickList[$i] . '/i', $username)) $stop = '<div class="text-center">' . _NAMERESTRICTED . '</div><br />';
+			if (preg_match('/' . $BadNickList[$i] . '/i', (string) $username)) $stop = '<div class="text-center">' . _NAMERESTRICTED . '</div><br />';
 		}
 	}
-	if (strrpos($username, ' ') > 0) $stop = '<div class="text-center">' . _NICKNOSPACES . '</div>';
-	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes($username) . '\'')) > 0) $stop = '<div class="text-center">' . _NICKTAKEN . '</div><br />';
-	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users_temp WHERE username=\'' . addslashes($username) . '\'')) > 0) $stop = '<div class="text-center">' . _NICKTAKEN . '</div><br />';
+	if (strrpos((string) $username, ' ') > 0) $stop = '<div class="text-center">' . _NICKNOSPACES . '</div>';
+	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes((string) $username) . '\'')) > 0) $stop = '<div class="text-center">' . _NICKTAKEN . '</div><br />';
+	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users_temp WHERE username=\'' . addslashes((string) $username) . '\'')) > 0) $stop = '<div class="text-center">' . _NICKTAKEN . '</div><br />';
 	return ($stop);
 }
 function ya_userCheckB($username) {
 	global $user_prefix, $db, $ya_config;
 	$return = 'true';
-	if ((empty($username)) || (preg_match('/[^\p{L}\p{N}\p{Pd}\p{Pc}]/', $username))) $return = 'false';
-	if (strlen($username) > $ya_config['nick_max']) $return = 'false';
-	if (strlen($username) < $ya_config['nick_min']) $return = 'false';
+	if ((empty($username)) || (preg_match('/[^\p{L}\p{N}\p{Pd}\p{Pc}]/', (string) $username))) $return = 'false';
+	if (strlen((string) $username) > $ya_config['nick_max']) $return = 'false';
+	if (strlen((string) $username) < $ya_config['nick_min']) $return = 'false';
 	if ($ya_config['bad_nick'] > '') {
-		$BadNickList = explode("\r\n", $ya_config['bad_nick']);
+		$BadNickList = explode("\r\n", (string) $ya_config['bad_nick']);
 		$j = count($BadNickList);
 		for ($i = 0;$i < $j;++$i) {
-			if (preg_match('/' . $BadNickList[$i] . '/i', $username)) $return = 'false';
+			if (preg_match('/' . $BadNickList[$i] . '/i', (string) $username)) $return = 'false';
 		}
 	}
-	if (strrpos($username, ' ') > 0) $return = 'false';
-	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes($username) . '\'')) > 0) $return = 'false';
-	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users_temp WHERE username=\'' . addslashes($username) . '\'')) > 0) $return = 'false';
+	if (strrpos((string) $username, ' ') > 0) $return = 'false';
+	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes((string) $username) . '\'')) > 0) $return = 'false';
+	if ($db->sql_numrows($db->sql_query('SELECT username FROM ' . $user_prefix . '_users_temp WHERE username=\'' . addslashes((string) $username) . '\'')) > 0) $return = 'false';
 	return ($return);
 }
 function ya_mail($emailto, $subject, $message, $emailfrom) {
 	global $ya_config, $adminmail, $sitename;
 	if ($ya_config['servermail'] == 1) {
-		if (trim($emailfrom) == '') {
+		if (trim((string) $emailfrom) == '') {
 			$from  = "From: $sitename <$adminmail>\r\n" . "Reply-To: $adminmail\r\n" . "Return-Path: $adminmail\r\n";
 			$fromname = $sitename;
 			$emailfrom = $adminmail;
@@ -101,21 +111,21 @@ function ya_mail($emailto, $subject, $message, $emailfrom) {
 			$to = array(array($emailto, ''));   // username is unknown
 			$mailsuccess = tnml_fMailer($to, $subject, $message, $emailfrom, $fromname);
 		} else {
-			$mailsuccess = mail($emailto, $subject, $message, $from . 'X-Mailer: PHP/' . phpversion());
+			$mailsuccess = mail((string) $emailto, (string) $subject, (string) $message, $from . 'X-Mailer: PHP/' . phpversion());
 		}
 		/* end of TegoNuke(tm) Mailer add */
 	}
 }
 function ya_mailCheck($user_email) {
 	global $stop, $user_prefix, $db, $ya_config;
-	$user_email = strtolower($user_email);
+	$user_email = strtolower((string) $user_email);
 	if (empty($user_email) || (!preg_match('/^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$/', $user_email))) {
 		$stop = _ERRORINVEMAIL . '<br />';
 		return $stop;
 	}
 	if ((!$user_email) || ($user_email == '') || (!validateEmailFormat($user_email))) $stop = _ERRORINVEMAIL . '<br />';
 	if ($ya_config['bad_mail'] > '') {
-		$BadMailList = explode("\r\n", $ya_config['bad_mail']);
+		$BadMailList = explode("\r\n", (string) $ya_config['bad_mail']);
 		$email_parts = explode('@', $user_email);
 		$j = count($BadMailList);
 		for ($i = 0;$i < $j;++$i) {
@@ -130,10 +140,10 @@ function ya_mailCheck($user_email) {
 }
 function ya_mailCheckB($user_email) {
 	global $user_prefix, $db, $ya_config;
-	$user_email = strtolower($user_email);
+	$user_email = strtolower((string) $user_email);
 	$return = 'true';
 	if ($ya_config['bad_mail'] > '') {
-		$BadMailList = explode("\r\n", $ya_config['bad_mail']);
+		$BadMailList = explode("\r\n", (string) $ya_config['bad_mail']);
 		$email_parts = explode('@', $user_email);
 		$j = count($BadMailList);
 		for ($i = 0;$i < $j;++$i) {
@@ -147,13 +157,13 @@ function ya_mailCheckB($user_email) {
 }
 function ya_passCheck($user_pass1, $user_pass2) {
 	global $stop, $ya_config;
-	if (strlen($user_pass1) > $ya_config['pass_max']) $stop = _YA_PASSLENGTH . '<br />';
-	if (strlen($user_pass1) < $ya_config['pass_min']) $stop = _YA_PASSLENGTH . '<br />';
+	if (strlen((string) $user_pass1) > $ya_config['pass_max']) $stop = _YA_PASSLENGTH . '<br />';
+	if (strlen((string) $user_pass1) < $ya_config['pass_min']) $stop = _YA_PASSLENGTH . '<br />';
 	if ($user_pass1 != $user_pass2) $stop = _PASSWDNOMATCH . '<br />';
 	return ($stop);
 }
 function ya_GetCustomFieldDesc($name) {
-	if (substr($name,0,1)=='_') {
+	if (str_starts_with((string) $name, '_')) {
 		if (defined($name)) $name_exit = constant($name);
 		else $name_exit = _YA_INVALIDCUSTOMFIELDNAME;
 	}
@@ -168,7 +178,7 @@ function ya_GetCustomRegFields() {
 	$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_fields WHERE (need = \'2\') OR (need = \'3\') OR (need = \'4\') OR (need = \'5\') ORDER BY pos');
 	while ($sqlvalue = $db->sql_fetchrow($result)) {
 		$t = $sqlvalue['fid'];
-		$value2 = explode('::', $sqlvalue['value']);
+		$value2 = explode('::', (string) $sqlvalue['value']);
 		$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 		$customFieldsHTML .=' <p><label for="nfield' . $t . '">' . $name_exit . ':';
 		// Required
@@ -206,7 +216,7 @@ function ya_GetCustomRegFieldsAdmin() {
 	$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_fields WHERE (need = \'2\') OR (need = \'3\') ORDER BY pos');
 	while ($sqlvalue = $db->sql_fetchrow($result)) {
 		$t = $sqlvalue['fid'];
-		$value2 = explode('::', $sqlvalue['value']);
+		$value2 = explode('::', (string) $sqlvalue['value']);
 		$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 		$customFieldsHTML .='<tr><td>' . $name_exit . ':';
 		// Required
@@ -238,7 +248,7 @@ function ya_GetCustomRegFieldsAdmin() {
 }
 function ya_fixtext($ya_fixtext) {
 	if ($ya_fixtext == '') return $ya_fixtext;
-	$ya_fixtext = stripslashes($ya_fixtext);
+	$ya_fixtext = stripslashes((string) $ya_fixtext);
 	$ya_fixtext = str_replace("\'",'',$ya_fixtext);
 	$ya_fixtext = str_replace('&acute;', '', $ya_fixtext);
 	$ya_fixtext = str_replace('"', '&quot;', $ya_fixtext);
@@ -257,20 +267,21 @@ function ya_save_config($config_name, $config_value, $config_param = '') {
 	if ($config_param == 'html') {
 		$config_name = check_html($config_name, 'nohtml');
 		$config_value = check_html($config_value, 'html');
-		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . addslashes($config_value) . '\' WHERE config_name=\'' . addslashes($config_name) . '\'');
+		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . addslashes((string) $config_value) . '\' WHERE config_name=\'' . addslashes((string) $config_name) . '\'');
 	}
 	if ($config_param == 'nohtml') {
 		$config_name = check_html($config_name, 'nohtml');
 		$config_value = ya_fixtext(check_html($config_value, 'nohtml'));
-		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . addslashes($config_value) . '\' WHERE config_name=\'' . addslashes($config_name) . '\'');
+		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . addslashes((string) $config_value) . '\' WHERE config_name=\'' . addslashes((string) $config_name) . '\'');
 	} else {
 		$config_name = check_html($config_name, 'nohtml');
 		$config_value = intval($config_value);
-		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . $config_value . '\' WHERE config_name=\'' . addslashes($config_name) . '\'');
+		$db->sql_query('UPDATE ' . $user_prefix . '_users_config SET config_value=\'' . $config_value . '\' WHERE config_name=\'' . addslashes((string) $config_name) . '\'');
 	}
 }
 function ya_get_configs() {
-	global $prefix, $db, $user_prefix;
+	$config = [];
+ global $prefix, $db, $user_prefix;
 	$configresult = $db->sql_query('SELECT config_name, config_value FROM ' . $user_prefix . '_users_config');
 	while (list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
 		// montego - following code is not necessary as GPC does not apply to retrieval from the DB
@@ -284,7 +295,7 @@ function ya_get_configs() {
 function yacookie($setuid, $setusername, $setpass, $setstorynum, $setumode, $setuorder, $setthold, $setnoscore, $setublockon, $settheme, $setcommentmax) {
 	global $ya_config, $db, $prefix, $nsnst_const;
 	if (defined('NUKESENTINEL_IS_LOADED')) {
-		$ip = (isset($nsnst_const['remote_ip'])) ? $nsnst_const['remote_ip'] : 'none';
+		$ip = $nsnst_const['remote_ip'] ?? 'none';
 	} else {
 		if (getenv('HTTP_CLIENT_IP')) $ip = getenv('HTTP_CLIENT_IP');
 		elseif (getenv('HTTP_X_FORWARDED_FOR')) $ip = getenv('HTTP_X_FORWARDED_FOR');
@@ -294,21 +305,21 @@ function yacookie($setuid, $setusername, $setpass, $setstorynum, $setumode, $set
 		else $ip = getenv('REMOTE_ADDR');
 	}
 	if (!validIP($ip)) $ip = ''; // RN0001003 + tightened up further using the new validIP() function in mainfile.php
-	$result = $db->sql_query('SELECT time FROM ' . $prefix . '_session WHERE uname=\'' . addslashes($setusername) . '\'');
+	$result = $db->sql_query('SELECT time FROM ' . $prefix . '_session WHERE uname=\'' . addslashes((string) $setusername) . '\'');
 	$ctime = time();
 	if ($setusername != '') {
-		$uname = substr($setusername, 0, 25);
+		$uname = substr((string) $setusername, 0, 25);
 		$guest = 0;
 		if ($row = $db->sql_fetchrow($result)) {
-			$db->sql_query('UPDATE ' . $prefix . '_session SET uname=\'' . addslashes($setusername) . '\', time=\'' . $ctime . '\', host_addr=\'' . $ip . '\', guest=\'' . $guest . '\' WHERE uname=\'' . addslashes($uname) . '\'');
+			$db->sql_query('UPDATE ' . $prefix . '_session SET uname=\'' . addslashes((string) $setusername) . '\', time=\'' . $ctime . '\', host_addr=\'' . $ip . '\', guest=\'' . $guest . '\' WHERE uname=\'' . addslashes($uname) . '\'');
 		} else {
 			$db->sql_query('INSERT INTO ' . $prefix . '_session (uname, time, host_addr, guest) VALUES (\'' . addslashes($uname) . '\', \'' . $ctime . '\', \'' . $ip . '\', \'' . $guest . '\')');
 		}
 	}
 	$info = base64_encode($setuid . ':' . $setusername . ':' . $setpass . ':' . $setstorynum . ':' . $setumode . ':' . $setuorder . ':' . $setthold . ':' . $setnoscore . ':' . $setublockon . ':' . $settheme . ':' . $setcommentmax);
 	if ($ya_config['cookietimelife'] != '-') {
-		if (trim($ya_config['cookiepath']) != '') setcookie('user', $info, time() + $ya_config['cookietimelife'], $ya_config['cookiepath']);
-		else setcookie('user', $info, time() + $ya_config['cookietimelife']);
+		if (trim((string) $ya_config['cookiepath']) != '') setcookie('user', $info, ['expires' => time() + $ya_config['cookietimelife'], 'path' => $ya_config['cookiepath']]);
+		else setcookie('user', $info, ['expires' => time() + $ya_config['cookietimelife']]);
 	} else {
 		setcookie('user', $info);
 	};
@@ -325,13 +336,14 @@ function YA_CoolSize($size) {
 	return $mysize;
 }
 function YA_MakePass() {
-	global $ya_config;
+	$str = [];
+ global $ya_config;
 	$makepass = '';
 	$strs = 'abc2def3ghj4kmn5opq6rst7uvw8xyz9';
 	$passLength = ($ya_config['pass_min'] <= 8) ? 8 : $ya_config['pass_min'];
 	for ($x = 0; $x < $passLength; ++$x) {
 		mt_srand((double)microtime() * 1000000);
-		$str[$x] = substr($strs, mt_rand(0, strlen($strs) - 1) , 1);
+		$str[$x] = substr($strs, random_int(0, strlen($strs) - 1) , 1);
 		$makepass = $makepass . $str[$x];
 	}
 	return ($makepass);
@@ -413,7 +425,7 @@ function mmain($user) {
 		include_once 'header.php';
 		mt_srand((double)microtime() * 1000000);
 		$maxran = 10000000;
-		$random_num = mt_rand(0, $maxran);
+		$random_num = random_int(0, $maxran);
 		Show_YA_menu();
 		OpenTable();
 		echo '<form action="modules.php?name=' . $module_name . '" method="post">';
