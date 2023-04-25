@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:14 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN'))
 {
 	 header('Location: ../../../index.php');
@@ -36,7 +41,7 @@ if ($radminsuper == 1) {
 		CloseTable();
 		include('footer.php');
 	} else {
-		$add_pwd = md5($add_pwd);
+		$add_pwd = md5((string) $add_pwd);
           if (isset($auth_modules)) {
             for ($i=0; $i < sizeof($auth_modules); $i++) { 
               $row = $db->sql_fetchrow($db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='$auth_modules[$i]'")); 
