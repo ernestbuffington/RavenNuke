@@ -149,7 +149,7 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 function attachment_quota_settings($admin_mode, $submit = false, $mode)
 {
 	$this_userdata = [];
- global $template, $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
+    global $template, $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
 
 	// Make sure constants got included
 	include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
@@ -570,7 +570,7 @@ function prune_attachments($sql_post)
 function perform_attach_pageregister($session_page, $in_admin = false)
 {
 	$phpEx = null;
- global $location, $location_url, $lang;
+    global $location, $location_url, $lang;
 
 	switch ($session_page)
 	{
