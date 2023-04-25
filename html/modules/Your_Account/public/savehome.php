@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:07 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -27,7 +32,7 @@ $vuid = intval($row['user_id']);
 $ccpass = $row['user_password'];
 if (($user_id == $vuid) AND ($check2 == $ccpass)) {
 	$ublockon = (isset($ublockon)) ? 1 : 0;
-	$ublock = addslashes(check_words(check_html($ublock,'')));
+	$ublock = addslashes((string) check_words(check_html($ublock,'')));
 	$storynum = intval($storynum);
 	$broadcast = intval($broadcast);
 	$db->sql_query('UPDATE ' . $user_prefix . '_users SET storynum=\'' . $storynum . '\', ublockon=\'' . $ublockon . '\', ublock=\'' . $ublock . '\', broadcast=\'' . $broadcast . '\' WHERE user_id=\'' . $user_id . '\'');
