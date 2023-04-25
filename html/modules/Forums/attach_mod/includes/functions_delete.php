@@ -22,7 +22,7 @@
 function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, $user_id = 0)
 {
 	$lang = [];
- global $db;
+    global $db;
 
 	// Generate Array, if it's not an array
 	if ($post_id_array === 0 && $attach_id_array === 0 && $page === 0)
