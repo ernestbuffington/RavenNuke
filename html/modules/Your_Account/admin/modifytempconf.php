@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:08 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')){
    header('Location: ../../../index.php');
   die ();
@@ -71,10 +77,10 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		$chng_sig_bbcode_uid = make_bbcode_uid();
 		$chng_user_sig = prepare_message($chng_user_sig, $board_config['allow_html'], $board_config['allow_bbcode'], $board_config['allow_smilies'], $chng_sig_bbcode_uid);
 		// End
-		$chng_user_sig = addslashes(check_html($chng_user_sig, ''));
+		$chng_user_sig = addslashes((string) check_html($chng_user_sig, ''));
 		$db->sql_query('UPDATE '.$user_prefix.'_users_temp SET username=\'' . $chng_uname . '\', name=\'' . $chng_realname . '\', user_email=\'' . $chng_email . '\', femail=\'' . $chng_femail . '\', user_website=\'' .	$chng_user_website . '\', user_icq=\'' . $chng_user_icq . '\', user_aim=\'' . $chng_user_aim . '\', user_yim=\'' . $chng_user_yim . '\', user_msnm=\'' . $chng_user_msnm . '\', user_from=\'' . $chng_user_from . '\', user_occ=\'' . $chng_user_occ . '\', user_interests=\'' . $chng_user_interests . '\', user_viewemail=\'' . $chng_user_viewemail . '\', user_sig=\'' . 		$chng_user_sig . '\', user_sig_bbcode_uid=\'' .	$chng_sig_bbcode_uid . '\', bio=\'' . $chng_bio . '\', newsletter=\'' .	$chng_newsletter . '\', user_allow_viewonline=\'' . $user_allow_viewonline . '\' WHERE user_id=\'' . $chng_uid . '\'');
 
-		if (isset($nfield) && count($nfield) > 0) {
+		if (isset($nfield) && (is_countable($nfield) ? count($nfield) : 0) > 0) {
 			foreach ($nfield as $key => $var) {
 				$nfield[$key] = ya_fixtext($nfield[$key]);
 				if (($db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users_temp_field_values WHERE fid='$key' AND uid = '$chng_uid'"))) == 0) {
