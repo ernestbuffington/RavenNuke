@@ -28,11 +28,11 @@ if ( !defined('IN_PHPBB') )
 class attach_pm extends attach_parent
 {
 	public $pm_delete_attachments = false;
-
+    public $attach_parent = '';
 	/**
 	* Constructor
 	*/
-	function __construct()
+	function attach_pm()
 	{
 		global $HTTP_POST_VARS;
 
