@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:33 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../../index.php');
 	die();
@@ -60,7 +65,7 @@ if (is_active('Private_Messages') && defined('LOGGEDIN_SAME_USER')) {
 	// montego - modified to remove wasteful SQL calls
 	$configresult = $db->sql_query('SELECT config_name, config_value FROM ' . $prefix . '_bbconfig WHERE config_name = \'default_style\'');
 	list($bbstyle) = $db->sql_fetchrow($configresult);
-	$sql = 'SELECT template_name FROM ' . $prefix . '_bbthemes WHERE themes_id=\'' . addslashes($bbstyle) . '\'';
+	$sql = 'SELECT template_name FROM ' . $prefix . '_bbthemes WHERE themes_id=\'' . addslashes((string) $bbstyle) . '\'';
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	if (isset($row['template_name'])) {
@@ -93,7 +98,7 @@ if (is_active('Private_Messages') && defined('LOGGEDIN_SAME_USER')) {
 	echo '<td><a href="modules.php?name=Private_Messages&amp;file=index&amp;folder=outbox"><img src="' . $imagedir . '/msg_inbox.gif" alt="" /></a></td>';
 	echo '<td valign="middle"><a href="modules.php?name=Private_Messages&amp;file=index&amp;folder=outbox"><strong>&nbsp; ' . _YAOUTBOX . ':&nbsp;' . $ya_outpms . '</strong></a></td></tr>';
 	echo '</table>';
-	echo '<form action="modules.php?name=Private_Messages&amp;mode=post&amp;pm_uname=' . htmlspecialchars($username, ENT_QUOTES, _CHARSET) . '" method="post">';
+	echo '<form action="modules.php?name=Private_Messages&amp;mode=post&amp;pm_uname=' . htmlspecialchars((string) $username, ENT_QUOTES, _CHARSET) . '" method="post">';
 	echo '<p align="center">' . _USENDPRIVATEMSG . ': <input type="text" name="pm_uname" size="25" />&nbsp;';
 	echo '<input type="submit" name="send" value="' . _SEND . '" /><br /><br />' . $links;
 	echo '</p></form></div>';
