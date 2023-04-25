@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:15 PM
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * NullToStrictStringFuncCallArgRector
+ */
+
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -26,17 +32,17 @@ include_once 'header.php';
 title(_USERAPPLOGIN);
 $sel1 = ' checked="checked"';
 $sel2 = '';
-$username = (isset($username)) ? check_html(trim($username) , 'nohtml') : '';
-$user_password = (isset($user_password)) ? htmlspecialchars(stripslashes($user_password), ENT_QUOTES, _CHARSET) : '';
-$random_num = (isset($random_num)) ? check_html(trim($random_num) , 'nohtml') : '';
-$gfx_check = (isset($gfx_check)) ? check_html(trim($gfx_check) , 'nohtml') : '';
-$mode = (isset($mode)) ? check_html(trim($mode) , 'nohtml') : 'nested';
-$unwatch = (isset($unwatch)) ? check_html(trim($unwatch) , 'nohtml') : '';
+$username = (isset($username)) ? check_html(trim((string) $username) , 'nohtml') : '';
+$user_password = (isset($user_password)) ? htmlspecialchars(stripslashes((string) $user_password), ENT_QUOTES, _CHARSET) : '';
+$random_num = (isset($random_num)) ? check_html(trim((string) $random_num) , 'nohtml') : '';
+$gfx_check = (isset($gfx_check)) ? check_html(trim((string) $gfx_check) , 'nohtml') : '';
+$mode = (isset($mode)) ? check_html(trim((string) $mode) , 'nohtml') : 'nested';
+$unwatch = (isset($unwatch)) ? check_html(trim((string) $unwatch) , 'nohtml') : '';
 $f = (isset($f)) ? intval($f) : '';
 $p = (isset($p)) ? intval($p) : '';
 $t = (isset($t)) ? intval($t) : '';
-$redirect = (isset($redirect)) ? check_html(trim($redirect) , 'nohtml') : '';
-$nextop = (isset($nextop)) ? check_html(trim($nextop) , 'nohtml') : '';
+$redirect = (isset($redirect)) ? check_html(trim((string) $redirect) , 'nohtml') : '';
+$nextop = (isset($nextop)) ? check_html(trim((string) $nextop) , 'nohtml') : '';
 // menelaos: shows top table (differently for new users and current members)
 OpenTable();
 if ($op == 'new_user') {
@@ -104,8 +110,8 @@ if (isset($_POST['tos_yes']) AND $ya_config['tos'] == 1 and $_POST['tos_yes'] ==
 	}
 	if ($ya_legalFailure) {
 		setcookie('user');
-		if (trim($ya_config['cookiepath']) != '') setcookie('user', 'expired', time() - 604800, $ya_config['cookiepath']); //correct the problem of path change
-		$db->sql_query('DELETE FROM ' . $prefix . '_session WHERE uname=\'' . addslashes($username) . '\'');
+		if (trim((string) $ya_config['cookiepath']) != '') setcookie('user', 'expired', ['expires' => time() - 604800, 'path' => $ya_config['cookiepath']]); //correct the problem of path change
+		$db->sql_query('DELETE FROM ' . $prefix . '_session WHERE uname=\'' . addslashes((string) $username) . '\'');
 		$db->sql_query('OPTIMIZE TABLE ' . $prefix . '_session');
 		$db->sql_query('DELETE FROM ' . $prefix . '_bbsessions WHERE session_user_id=\'' . $r_uid . '\'');
 		$db->sql_query('OPTIMIZE TABLE ' . $prefix . '_bbsessions');
