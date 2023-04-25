@@ -1,5 +1,9 @@
 <?php
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:29 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 function parse_bbcode($hometext, $bbcode_uid) {
 
 		$bbcode_tpl = array();
@@ -45,7 +49,7 @@ function parse_bbcode($hometext, $bbcode_uid) {
 		$patterns[] = "#\[email\]([a-z0-9\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)\[/email\]#si";
 		$replacements[] = $bbcode_tpl['email'];
 
-		$hometext = preg_replace($patterns, $replacements, $hometext);
+		$hometext = preg_replace($patterns, $replacements, (string) $hometext);
 
 		$code_start_html = $bbcode_tpl['code_open'];
 		$code_end_html =  $bbcode_tpl['code_close'];
@@ -54,7 +58,7 @@ function parse_bbcode($hometext, $bbcode_uid) {
 		for ($i = 0; $i < $match_count; $i++) {
 			$before_replace = $matches[1][$i];
 			$after_replace = $matches[1][$i];
-			$after_replace = str_replace("  ", "&nbsp; ", $after_replace);
+			$after_replace = str_replace("  ", "&nbsp; ", (string) $after_replace);
 			$after_replace = str_replace("  ", " &nbsp;", $after_replace);
 			$after_replace = str_replace("\t", "&nbsp; &nbsp;", $after_replace);
 			$str_to_match = "[code:1:$bbcode_uid]" . $before_replace . "[/code:1:$bbcode_uid]";
