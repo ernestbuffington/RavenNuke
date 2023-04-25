@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 8:58 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')) {
 	die ('Illegal File Access');
 }
@@ -24,7 +29,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 	if ($ya_config['servermail'] == 1) {
 		$message = _SORRYTO." $sitename "._HASDELETE;
 		if ($deletereason > '') {
-			$deletereason = stripslashes($deletereason);
+			$deletereason = stripslashes((string) $deletereason);
 			$message .= "\r\n\r\n"._DELETEREASON."\r\n$deletereason";
 		  }
 /*        $subject = _ACCTDELETE;
