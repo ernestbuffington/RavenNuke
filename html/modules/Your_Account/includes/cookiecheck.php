@@ -19,20 +19,27 @@ if (!defined('RNYA')) {
 	die();
 }
 /********************************************************/
-/* Coded by Richard van Oosterhout, the Netherlands	  */
-/* (menelaos dot hetnet dot nl)				  */
+/* Coded by Richard van Oosterhout, the Netherlands	    */
+/* (menelaos dot hetnet dot nl)				            */
 /* based on MyCookies Manager by A_Jelly_Doughnut       */
-/* and work by Josh Pettit of UBB.Threads		  */
+/* and work by Josh Pettit of UBB.Threads		        */
 /********************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:24 PM
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * NullToStrictStringFuncCallArgRector
+ */
+
 /*************************************************************************************/
 // function yacookiecheck()
 /*************************************************************************************/
 function yacookiecheck() {
 	global $ya_config;
 	setcookie('RNYA_test1', 'value1');
-	setcookie('RNYA_test2', 'value2', time() + 3600);
-	setcookie('RNYA_test3', 'value3', time() + 3600, '/');
-	setcookie('RNYA_test4', 'value4', time() + 3600, $ya_config['cookiepath']);
+	setcookie('RNYA_test2', 'value2', ['expires' => time() + 3600]);
+	setcookie('RNYA_test3', 'value3', ['expires' => time() + 3600, 'path' => '/']);
+	setcookie('RNYA_test4', 'value4', ['expires' => time() + 3600, 'path' => $ya_config['cookiepath']]);
 }
 /*************************************************************************************/
 // function yacookiecheckresults()
@@ -105,10 +112,10 @@ function yacookiecheckresults() {
 		echo '</td><tr><form action="modules.php?name=' . $module_name . '" method="post">';
 		echo '<td align="right"><input type="submit" name="submit" value="' . _YA_CONTINUE . '" /></td></form></tr></table>';
 	}
-	setcookie('RNYA_test1', 'expired1', time() - 604800, '');
-	setcookie('RNYA_test2', 'expired2', time() - 604800, '');
-	setcookie('RNYA_test3', 'expired3', time() - 604800, '/');
-	setcookie('RNYA_test4', 'expired4', time() - 604800, $ya_config['cookiepath']);
+	setcookie('RNYA_test1', 'expired1', ['expires' => time() - 604800, 'path' => '']);
+	setcookie('RNYA_test2', 'expired2', ['expires' => time() - 604800, 'path' => '']);
+	setcookie('RNYA_test3', 'expired3', ['expires' => time() - 604800, 'path' => '/']);
+	setcookie('RNYA_test4', 'expired4', ['expires' => time() - 604800, 'path' => $ya_config['cookiepath']]);
 	if (($_COOKIE['RNYA_test3'] != 'value3') OR ($cookiedebug == '1')) {
 		CloseTable();
 		echo '<br />';
@@ -120,10 +127,10 @@ function yacookiecheckresults() {
 /*************************************************************************************/
 function ShowCookiesRedirect() {
 	global $ya_config, $module_name;
-	setcookie('RNYA_test1', '1', time() - 604800, '');
-	setcookie('RNYA_test2', '2', time() - 604800, '');
-	setcookie('RNYA_test3', '3', time() - 604800, '/');
-	setcookie('RNYA_test4', '4', time() - 604800, $ya_config['cookiepath']);
+	setcookie('RNYA_test1', '1', ['expires' => time() - 604800, 'path' => '']);
+	setcookie('RNYA_test2', '2', ['expires' => time() - 604800, 'path' => '']);
+	setcookie('RNYA_test3', '3', ['expires' => time() - 604800, 'path' => '/']);
+	setcookie('RNYA_test4', '4', ['expires' => time() - 604800, 'path' => $ya_config['cookiepath']]);
 	Header('Location: modules.php?name=' . $module_name . '&op=ShowCookies');
 }
 /*************************************************************************************/
@@ -150,8 +157,8 @@ function ShowCookies() {
 		foreach($CookieArray as $cName => $cValue) {
 			$cName = str_replace(' ', '', $cName);
 			if ($cValue == '') $cValue = '(empty)';
-			$cMore = substr($cValue, 36, 1);
-			if ($cMore != '') $cValue = substr($cValue, 0, 35) . ' ( . . . )';
+			$cMore = substr((string) $cValue, 36, 1);
+			if ($cMore != '') $cValue = substr((string) $cValue, 0, 35) . ' ( . . . )';
 			echo '<tr><td align="left" nowrap="nowrap">' . $cName . '</td><td width="100%" align="left">' . $cValue . '</td></tr>';
 		}
 		echo '</table></td><td valign="top"><input type="submit" name="submit" value="' . _YA_COOKIEDELTHESE . '" /></td></tr></table></form>';
@@ -167,7 +174,8 @@ function ShowCookies() {
 // function DeleteCookies()
 /*************************************************************************************/
 function DeleteCookies() {
-	global $ya_config, $module_name, $prefix, $user, $username, $CookieArray;
+	$db = null;
+ global $ya_config, $module_name, $prefix, $user, $username, $CookieArray;
 	include_once 'header.php';
 	Show_YA_menu();
 	OpenTable();
@@ -198,9 +206,9 @@ function DeleteCookies() {
 		foreach($CookieArray as $cName => $cValue) {
 			$cName = str_replace(' ', '', $cName);
 			// Multiple cookie paths used to expire cookies that are no longer in use as well.
-			setcookie($cName, '1', time() - 604800, ''); // Directory only path
-			setcookie($cName, '2', time() - 604800, '/'); // Site wide path
-			setcookie($cName, '3', time() - 604800, $ya_config['cookiepath']); // Configured path
+			setcookie($cName, '1', ['expires' => time() - 604800, 'path' => '']); // Directory only path
+			setcookie($cName, '2', ['expires' => time() - 604800, 'path' => '/']); // Site wide path
+			setcookie($cName, '3', ['expires' => time() - 604800, 'path' => $ya_config['cookiepath']]); // Configured path
 			echo '<tr><td align="left" nowrap="nowrap">' . $cName . '</td><td width="100%" align="left">' . _YA_COOKIEDEL2 . '</td></tr>';
 			unset($cName);
 		}
