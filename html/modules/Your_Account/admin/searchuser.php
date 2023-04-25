@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:18 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')) {
    header('Location: ../../../index.php');
   die ();
@@ -36,7 +41,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
     asearch();
     if (!empty($listtype)) {
       echo '<br />';
-      $listtype = str_replace("\"",'',$listtype);
+      $listtype = str_replace("\"",'',(string) $listtype);
       $listtype = str_replace("\'",'',$listtype);
       if ($find == 'findUser') { $usertable = $user_prefix."_users"; } else { $usertable = $user_prefix."_users_temp"; }
       if ($match == 'equal') { $sign = "='$listtype'"; } else { $sign = "LIKE '%".$listtype."%'"; }
