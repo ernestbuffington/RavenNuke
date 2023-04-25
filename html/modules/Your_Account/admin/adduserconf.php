@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Buffington (TheGhost) 04/24/2023 8:53 PM
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')){
 	header('Location: ../../../index.php');
 	die ();
@@ -42,7 +48,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 	if ($ya_config['useviewemail'] == '0') $add_user_viewemail = '0';
 	if ($ya_config['usesignature'] == '0') $add_user_sig = '';
 	if ($ya_config['usepoints'] == '0' ) $add_points = '0';
-	$add_email = strtolower($add_email);
+	$add_email = strtolower((string) $add_email);
 	ya_userCheck($add_uname);
 	ya_mailCheck($add_email);
 	ya_passCheck($add_pass, $add_pass2);
@@ -50,7 +56,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 	if($add_name == '') { $add_name = $add_uname; }
 	$add_femail = ya_fixtext($add_femail);
 	$add_url = check_html($add_url);
-	if (!stristr($add_url, 'http://') AND $add_url != '') { $add_url = 'http://' . $add_url; }
+	if (!stristr((string) $add_url, 'http://') AND $add_url != '') { $add_url = 'http://' . $add_url; }
 	// Start - Added to allow bbcode encoding to remain upon saving user  - RN v2.40.00
 	$resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig WHERE config_name = "allow_html" OR config_name = "allow_html_tags" OR config_name = "allow_bbcode" OR config_name = "allow_smilies" OR config_name = "smilies_path" OR config_name = "rand_seed"');
 	while ($rowbc = $db->sql_fetchrow($resultbc)) {
@@ -63,7 +69,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 	$add_sig_bbcode_uid = make_bbcode_uid();
 	$add_user_sig = prepare_message($add_user_sig, $board_config['allow_html'], $board_config['allow_bbcode'], $board_config['allow_smilies'], $add_sig_bbcode_uid);
 	// End
-	$add_user_sig = addslashes(check_html($add_user_sig, ''));
+	$add_user_sig = addslashes((string) check_html($add_user_sig, ''));
 	//$add_user_sig = ya_fixtext($add_user_sig);
 	$add_user_icq = ya_fixtext($add_user_icq);
 	$add_user_aim = ya_fixtext($add_user_aim);
@@ -79,7 +85,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 	$add_points = intval($add_points);
 	if ($stop == '') {
 		$user_password = $add_pass;
-		$add_pass = md5($add_pass);
+		$add_pass = md5((string) $add_pass);
 		$user_regdate = date('M d, Y');
 		list($newest_uid) = $db->sql_fetchrow($db->sql_query('SELECT max(user_id) AS newest_uid FROM '.$user_prefix.'_users'));
 		if ($newest_uid == '-1') $new_uid = 1;
@@ -92,7 +98,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		$sql .= ', \''.$add_points.'\'';
 		$sql .= ',\'1\')';
 		$result = $db->sql_query($sql);
-		if (isset($nfield) && count($nfield) > 0) {
+		if (isset($nfield) && (is_countable($nfield) ? count($nfield) : 0) > 0) {
 			foreach ($nfield as $key => $var) {
 				$nfield[$key] = ya_fixtext($nfield[$key]);
 				if (($db->sql_numrows($db->sql_query('SELECT * FROM '.$user_prefix.'_users_field_values WHERE fid=\''.$key.'\' AND uid = \''.$new_uid.'\''))) == 0) {
