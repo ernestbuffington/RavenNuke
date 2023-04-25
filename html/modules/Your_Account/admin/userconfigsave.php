@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:22 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN'))
 {
   header('Location: ../../../index.php');
@@ -45,14 +50,14 @@ if (!isset($xtosall)) $xtosall = '';
 
 if (($radminsuper==1) OR ($radminuser==1)) {
 
-    $tmp_nick = explode("\r\n",$xbad_nick);
+    $tmp_nick = explode("\r\n",(string) $xbad_nick);
     rsort($tmp_nick);
     for ($i=count($tmp_nick)-1; $i > -1; $i--) {
         if ($tmp_nick[$i] == "") { array_pop($tmp_nick); }
     }
     sort($tmp_nick);
     $xbad_nick = implode("\r\n",$tmp_nick);
-    $tmp_mail = explode("\r\n",$xbad_mail);
+    $tmp_mail = explode("\r\n",(string) $xbad_mail);
     rsort($tmp_mail);
     for ($i=count($tmp_mail)-1; $i > -1; $i--) {
         if ($tmp_mail[$i] == "") { array_pop($tmp_mail); }
