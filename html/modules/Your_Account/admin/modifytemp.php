@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Alle Buffington (TheGHost) 04/24/2023 9:07 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN'))
 {
 	header('Location: ../../../index.php');
@@ -49,7 +54,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 //	 users temp field values will have fields vid, uid, fid and value ... it will only have one value from the concatenated field value in the users_fields table
 			while ($tmpsqlvalue = $db->sql_fetchrow($result1)) {
 				$tmp_value=$tmpsqlvalue['value'];
-				$value2 = explode("::", $sqlvalue['value']);
+				$value2 = explode("::", (string) $sqlvalue['value']);
 				$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 				echo '<tr><td>'.$name_exit.'</td><td>';
 				if (count($value2) == 1) {
@@ -62,7 +67,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 // the name field of the users fields table will be the name of a field, not any field from the users temp table
 // so the attempt to use an index on $chnginfo that refers to users_temp will fail
 // value2 which is the exploded value array from the users_field table needs to be compares with $tmp_value instead
-						if (trim($tmp_value) == trim($value2[$i])) $sel = 'selected="selected"'; else $sel = '';
+						if (trim((string) $tmp_value) == trim($value2[$i])) $sel = 'selected="selected"'; else $sel = '';
 						echo '<option value="'.trim($value2[$i]).'" '.$sel.'>'.$value2[$i].'</option>';
 					}
 					echo '</select>';
@@ -88,7 +93,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		if ($chnginfo['user_allow_viewonline'] == '1') $sel1 = 'selected="selected"'; else $sel2 = 'selected="selected"';
 		echo '<tr><td>'._HIDEONLINE.':</td><td><select name="chng_user_allow_viewonline"><option value="1" ' . $sel1 . '>' . _YES . '</option><option value="0" ' . $sel2 . '>' . _NO . '</option></select></td></tr>';
 		$signature = $chnginfo['user_sig'];
-		$signature = ($chnginfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$chnginfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', $signature) : $signature;
+		$signature = ($chnginfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$chnginfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', (string) $signature) : $signature;
 		echo '<tr><td>'._SIGNATURE.':</td><td><textarea cols="50" rows="5" name="chng_user_sig" style="color=#000000;background-color: #ffffff">' . $signature . '</textarea></td></tr>';
 		echo '<tr><td>'._EXTRAINFO.':</td><td><textarea cols="50" rows="5" name="chng_bio" style="color=#000000;background-color: #ffffff">' . $chnginfo['bio'] . '</textarea></td></tr>';
 		echo '<tr><td>'._REGDATE.':</td><td><input type="text" value="'.$chnginfo['user_regdate'].'" size="40" disabled="disabled" style="color=#000000;background-color: #ffffff" /></td></tr>';
