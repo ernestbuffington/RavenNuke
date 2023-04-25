@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:26 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: ../../index.php');
 	exit('Access Denied');
@@ -35,7 +39,7 @@ if($result)
     # On Preview page, convert title
     if ( function_exists('mb_convert_encoding') and $fid>0 and nf_CONVERTENCODING and $type=='HTML' )
     {
-      $feed['title'] = mb_convert_encoding($feed['title'], 'UTF-8');
+      $feed['title'] = mb_convert_encoding((string) $feed['title'], 'UTF-8');
     }
     $linkfid      = $feed['fid'];
     $title        = $feed['title'];
