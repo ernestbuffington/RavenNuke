@@ -14,13 +14,18 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:39 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../../index.php');
 	die();
 }
 if (is_active('Web_Links')) {
 	// Last 10 Weblinks Approved
-	$result10 = $db->sql_query('SELECT lid, title FROM ' . $prefix . '_links_links where submitter=\'' . addslashes($usrinfo['username']) . '\' order by date DESC limit 0,10');
+	$result10 = $db->sql_query('SELECT lid, title FROM ' . $prefix . '_links_links where submitter=\'' . addslashes((string) $usrinfo['username']) . '\' order by date DESC limit 0,10');
 	if (($db->sql_numrows($result10) > 0)) {
 		echo '<br />';
 		OpenTable();
