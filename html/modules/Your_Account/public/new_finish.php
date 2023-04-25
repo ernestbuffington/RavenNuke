@@ -14,6 +14,14 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:00 PM
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -23,14 +31,14 @@ $stop = '';
 $ya_username = check_html($ya_username, 'nohtml');
 ya_userCheck($ya_username);
 $ya_user_email = check_html($ya_user_email, 'nohtml');
-$ya_user_email = strtolower($ya_user_email);
+$ya_user_email = strtolower((string) $ya_user_email);
 ya_mailCheck($ya_user_email);
 // BEGIN:  nukeSPAM(tm)
 if ( function_exists('nukeSPAM') and empty($stop) ) $stop .= nukeSPAM($ya_username, $ya_user_email);
 // END:  nukeSPAM(tm)
 $user_regdate = date('M d, Y');
-if ($forceLowerCaseUserName) $ya_username = strtolower($ya_username); //Added by Raven 7/3/2005  Modified for RN v2.10.00
-$gfx_check = (isset($gfx_check)) ? check_html(trim($gfx_check) , 'nohtml') : '';
+if ($forceLowerCaseUserName) $ya_username = strtolower((string) $ya_username); //Added by Raven 7/3/2005  Modified for RN v2.10.00
+$gfx_check = (isset($gfx_check)) ? check_html(trim((string) $gfx_check) , 'nohtml') : '';
 if (empty($stop)) {
 	/*
 	 * montego - usegfxcheck is not configurable for RN and only the RN captcha security
@@ -58,15 +66,15 @@ if (empty($stop)) {
 	//}
 	mt_srand((double)microtime() * 1000000);
 	$maxran = 1000000;
-	$check_num = mt_rand(0, $maxran);
+	$check_num = random_int(0, $maxran);
 	$check_num = md5($check_num);
 	$time = time();
-	$user_password = htmlspecialchars(stripslashes($user_password)); // from RN
+	$user_password = htmlspecialchars(stripslashes((string) $user_password)); // from RN
 	$hashed_pass = md5($user_password);
 	if ($ya_config['userealname'] > 1) $ya_realname = check_html($ya_realname, 'nohtml');
 	else $ya_realname = '';
 	if (defined('NUKESENTINEL_IS_LOADED')) {
-		$ip = (isset($nsnst_const['remote_ip'])) ? $nsnst_const['remote_ip'] : 'none';
+		$ip = $nsnst_const['remote_ip'] ?? 'none';
 	} else {
 		if (getenv('HTTP_CLIENT_IP')) $ip = getenv('HTTP_CLIENT_IP');
 		elseif (getenv('HTTP_X_FORWARDED_FOR')) $ip = getenv('HTTP_X_FORWARDED_FOR');
@@ -83,22 +91,22 @@ if (empty($stop)) {
 	//		if (getmxrr($domain, $mxhosts)) $mx = 'Yes';
 	//	}
 	//}
-	$server_port = (!preg_match('#^([0-9]{1,6})#', $_SERVER['REMOTE_PORT'])) ? '' : $_SERVER['REMOTE_PORT']; //RN0001003
+	$server_port = (!preg_match('#^([0-9]{1,6})#', (string) $_SERVER['REMOTE_PORT'])) ? '' : $_SERVER['REMOTE_PORT']; //RN0001003
 	$requestor = $ip . ':' . $server_port . ' ' . $mx; //RN0001003
 //	if ($ya_config['requireadmin'] == 0 and $ya_config['useactivate'] == 0) {
 	$femail = (isset($femail)) ? check_html($femail, 'nohtml') : '';
 	$user_website = (isset($user_website)) ? check_html($user_website) : '';
-	if (!preg_match('#^http[s]?:\/\/#i', $user_website)) { // From RN
+	if (!preg_match('#^http[s]?:\/\/#i', (string) $user_website)) { // From RN
 		$user_website = 'http://' . $user_website;
 	}
-	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $user_website)) {
+	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', (string) $user_website)) {
 		$user_website = '';
 	}
 	$user_aim = (isset($user_aim)) ? check_html($user_aim, 'nohtml') : '';
 	if (isset($user_icq)) {
-		if (function_exists('ctype_digit')) $user_icq = ctype_digit($user_icq) ? $user_icq : '';
+		if (function_exists('ctype_digit')) $user_icq = ctype_digit((string) $user_icq) ? $user_icq : '';
 		else {
-			if (preg_match('/^[0-9]+$/', $user_icq)) $user_icq = intval($user_icq);
+			if (preg_match('/^[0-9]+$/', (string) $user_icq)) $user_icq = intval($user_icq);
 			else { $user_icq = ''; }
 		} // fix by Raven to stop  '0' being stored in DB if field is empty
 	} else {
@@ -112,7 +120,7 @@ if (empty($stop)) {
 	$newsletter = (isset($newsletter)) ? intval($newsletter) : 0;
 	$user_viewemail = (isset($user_viewemail)) ? intval($user_viewemail) : 0;
 	$user_allow_viewonline = (isset($user_allow_viewonline)) ? intval($user_allow_viewonline) : 1;
-	$user_sig = (isset($user_sig)) ? str_replace('<br />', "\r\n", $user_sig) : '';
+	$user_sig = (isset($user_sig)) ? str_replace('<br />', "\r\n", (string) $user_sig) : '';
 	// Start - Added to allow bbcode encoding to remain upon saving user  - RN v2.40.00
 	$resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig WHERE config_name = "allow_html" OR config_name = "allow_html_tags" OR config_name = "allow_bbcode" OR config_name = "allow_smilies" OR config_name = "smilies_path" OR config_name = "rand_seed"');
 	while ($rowbc = $db->sql_fetchrow($resultbc)) {
@@ -126,7 +134,7 @@ if (empty($stop)) {
 	$user_sig = prepare_message($user_sig, $board_config['allow_html'], $board_config['allow_bbcode'], $board_config['allow_smilies'], $user_sig_bbcode_uid);
 	// End
 	$user_sig = check_html($user_sig, '');
-	$bio = (isset($bio)) ? str_replace('<br />', "\r\n", $bio) : '';
+	$bio = (isset($bio)) ? str_replace('<br />', "\r\n", (string) $bio) : '';
 	$bio = check_html($bio, 'nohtml');
 	if ($ya_config['requireadmin'] == 0 and $ya_config['useactivate'] == 0) {
 		$user_dateformat = (isset($user_dateformat)) ? check_html($user_dateformat, 'nohtml') : '';
@@ -145,18 +153,18 @@ if (empty($stop)) {
 			. 'username, name, user_email, femail, user_website, user_icq, user_aim, user_yim, '
 			. 'user_msnm, user_from, user_occ, user_interests, newsletter, user_viewemail, '
 			. 'user_allow_viewonline, user_timezone, user_dateformat, user_sig, user_sig_bbcode_uid, bio, user_password, '
-			. 'user_regdate, agreedtos) VALUES (NULL, \'gallery/blank.gif\', \'3\', \'' . addslashes($language) . '\', \'' . $lv . '\', \'' . $lv . '\', \'nested\', '
-			. '\'' . addslashes($ya_username) . '\', \'' . addslashes($ya_realname) . '\', \'' . addslashes($ya_user_email) . '\', \'' . addslashes($femail) . '\', \''
-			. addslashes($user_website) . '\', \'' . $user_icq . '\',\'' . $user_aim . '\', \'' . $user_yim . '\', \'' . $user_msnm . '\', \''
-			. addslashes($user_from) . '\', \'' . addslashes($user_occ) . '\', \'' . addslashes($user_interests) . '\', \'' . $newsletter . '\', \''
-			. $user_viewemail . '\', \'' . $user_allow_viewonline . '\', \'' . $user_timezone . '\', \'' . addslashes($user_dateformat) . '\', \''
-			. addslashes($user_sig) . '\', \'' . $user_sig_bbcode_uid . '\', \'' . addslashes($bio) . '\', \'' . $hashed_pass . '\', \'' . $user_regdate . '\', \'1\')';
+			. 'user_regdate, agreedtos) VALUES (NULL, \'gallery/blank.gif\', \'3\', \'' . addslashes((string) $language) . '\', \'' . $lv . '\', \'' . $lv . '\', \'nested\', '
+			. '\'' . addslashes((string) $ya_username) . '\', \'' . addslashes((string) $ya_realname) . '\', \'' . addslashes($ya_user_email) . '\', \'' . addslashes((string) $femail) . '\', \''
+			. addslashes((string) $user_website) . '\', \'' . $user_icq . '\',\'' . $user_aim . '\', \'' . $user_yim . '\', \'' . $user_msnm . '\', \''
+			. addslashes((string) $user_from) . '\', \'' . addslashes((string) $user_occ) . '\', \'' . addslashes((string) $user_interests) . '\', \'' . $newsletter . '\', \''
+			. $user_viewemail . '\', \'' . $user_allow_viewonline . '\', \'' . $user_timezone . '\', \'' . addslashes((string) $user_dateformat) . '\', \''
+			. addslashes((string) $user_sig) . '\', \'' . $user_sig_bbcode_uid . '\', \'' . addslashes((string) $bio) . '\', \'' . $hashed_pass . '\', \'' . $user_regdate . '\', \'1\')';
 		$result = $db->sql_query($sql);
 		$new_uid = $db->sql_nextid();
 		if (isset($nfield)) {
-			if ((count($nfield) > 0) AND ($result)) {
+			if (((is_countable($nfield) ? count($nfield) : 0) > 0) AND ($result)) {
 				foreach($nfield as $key => $var) {
-					$db->sql_query('INSERT INTO ' . $user_prefix . '_users_field_values (uid, fid, value) VALUES (\'' . $new_uid . '\', \'' . addslashes(check_html($key, 'nohtml')) . '\',\'' . addslashes(check_html($nfield[$key], 'nohtml')) . '\')');
+					$db->sql_query('INSERT INTO ' . $user_prefix . '_users_field_values (uid, fid, value) VALUES (\'' . $new_uid . '\', \'' . addslashes((string) check_html($key, 'nohtml')) . '\',\'' . addslashes((string) check_html($nfield[$key], 'nohtml')) . '\')');
 				}
 			}
 		}
@@ -169,13 +177,13 @@ if (empty($stop)) {
 		//} else {
 		//	$new_uid = $newest_uid+1;
 		//}
-		$sql = 'INSERT INTO ' . $user_prefix . '_users_temp (user_id, username, name, user_email, user_password, user_regdate, check_num, time, requestor, femail, user_website, user_aim, user_icq, user_msnm, user_yim, user_from, user_occ, user_interests, newsletter, user_viewemail, user_allow_viewonline, user_sig, user_sig_bbcode_uid, bio) VALUES (NULL, \'' . addslashes($ya_username) . '\', \'' . addslashes($ya_realname) . '\', \'' . addslashes($ya_user_email) . '\', \'' . $hashed_pass . '\', \'' . $user_regdate . '\', \'' .$check_num . '\', \'' . $time . '\', \'' . $requestor . '\', \'' . addslashes($femail) . '\', \'' . addslashes($user_website) . '\', \'' . $user_aim . '\', \'' . $user_icq . '\', \'' . $user_msnm . '\', \'' . $user_yim . '\', \'' . addslashes($user_from) . '\', \'' . addslashes($user_occ) . '\', \'' . addslashes($user_interests) . '\', \'' . $newsletter . '\', \'' . $user_viewemail . '\', \'' . $user_allow_viewonline . '\', \'' . addslashes($user_sig) . '\', \'' . $user_sig_bbcode_uid . '\', \'' . addslashes($bio) . '\')';
+		$sql = 'INSERT INTO ' . $user_prefix . '_users_temp (user_id, username, name, user_email, user_password, user_regdate, check_num, time, requestor, femail, user_website, user_aim, user_icq, user_msnm, user_yim, user_from, user_occ, user_interests, newsletter, user_viewemail, user_allow_viewonline, user_sig, user_sig_bbcode_uid, bio) VALUES (NULL, \'' . addslashes((string) $ya_username) . '\', \'' . addslashes((string) $ya_realname) . '\', \'' . addslashes($ya_user_email) . '\', \'' . $hashed_pass . '\', \'' . $user_regdate . '\', \'' .$check_num . '\', \'' . $time . '\', \'' . $requestor . '\', \'' . addslashes((string) $femail) . '\', \'' . addslashes((string) $user_website) . '\', \'' . $user_aim . '\', \'' . $user_icq . '\', \'' . $user_msnm . '\', \'' . $user_yim . '\', \'' . addslashes((string) $user_from) . '\', \'' . addslashes((string) $user_occ) . '\', \'' . addslashes((string) $user_interests) . '\', \'' . $newsletter . '\', \'' . $user_viewemail . '\', \'' . $user_allow_viewonline . '\', \'' . addslashes((string) $user_sig) . '\', \'' . $user_sig_bbcode_uid . '\', \'' . addslashes((string) $bio) . '\')';
 		$result = $db->sql_query($sql);
 		$new_uid = $db->sql_nextid();
 		if (isset($nfield)) {
-			if ((count($nfield) > 0) AND ($result)) {
+			if (((is_countable($nfield) ? count($nfield) : 0) > 0) AND ($result)) {
 				foreach($nfield as $key => $var) {
-					$db->sql_query('INSERT INTO ' . $user_prefix . '_users_temp_field_values (uid, fid, value) VALUES (\'' . $new_uid . '\', \'' . addslashes(check_html($key, 'nohtml')) . '\',\'' . addslashes(check_html($var, 'nohtml')) . '\')');
+					$db->sql_query('INSERT INTO ' . $user_prefix . '_users_temp_field_values (uid, fid, value) VALUES (\'' . $new_uid . '\', \'' . addslashes((string) check_html($key, 'nohtml')) . '\',\'' . addslashes((string) check_html($var, 'nohtml')) . '\')');
 				}
 			}
 		}
