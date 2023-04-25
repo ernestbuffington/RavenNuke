@@ -360,7 +360,7 @@ $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0)
 $template->assign_vars(array(
         'SITENAME' => $board_config['sitename'],
         'SITE_DESCRIPTION' => $board_config['site_desc'],
-        'PAGE_TITLE' => $page_title,
+        'PAGE_TITLE' => $page_title ?? '',
         'LAST_VISIT_DATE' => sprintf($lang['You_last_visit'], $s_last_visit),
         'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
         'TOTAL_USERS_ONLINE' => $l_online_users,
