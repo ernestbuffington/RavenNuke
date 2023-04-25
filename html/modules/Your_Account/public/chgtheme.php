@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:49 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	echo 'you fluffed';
 	//  header('Location: ../../../index.php');
@@ -26,7 +31,7 @@ if (!defined('theme')) define('theme', 'theme');
 // set some vars up front to stop notice errors
 if (!isset($themelist)) $themelist = '';
 getusrinfo($user);
-if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+if ((is_user($user)) AND (strtolower((string) $userinfo['username']) == strtolower((string) $cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
 	include_once 'header.php';
 	title(_THEMESELECTION);
 	OpenTable();
