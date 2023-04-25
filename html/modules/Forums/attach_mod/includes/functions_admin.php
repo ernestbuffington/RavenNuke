@@ -244,15 +244,15 @@ function entry_exists($attach_id)
 function collect_attachments()
 {
 	$dirinfo = [];
- global $upload_dir, $attach_config;
+    global $upload_dir, $attach_config;
 
 	$file_attachments = array(); 
 
 	if (!intval($attach_config['allow_ftp_upload']))
 	{
-		if ($dir = @opendir($upload_dir))
+		if ($dir = opendir($upload_dir))
 		{
-			while ($file = @readdir($dir))
+			while ($file = readdir($dir))
 			{
 				if ($file != 'index.php' && $file != '.htaccess' && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
 				{
@@ -273,7 +273,7 @@ function collect_attachments()
 
 		$file_listing = array();
 
-		$file_listing = @ftp_rawlist($conn_id, '');
+		$file_listing = ftp_rawlist($conn_id, '');
 
 		if (!$file_listing)
 		{
@@ -300,7 +300,7 @@ function collect_attachments()
 			}
 		}
 
-		@ftp_quit($conn_id);
+		ftp_quit($conn_id);
 	}
 
 	return $file_attachments;
@@ -312,22 +312,22 @@ function collect_attachments()
 function get_formatted_dirsize()
 {
 	$dirinfo = [];
- global $attach_config, $upload_dir, $lang;
+    global $attach_config, $upload_dir, $lang;
 
 	$upload_dir_size = 0;
 
 	if (!intval($attach_config['allow_ftp_upload']))
 	{
-		if ($dirname = @opendir($upload_dir))
+		if ($dirname = opendir($upload_dir))
 		{
-			while ($file = @readdir($dirname))
+			while ($file = readdir($dirname))
 			{
 				if ($file != 'index.php' && $file != '.htaccess' && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
 				{
-					$upload_dir_size += @filesize($upload_dir . '/' . $file);
+					$upload_dir_size += filesize($upload_dir . '/' . $file);
 				}
 			}
-			@closedir($dirname);
+			closedir($dirname);
 		}
 		else
 		{
@@ -341,7 +341,7 @@ function get_formatted_dirsize()
 
 		$file_listing = array();
 
-		$file_listing = @ftp_rawlist($conn_id, '');
+		$file_listing = ftp_rawlist($conn_id, '');
 
 		if (!$file_listing)
 		{
@@ -369,7 +369,7 @@ function get_formatted_dirsize()
 			}
 		}
 
-		@ftp_quit($conn_id);
+		ftp_quit($conn_id);
 	}
 
 	if ($upload_dir_size >= 1048576)
