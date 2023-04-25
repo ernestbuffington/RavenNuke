@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:09 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')) {
 	header('Location: ../../../index.php');
 	die ();
@@ -41,18 +46,18 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		while ($sqlvalue = $db->sql_fetchrow($result)) {
 			$t = (int)$sqlvalue['fid'];
 			list($value) = $db->sql_fetchrow($db->sql_query('SELECT value FROM ' . $user_prefix . '_users_field_values WHERE fid =\'' . $t . '\' AND uid = \'' . $chnginfo['user_id'] . '\''));
-			$value2 = explode('::', $sqlvalue['value']);
+			$value2 = explode('::', (string) $sqlvalue['value']);
 			$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 			if (count($value2) == 1) {
 				$size = 60;
 				if ($sqlvalue['size'] < 57) $size = $sqlvalue['size']+3;
-				echo '<tr><td>' . $name_exit . '</td><td><input type="text" name="nfield[' . $t . ']" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" value="' . htmlspecialchars($value, ENT_QUOTES, _CHARSET) . '" /></td></tr>';
+				echo '<tr><td>' . $name_exit . '</td><td><input type="text" name="nfield[' . $t . ']" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" value="' . htmlspecialchars((string) $value, ENT_QUOTES, _CHARSET) . '" /></td></tr>';
 			} else {
 				echo '<tr><td>' . $name_exit . '</td><td>';
 				echo '<select name="nfield[' . $t . ']">';
 				$j = count($value2);
 				for ($i = 0;$i < $j;++$i) {
-					if (trim($value) == trim($value2[$i])) $sel = ' selected="selected"';
+					if (trim((string) $value) == trim($value2[$i])) $sel = ' selected="selected"';
 					else $sel = '';
 					echo '<option value="' . trim($value2[$i]) . '"' . $sel . '>' . $value2[$i] . '</option>';
 				}
@@ -164,13 +169,13 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		closedir($dir);
 		asort($lang);
 		reset($lang);
-		if (in_array(strtolower($chnginfo['user_lang']), $lang)) {
+		if (in_array(strtolower((string) $chnginfo['user_lang']), $lang)) {
 			$form_lang = $chnginfo['user_lang'];
 		} else {
 			$form_lang = $board_config['default_lang'];
 		}
 		foreach($lang as $displayname => $filename) {
-			$selected = ( strtolower($form_lang) == strtolower($filename) ) ? ' selected="selected"' : '';
+			$selected = ( strtolower((string) $form_lang) == strtolower($filename) ) ? ' selected="selected"' : '';
 			echo '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
 		}
 		echo '</select>';
@@ -258,7 +263,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		echo $yacontent;
 */
 		$signature = $chnginfo['user_sig'];
-		$signature = ($chnginfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$chnginfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', $signature) : $signature;
+		$signature = ($chnginfo['user_sig_bbcode_uid'] != '') ? preg_replace('/:(([a-z0-9]+:)?)'.$chnginfo['user_sig_bbcode_uid'].'(=|\])/si', '\\3', (string) $signature) : $signature;
 		echo '<tr><td valign="top">' . _SIGNATURE . ':</td><td><textarea name="chng_user_sig" rows="6" cols="45">' . $signature . '</textarea></td></tr>';
 		echo '<tr><td valign="top">'._EXTRAINFO.'</td><td><textarea name="chng_bio" rows="6" cols="45">'.$chnginfo['bio'].'</textarea></td></tr>';
 		echo '<tr><td>' . _YA_POINTS . ':</td><td><input type="text" name="chng_points" value="' . $chnginfo['points'] . '" /></td></tr>';
