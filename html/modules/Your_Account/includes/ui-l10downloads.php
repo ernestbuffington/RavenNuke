@@ -15,6 +15,10 @@
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:36 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 if (!defined('RNYA')) {
 	header('Location: ../../../../index.php');
 	die();
@@ -22,13 +26,13 @@ if (!defined('RNYA')) {
 
 if (is_active('Downloads')) {
 	// Last 10 Download Links Approved
-	$result = $db->sql_query('SELECT `lid`, `title` FROM `' . $prefix . '_nsngd_downloads` WHERE `submitter`=\'' . addslashes($usrinfo['username']) . '\' ORDER BY `date` DESC LIMIT 0,10');
+	$result = $db->sql_query('SELECT `lid`, `title` FROM `' . $prefix . '_nsngd_downloads` WHERE `submitter`=\'' . addslashes((string) $usrinfo['username']) . '\' ORDER BY `date` DESC LIMIT 0,10');
 	if (($db->sql_numrows($result) > 0)) {
 		echo '<br />';
 		OpenTable();
 		echo '<strong>' , $usrinfo['username'] , '\'s ' , _LAST10DOWNLOAD , ':</strong><ul>';
 		while (list($lid, $title) = $db->sql_fetchrow($result)) {
-			echo '<li><a href="modules.php?name=Downloads&amp;op=getit&amp;lid=' . $lid . '">' . htmlspecialchars($title, ENT_QUOTES, _CHARSET) . '</a></li>';
+			echo '<li><a href="modules.php?name=Downloads&amp;op=getit&amp;lid=' . $lid . '">' . htmlspecialchars((string) $title, ENT_QUOTES, _CHARSET) . '</a></li>';
 		}
 		echo '</ul>';
 		CloseTable();
