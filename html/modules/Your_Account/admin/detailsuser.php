@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:04 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')) {
 	header('Location: ../../../index.php');
 	die ();
@@ -35,7 +40,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		if ($ya_config['userealname'] >= '1') echo '<tr><td>'._UREALNAME.':</td><td><span class="thick">'.$chnginfo['name'].'&nbsp;</span></td></tr>';
 		echo '<tr><td>' . _EMAIL . ':</td><td><span class="thick"><a href="mailto:'.$chnginfo['user_email'].'">'.$chnginfo['user_email'].'</a></span></td></tr>';
 		if ($ya_config['usefakeemail'] >= '1') echo '<tr><td>' . _FAKEEMAIL . ':</td><td><span class="thick">'.$chnginfo['femail'].'&nbsp;</span></td></tr>';
-		$chnginfo['user_website'] = strtolower($chnginfo['user_website']);
+		$chnginfo['user_website'] = strtolower((string) $chnginfo['user_website']);
 		$chnginfo['user_website'] = str_replace('http://', '', $chnginfo['user_website']);
 		if ($chnginfo['user_website'] == '') $userwebsite = _YA_NA;
 		else $userwebsite = '<a href="http://'.$chnginfo['user_website'].'" target="_blank">'.$chnginfo['user_website'].'</a>';
@@ -45,7 +50,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 			$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 			$t = (int)$sqlvalue['fid'];
 			list($value) = $db->sql_fetchrow($db->sql_query('SELECT value FROM ' . $user_prefix . '_users_field_values WHERE fid =\'' . $t . '\' AND uid = \'' . $chnginfo['user_id'] . '\''));
-			echo '<tr><td>'.$name_exit.'</td><td><span class="thick">'.htmlspecialchars($value, ENT_QUOTES, _CHARSET).'&nbsp;</span></td></tr>';
+			echo '<tr><td>'.$name_exit.'</td><td><span class="thick">'.htmlspecialchars((string) $value, ENT_QUOTES, _CHARSET).'&nbsp;</span></td></tr>';
 		}
 		if ($ya_config['useinstantmessaim'] >= '1') echo '<tr><td>'._AIM.':</td><td><span class="thick">'.$chnginfo['user_aim'].'&nbsp;</span></td></tr>';
 		if ($ya_config['useinstantmessicq'] >= '1') echo '<tr><td>'._ICQ.':</td><td><span class="thick">'.$chnginfo['user_icq'].'&nbsp;</span></td></tr>';
@@ -64,7 +69,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		}
 		if ($chnginfo['user_allow_viewonline'] == 1) { $cnl = _YES; } else { $cnl = _NO; }
 		if ($ya_config['usehideonline'] > '1') echo '<tr><td>' . _HIDEONLINE . ':</td><td><span class="thick">' . $cnl . '</span></td></tr>'."\n";
-		$signature = str_replace("\r\n", "<br />", $chnginfo['user_sig']);
+		$signature = str_replace("\r\n", "<br />", (string) $chnginfo['user_sig']);
 		$resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig WHERE config_name = "allow_html" OR config_name = "allow_bbcode" OR config_name = "allow_smilies" OR config_name = "smilies_path"');
 		while ($rowbc = $db->sql_fetchrow($resultbc)) {
 			$board_config[$rowbc['config_name']] = $rowbc['config_value'];
@@ -89,7 +94,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 				$signature = smilies_pass($signature);
 			}
 
-			$signature = str_replace("\n", "\n<br />\n", $signature);
+			$signature = str_replace("\n", "\n<br />\n", (string) $signature);
 		}
 		// End
 		if ($ya_config['usesignature'] >= '1') echo '<tr><td valign="top">'._SIGNATURE.':</td><td>'.$signature.'&nbsp;</td></tr>';
