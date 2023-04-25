@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:19 PM
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 $module_name = basename(dirname(__FILE__));
 if (!defined('MODULE_FILE')) {
 	header('Location: ../../index.php');
@@ -31,11 +37,11 @@ $userpage = 1;
 include_once 'modules/' . $module_name . '/navbar.php';
 include_once 'modules/' . $module_name . '/includes/cookiecheck.php';
 
-$random_num = (isset($random_num)) ? check_html(trim($random_num) , 'nohtml') : '';
-$op = (isset($op)) ? check_html(trim($op) , 'nohtml') : '';
-$redirect = (isset($redirect)) ? html_entity_decode(check_html(trim($redirect) , 'nohtml'), ENT_QUOTES, _CHARSET) : '';
-$mode = (isset($mode)) ? check_html(trim($mode) , 'nohtml') : '';
-$unwatch = (isset($unwatch)) ? check_html(trim($unwatch) , 'nohtml') : '';
+$random_num = (isset($random_num)) ? check_html(trim((string) $random_num) , 'nohtml') : '';
+$op = (isset($op)) ? check_html(trim((string) $op) , 'nohtml') : '';
+$redirect = (isset($redirect)) ? html_entity_decode((string) check_html(trim((string) $redirect) , 'nohtml'), ENT_QUOTES, _CHARSET) : '';
+$mode = (isset($mode)) ? check_html(trim((string) $mode) , 'nohtml') : '';
+$unwatch = (isset($unwatch)) ? check_html(trim((string) $unwatch) , 'nohtml') : '';
 $f = (isset($f)) ? intval($f) : '';
 $p = (isset($p)) ? intval($p) : '';
 $t = (isset($t)) ? intval($t) : '';
@@ -107,7 +113,7 @@ switch ($op) {
 		$image = @imagecreatefrompng($icon);
 		$text_color = imagecolorallocate($image, 0, 0, 0);
 		Header('Content-type: image/x-png');
-		imagestring($image, 1, 7, 42, $yaversion, $text_color);
+		imagestring($image, 1, 7, 42, (string) $yaversion, $text_color);
 		imagepng($image);
 		imagedestroy($image);
 		break;
@@ -138,15 +144,15 @@ switch ($op) {
 	case 'login':
 		global $nsnst_const;
 		if (!isset($gfx_check)) $gfx_check = '';
-		$username = isset($username) ? check_html(trim($username) , 'nohtml') : ''; // RN0001003
-		$user_password = isset($user_password) ? htmlspecialchars(stripslashes($user_password), ENT_QUOTES, _CHARSET) : '';
-		$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes($username) . '\'');
+		$username = isset($username) ? check_html(trim((string) $username) , 'nohtml') : ''; // RN0001003
+		$user_password = isset($user_password) ? htmlspecialchars(stripslashes((string) $user_password), ENT_QUOTES, _CHARSET) : '';
+		$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes((string) $username) . '\'');
 		$ya_numUser = $db->sql_numrows($result);
 		$setinfo = $db->sql_fetchrow($result);
 		// menelaos: check of the member agreed with the TOS and update the database field
 		if (isset($_POST['tos_yes'])) {
 			if (($ya_config['tos'] == 1) AND ($_POST['tos_yes'] == 1)) {
-				$db->sql_query('UPDATE ' . $user_prefix . '_users SET agreedtos=\'1\' WHERE username=\'' . addslashes($username) . '\'');
+				$db->sql_query('UPDATE ' . $user_prefix . '_users SET agreedtos=\'1\' WHERE username=\'' . addslashes((string) $username) . '\'');
 			}
 		}
 		$forward = str_replace('redirect=', '', $redirect);
@@ -168,11 +174,11 @@ switch ($op) {
 			*/
 			$dbpass = $setinfo['user_password'];
 			$non_crypt_pass = $user_password;
-			$old_crypt_pass = crypt($user_password, substr($dbpass, 0, 2));
+			$old_crypt_pass = crypt($user_password, substr((string) $dbpass, 0, 2));
 			$new_pass = md5($user_password);
 			if (($dbpass == $non_crypt_pass) OR ($dbpass == $old_crypt_pass)) {
-				$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_password=\'' . $new_pass . '\'	WHERE username=\'' . addslashes($username) . '\'');
-				$result = $db->sql_query('SELECT user_password FROM ' . $user_prefix . '_users	WHERE username=\'' . addslashes($username) . '\'');
+				$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_password=\'' . $new_pass . '\'	WHERE username=\'' . addslashes((string) $username) . '\'');
+				$result = $db->sql_query('SELECT user_password FROM ' . $user_prefix . '_users	WHERE username=\'' . addslashes((string) $username) . '\'');
 				list($dbpass) = $db->sql_fetchrow($result);
 			}
 			if ($dbpass != $new_pass) {
@@ -212,7 +218,7 @@ switch ($op) {
 				if (!validIP($uname)) $uname = '127.0.0.1'; // RN0001003 + tightened it up some with new function validIP() in mainfile.php
 				$db->sql_query('DELETE FROM ' . $prefix . '_session WHERE uname=\'' . $uname . '\' AND guest=\'1\'');
 				//		if ($Version_Num >= 7.4)
-				$db->sql_query('UPDATE ' . $user_prefix . '_users SET last_ip=\'' . $uname . '\' WHERE username=\'' . addslashes($username) . '\'');
+				$db->sql_query('UPDATE ' . $user_prefix . '_users SET last_ip=\'' . $uname . '\' WHERE username=\'' . addslashes((string) $username) . '\'');
 			}
 			// menelaos: the cookiecheck is run here
 			if ($ya_config['cookiecheck'] == 1) {
@@ -262,7 +268,7 @@ switch ($op) {
 			$userinfo = getusrinfo($user);
 		}
 		setcookie('user');
-		if (trim($ya_config['cookiepath']) != '') setcookie('user', 'expired', time() -604800, $ya_config['cookiepath']); //correct the problem of path change
+		if (trim((string) $ya_config['cookiepath']) != '') setcookie('user', 'expired', ['expires' => time() -604800, 'path' => $ya_config['cookiepath']]); //correct the problem of path change
 		if ($userinfo != '') {
 			$db->sql_query('DELETE FROM ' . $prefix . '_session WHERE uname=\'' . $userinfo['username'] . '\'');
 			$db->sql_query('OPTIMIZE TABLE ' . $prefix . '_session');
