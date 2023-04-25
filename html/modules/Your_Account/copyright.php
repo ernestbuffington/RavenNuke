@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:17 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 $module_name = basename(dirname(__FILE__));
 $mod_name = 'RN Your Account';
 $author_email = '';
@@ -28,7 +33,7 @@ $mod_cost = '';
 function show_copyright() {
 	global $db, $ya_config, $mod_cost, $forum, $mod_name, $module_name, $release_date, $author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description;
 	if (empty($mod_name)) {
-		$mod_name = str_replace('_', ' ', $module_name);
+		$mod_name = str_replace('_', ' ', (string) $module_name);
 	}
 	echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">';
 	echo '<html>';
