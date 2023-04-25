@@ -14,22 +14,27 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:46 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
 }
 getusrinfo($user);
 if (!isset($who)) $who = '';
-if ((is_user($user)) AND (strtolower($who) == strtolower($cookie[1])) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+if ((is_user($user)) AND (strtolower((string) $who) == strtolower((string) $cookie[1])) AND (strtolower((string) $userinfo['username']) == strtolower((string) $cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
 	$who = $cookie[1];
 	include_once 'header.php';
 	title(_BROADCAST);
 	OpenTable();
 	$numrows = $db->sql_numrows($db->sql_query('SELECT * FROM ' . $prefix . '_public_messages WHERE who=\'' . $who . '\''));
-	$the_message = addslashes(check_html($the_message, 'nohtml')); // RN0001003
+	$the_message = addslashes((string) check_html($the_message, 'nohtml')); // RN0001003
 	if (!empty($the_message) AND $numrows == 0) {
 		$the_time = time();
-		$who = htmlspecialchars(stripslashes($who), ENT_QUOTES, _CHARSET);
+		$who = htmlspecialchars(stripslashes((string) $who), ENT_QUOTES, _CHARSET);
 		$db->sql_query('INSERT INTO ' . $prefix . '_public_messages VALUES (NULL, \'' . $the_message . '\', \'' . $the_time . '\', \'' . $who . '\')');
 		update_points(20);
 		echo '<div class="text-center">' . _BROADCASTSENT . '<br /><br />[ <a href="modules.php?name=' . $module_name . '">' . _RETURNPAGE . '</a> ]</div>';
