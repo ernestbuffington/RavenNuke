@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:24 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 if(!defined('MODULE_FILE')) {
 	header('Location: ../../index.php');
 	die();
@@ -20,7 +24,7 @@ if (empty($type)) $type = '';
 if (empty($op)) $op = '';
 
 $fid = intval($fid);
-$type = strtoupper($type);
+$type = strtoupper((string) $type);
 
 if(!isset($module_file)) $module_file='modules';
 $module_name = basename(dirname(__FILE__));
@@ -93,8 +97,8 @@ if ($type == 'HTML' or ($fid == 0 and $op != 'map')) { echo '<div align="right">
     if (!defined('nf_CONVERTENCODING')) define('nf_CONVERTENCODING',true);
     if ( function_exists('mb_convert_encoding') and nf_CONVERTENCODING )
     {
-      $feed['title'] = mb_convert_encoding($feed['title'], 'UTF-8');
-      $feed['desc'] = mb_convert_encoding($feed['desc'], 'UTF-8');
+      $feed['title'] = mb_convert_encoding((string) $feed['title'], 'UTF-8');
+      $feed['desc'] = mb_convert_encoding((string) $feed['desc'], 'UTF-8');
     }
     $boxContent = '<br />'.listSubscriptions('single', 'aggregator', $subscriptions, $feed['title'], $feed['desc'], $fid, $feed['feedburner_address'], $seo_config);
     if (is_admin($admin)) $boxContent .= '<br /><a href="'.$admin_file.'.php?op=nukeFEED">'._FEEDS_ADMIN.'</a>';
