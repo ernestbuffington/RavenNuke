@@ -297,7 +297,7 @@ function session_pagestart($user_ip, $thispage_id, $nukeuser)
 	{
 		$session_id = '';
 	}
-        if ( ($nukeuser != "") && ($userdata['session_logged_in'] == "" )) {
+        if ( (isset($nukeuser) && $nukeuser != "") && (isset($userdata['session_logged_in']) && $userdata['session_logged_in'] == "" )) {
                 bblogin($nukeuser, $session_id);
         } else {
 	            $thispage_id = (int) $thispage_id;
