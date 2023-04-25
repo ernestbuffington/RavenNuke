@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 0:31 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../../index.php');
 	die();
@@ -62,13 +67,13 @@ if ($my_headlines == 1 && defined('LOGGEDIN_SAME_USER')) {
 			$nsitename = $row5['sitename'];
 			$url = $row5['headlinesurl'];
 			$title = check_html($nsitename, 'nohtml');
-			$siteurl = str_ireplace('http://', '', $url);
+			$siteurl = str_ireplace('http://', '', (string) $url);
 			$siteurl = explode('/', $siteurl);
 		} else {
-			if (!stristr($url, 'http://')) {
+			if (!stristr((string) $url, 'http://')) {
 				$url = 'http://' . $url;
 			}
-			$siteurl = str_ireplace('http://', '', $url);
+			$siteurl = str_ireplace('http://', '', (string) $url);
 			$siteurl = explode('/', $siteurl);
 			$title = 'http://' . $siteurl[0];
 		}
@@ -113,7 +118,7 @@ function ya_superhtmlentities($text) {
 		159 => 'Yuml'
 	);
 	$new_text = '';
-	$j = strlen($text);
+	$j = strlen((string) $text);
 	for ($i = 0;$i < $j;++$i) {
 		$num = ord($text[$i]);
 		if (array_key_exists($num, $entities)) {
@@ -125,7 +130,7 @@ function ya_superhtmlentities($text) {
 					$new_text .= '&' . $entities[$num] . ';';
 			}
 		} else if ($num < 127 || $num > 159) {
-			$new_text .= htmlentities($text[$i]);
+			$new_text .= htmlentities((string) $text[$i]);
 		}
 	}
 	$new_text = preg_replace('#  +#', ' ', $new_text); // Remove anything greater than one space.
@@ -133,12 +138,12 @@ function ya_superhtmlentities($text) {
 }
 function ya_doti($str, $len = 500, $dots = '...') {
 	// $len=max length of hometext displayed
-	if (strlen($str) > $len) {
+	if (strlen((string) $str) > $len) {
 		// $dot = " whatever you want here ")
-		$str = explode('.', $str);
+		$str = explode('.', (string) $str);
 		// Displayed at the end of hometext
-		$dotlen = strlen($dots);
-		$str = substr_replace($str[0] . $str[1] . $str[2] . $str[3] . $str[4], $dots, $len-$dotlen);
+		$dotlen = strlen((string) $dots);
+		$str = substr_replace($str[0] . $str[1] . $str[2] . $str[3] . $str[4], (string) $dots, $len-$dotlen);
 	}
 	return $str;
 }
