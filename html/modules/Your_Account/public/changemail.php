@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:47 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -25,16 +30,16 @@ getusrinfo($user);
 include_once 'header.php';
 title(_CHANGEMAILTITLE);
 opentable();
-if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+if ((is_user($user)) AND (strtolower((string) $userinfo['username']) == strtolower((string) $cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
 	// montego - moved the following block of code here from above as need to make sure is a user first before anything else!
 	ya_mailCheck($newmail);
 	list($get_username, $tuemail) = $db->sql_fetchrow($db->sql_query('SELECT username, user_email FROM ' . $user_prefix . '_users WHERE user_id = \'' . $get_id . '\''));
 	$datekey = date('F Y');
-	$check_num2 = substr(md5(hexdec($datekey) * hexdec($userinfo['user_password']) * hexdec($sitekey) * hexdec($newmail) * hexdec($tuemail)) , 2, 10);
+	$check_num2 = substr(md5(hexdec($datekey) * hexdec((string) $userinfo['user_password']) * hexdec((string) $sitekey) * hexdec((string) $newmail) * hexdec((string) $tuemail)) , 2, 10);
 	// montego - end of move.
 	if ($stop == '') {
-		if ((strtolower($userinfo['username']) == strtolower($get_username)) AND ($check_num2 == $check_num)) {
-			$result = $db->sql_query('UPDATE ' . $user_prefix . '_users SET user_email=\'' . addslashes($newmail) . '\' WHERE user_id=\'' . $get_id . '\'');
+		if ((strtolower((string) $userinfo['username']) == strtolower((string) $get_username)) AND ($check_num2 == $check_num)) {
+			$result = $db->sql_query('UPDATE ' . $user_prefix . '_users SET user_email=\'' . addslashes((string) $newmail) . '\' WHERE user_id=\'' . $get_id . '\'');
 			if ($result) echo _CHANGEMAILOK;
 			else echo _CHANGEMAILNOT;
 		} else {
