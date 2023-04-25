@@ -9,6 +9,10 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:23 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+
 global $admin_file;
 if(!isset($admin_file)) { $admin_file = 'admin'; }
 if(!defined('ADMIN_FILE')) {
@@ -91,13 +95,13 @@ if(!defined('ADMIN_FILE')) {
   else
   {
     if (!function_exists('get_magic_quotes_runtime')) {
-      if (strlen($cFContent) > 0) $cFContent  = stripslashes($cFContent);
-      if (strlen($contentName) > 0) $contentName  = stripslashes($contentName);
-      if (strlen($cFTitle) > 0)   $cFTitle    = stripslashes($cFTitle);
-      if (strlen($cFDesc) > 0)    $cFDesc     = stripslashes($cFDesc);
-      if (strlen($subItems) > 0)  $subItems   = stripslashes($subItems);
-      if (strlen($subItems2) > 0) $subItems2  = stripslashes($subItems2);
-      if (strlen($fBAddress) > 0) $fBAddress  = stripslashes($fBAddress);
+      if (strlen((string) $cFContent) > 0) $cFContent  = stripslashes((string) $cFContent);
+      if (strlen((string) $contentName) > 0) $contentName  = stripslashes((string) $contentName);
+      if (strlen((string) $cFTitle) > 0)   $cFTitle    = stripslashes((string) $cFTitle);
+      if (strlen((string) $cFDesc) > 0)    $cFDesc     = stripslashes((string) $cFDesc);
+      if (strlen((string) $subItems) > 0)  $subItems   = stripslashes((string) $subItems);
+      if (strlen((string) $subItems2) > 0) $subItems2  = stripslashes((string) $subItems2);
+      if (strlen((string) $fBAddress) > 0) $fBAddress  = stripslashes((string) $fBAddress);
     }
   }
   if ($fid > 0)
