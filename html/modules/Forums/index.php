@@ -520,10 +520,12 @@ $unread_topics=check_unread($forum_id);
 															$last_post = $lang['No_Posts'];
 														}
 
-														if (is_array($forum_moderators[$forum_id]) && count($forum_moderators[$forum_id]) > 0 )
-														{
+														if(isset($forum_moderators[$forum_id])) {
+														  if (is_array($forum_moderators[$forum_id]) && count($forum_moderators[$forum_id]) > 0 )
+														  {
 															$l_moderators = ( count($forum_moderators[$forum_id]) == 1 ) ? $lang['Moderator'] : $lang['Moderators'];
 																$moderator_list = implode(', ', $forum_moderators[$forum_id]);
+														  }
 														}
 														else
 														{
