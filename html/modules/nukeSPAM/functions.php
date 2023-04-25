@@ -404,7 +404,7 @@ function checkSpambots($mail,$ip,$username){
 		$sBSMail = $mail;
 		$sBSIP = $ip;
 		$sBSName = $username;
-		$sBSURL = 'http://botscout.com/test/?multi&key='.$sBSAPI.'&mail='.$sBSMail.'&ip='.$sBSIP.'&name='.$sBSName;
+		$sBSURL = 'https://botscout.com/test/?multi&key='.$sBSAPI.'&mail='.$sBSMail.'&ip='.$sBSIP.'&name='.$sBSName;
 		if ($spamDebug) echo $sBSURL.'<br />';
 		$fspamcheck = getURL($sBSURL);
 
