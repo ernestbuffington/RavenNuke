@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:02 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('YA_ADMIN')) {
 	header('Location: ../../../index.php');
 	die ();
@@ -62,7 +67,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 		if ($ya_config['usehideonline'] > '1') echo '<tr><td>' . _HIDEONLINE . ':</td><td style="color=#000000;background-color: #ffffff"><b>' . $cnl . '</b></td></tr>'."\n";
 
 		if ($ya_config['usesignature'] > '1') {
-			$signature = str_replace("\r\n", "<br />", $chnginfo['user_sig']);
+			$signature = str_replace("\r\n", "<br />", (string) $chnginfo['user_sig']);
 			if (!empty($signature)) {
 				$resultbc = $db->sql_query('SELECT * FROM ' . $prefix . '_bbconfig WHERE config_name = "allow_html" OR config_name = "allow_bbcode" OR config_name = "allow_smilies" OR config_name = "smilies_path"');
 				while ($rowbc = $db->sql_fetchrow($resultbc)) {
@@ -76,7 +81,7 @@ if (($radminsuper==1) OR ($radminuser==1)) {
 				if ($chnginfo['user_sig_bbcode_uid'] != '') $signature = ($board_config['allow_bbcode']) ? parse_bbcode($signature, $chnginfo['user_sig_bbcode_uid']) : preg_replace("/\:".$chnginfo['user_sig_bbcode_uid']."/si", '', $signature);
 				$signature = make_clickable($signature);
 				if ($board_config['allow_smilies']) $signature = smilies_pass($signature);
-				$signature = str_replace("\n", "\n<br />\n", $signature);
+				$signature = str_replace("\n", "\n<br />\n", (string) $signature);
 			}
 			echo '<tr><td>' . _SIGNATURE . ':</td><td><b><textarea disabled="disabled" style="color=#000000;background-color: #ffffff" cols="50" rows="5">'.$signature.'</textarea></b></td></tr>'."\n";
 		}
