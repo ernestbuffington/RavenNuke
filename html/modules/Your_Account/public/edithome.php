@@ -14,12 +14,17 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:53 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
 }
 getusrinfo($user);
-if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+if ((is_user($user)) AND (strtolower((string) $userinfo['username']) == strtolower((string) $cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
 	include_once 'header.php';
 	title(_HOMECONFIG);
 	OpenTable();
@@ -56,7 +61,7 @@ if ((is_user($user)) AND (strtolower($userinfo['username']) == strtolower($cooki
 	echo '<strong>' . _ACTIVATEPERSONAL . '</strong>';
 	echo '<br />' . _CHECKTHISOPTION;
 	echo '<br />' . _YOUCANUSEHTML . '<br />';
-	echo '<textarea cols="55" rows="5" name="ublock">' . htmlspecialchars($userinfo['ublock'], ENT_QUOTES, _CHARSET) . '</textarea>';
+	echo '<textarea cols="55" rows="5" name="ublock">' . htmlspecialchars((string) $userinfo['ublock'], ENT_QUOTES, _CHARSET) . '</textarea>';
 	echo '<br /><br />';
 	echo '<input type="hidden" name="username" value="' . $userinfo['username'] . '" />';
 	echo '<input type="hidden" name="user_id" value="' . $userinfo['user_id'] . '" />';
