@@ -14,6 +14,12 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 10:13 PM
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -25,7 +31,7 @@ while ($rowbc = $db->sql_fetchrow($resultbc)) {
 	$board_config[$rowbc['config_name']] = $rowbc['config_value'];
 }
 isset($username) ? $username = check_html($username, 'nohtml') : $username = '';
-$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes($username) . '\'');
+$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes((string) $username) . '\'');
 $num = $db->sql_numrows($result);
 $usrinfo = $db->sql_fetchrow($result);
 include_once 'header.php';
@@ -34,7 +40,7 @@ if ($num == 1) {
 		/*
 		 * Determine if the logged in user is the same as the user being viewed
 		 */
-		if (isset($cookie[1]) && isset($cookie[2]) && (strtolower($usrinfo['username']) == strtolower($cookie[1])) && ($usrinfo['user_password'] == $cookie[2])) {
+		if (isset($cookie[1]) && isset($cookie[2]) && (strtolower((string) $usrinfo['username']) == strtolower((string) $cookie[1])) && ($usrinfo['user_password'] == $cookie[2])) {
 			define('LOGGEDIN_SAME_USER', true);
 		}
 		$result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_fields');
@@ -49,7 +55,7 @@ if ($num == 1) {
 		 */
 		$usrURI = array('user_website', 'user_avatar');  // Don't override empty URI fields with blank
 		foreach($usrinfo as $key => $value) {
-			$value = trim($value);
+			$value = trim((string) $value);
 			if ($value == '' and !in_array($key, $usrURI)) $usrinfo[$key] = '&nbsp;';
 		}
 		/*
@@ -93,7 +99,7 @@ if ($num == 1) {
 			if ($usrinfo['user_website'] == '') {
 				$userwebsite = _YA_NA;
 			} else {
-				$usrinfo['user_website'] = strtolower($usrinfo['user_website']);
+				$usrinfo['user_website'] = strtolower((string) $usrinfo['user_website']);
 				$usrinfo['user_website'] = str_replace('http://', '', $usrinfo['user_website']);
 				$userwebsite = '<a href="http://' . $usrinfo['user_website'] . '" target="new">' . $usrinfo['user_website'] . '</a>';
 			}
@@ -163,11 +169,11 @@ if ($num == 1) {
 
 			if ($signature != '') {
 				if ( !$board_config['allow_html'] || (isset($userinfo['user_allowhtml']) && !$userinfo['user_allowhtml'])) {
-					$signature = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $signature);
+					$signature = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", (string) $signature);
 				}
 
 				if ($usrinfo['user_sig_bbcode_uid'] != '') {
-					$signature = ($board_config['allow_bbcode'] && isset($userinfo['user_allowbbcode'])) ? parse_bbcode($signature, $usrinfo['user_sig_bbcode_uid']) : preg_replace("/\:".$usrinfo['user_sig_bbcode_uid']."/si", '', $signature);
+					$signature = ($board_config['allow_bbcode'] && isset($userinfo['user_allowbbcode'])) ? parse_bbcode($signature, $usrinfo['user_sig_bbcode_uid']) : preg_replace("/\:".$usrinfo['user_sig_bbcode_uid']."/si", '', (string) $signature);
 				}
 
 				$signature = make_clickable($signature);
@@ -178,14 +184,14 @@ if ($num == 1) {
 					}
 				}
 
-				$signature = str_replace("\n", "\n<br />\n", $signature);
+				$signature = str_replace("\n", "\n<br />\n", (string) $signature);
 			}
 			// End
 			if ($usrinfo['user_sig'] == '') $signature = _YA_NA;
 			echo '<tr><td width="30%" align="left">' . _SIGNATURE . '</td><td width="70%" align="left"><strong>' . $signature . '</strong></td></tr>' ;
 		}
 		if ($ya_config['useextrainfo'] >= '1') {
-			$usrinfo['bio'] = nl2br($usrinfo['bio']);
+			$usrinfo['bio'] = nl2br((string) $usrinfo['bio']);
 			if ($usrinfo['bio'] == '') $usrinfo['bio'] = _YA_NA;
 			echo '<tr><td width="30%" align="left">' . _EXTRAINFO . '</td><td width="70%" align="left"><strong>' . $usrinfo['bio'] . '</strong></td></tr>' ;
 		}
@@ -202,7 +208,7 @@ if ($num == 1) {
 		/*
 		 * Determine if the user is currently on-line or not
 		 */
-		$sql2 = 'SELECT uname FROM ' . $prefix . '_session WHERE uname=\'' . addslashes($username) . '\'';
+		$sql2 = 'SELECT uname FROM ' . $prefix . '_session WHERE uname=\'' . addslashes((string) $username) . '\'';
 		$result2 = $db->sql_query($sql2);
 		if ($db->sql_numrows($result2) > 0) {
 			$online = _ONLINE;
@@ -212,7 +218,7 @@ if ($num == 1) {
 		echo '<tr><td width="30%" align="left">' . _USERSTATUS . '</td><td width="70%" align="left"><strong>' . $online . '</strong></td></tr>';
 		echo '</table><br />';
 		if (is_active('Journal') && defined('LOGGEDIN_SAME_USER')) {
-			$sql3 = 'SELECT jid FROM ' . $prefix . '_journal WHERE aid=\'' . addslashes($username) . '\' AND status=\'yes\' ORDER BY pdate,jid DESC LIMIT 0,1';
+			$sql3 = 'SELECT jid FROM ' . $prefix . '_journal WHERE aid=\'' . addslashes((string) $username) . '\' AND status=\'yes\' ORDER BY pdate,jid DESC LIMIT 0,1';
 			$result3 = $db->sql_query($sql3);
 			$row3 = $db->sql_fetchrow($result3);
 			$jid = $row3['jid'];
@@ -237,7 +243,7 @@ if ($num == 1) {
 		$incsdir = dir('modules/' . $module_name . '/includes');
 		$incslist = '';
 		while ($func = $incsdir->read()) {
-			if (substr($func, 0, 3) == 'ui-') {
+			if (str_starts_with($func, 'ui-')) {
 				$incslist .= $func . ' ';
 			}
 		}
