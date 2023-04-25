@@ -14,16 +14,21 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:57 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
 }
-$username = isset($username) ? check_html(trim($username), 'nohtml') : ''; // RN0001003
-$user_email = isset($user_email) ? check_html(trim($user_email), 'nohtml') : ''; // RN0001003
+$username = isset($username) ? check_html(trim((string) $username), 'nohtml') : ''; // RN0001003
+$user_email = isset($user_email) ? check_html(trim((string) $user_email), 'nohtml') : ''; // RN0001003
 if ($username != '' AND $user_email == '') {
-	$sql = 'SELECT username, user_email, user_password, user_level FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes($username) . '\'';
+	$sql = 'SELECT username, user_email, user_password, user_level FROM ' . $user_prefix . '_users WHERE username=\'' . addslashes((string) $username) . '\'';
 } elseif ($username == '' AND $user_email != '') {
-	$sql = 'SELECT username, user_email, user_password, user_level FROM ' . $user_prefix . '_users WHERE user_email=\'' . addslashes($user_email) . '\'';
+	$sql = 'SELECT username, user_email, user_password, user_level FROM ' . $user_prefix . '_users WHERE user_email=\'' . addslashes((string) $user_email) . '\'';
 } else {
 	include_once 'header.php';
 	// removed by menelaos dot hetnet dot nl
@@ -55,7 +60,7 @@ if ($db->sql_numrows($result) == 0) {
 		$user_password = $row['user_password'];
 		$user_level = (int)$row['user_level'];
 		if ($user_level > 0) {
-			$areyou = substr($user_password, 0, 10);
+			$areyou = substr((string) $user_password, 0, 10);
 			if ($areyou == $code) {
 				$newpass = YA_MakePass();
 				$message = _USERACCOUNT . ' \'' . $user_name . '\' ' . _AT . ' ' . $sitename . ' ' . _HASTHISEMAIL . '  ' . _AWEBUSERFROM . ' ' . $host_name . ' ' . _HASREQUESTED . "\r\n\r\n";
@@ -68,11 +73,11 @@ if ($db->sql_numrows($result) == 0) {
 					$subject .= ' \'' . $user_email . '\'';
 				}
 				ya_mail($user_email, $subject, $message, '');
-				$cryptpass = md5($newpass);
+				$cryptpass = md5((string) $newpass);
 				if ($username != '') {
-					$query = 'UPDATE ' . $user_prefix . '_users SET user_password=\'' . $cryptpass . '\' WHERE username=\'' . addslashes($username) . '\'';
+					$query = 'UPDATE ' . $user_prefix . '_users SET user_password=\'' . $cryptpass . '\' WHERE username=\'' . addslashes((string) $username) . '\'';
 				} elseif ($user_email != '') {
-					$query = 'UPDATE ' . $user_prefix . '_users SET user_password=\'' . $cryptpass . '\' WHERE user_email=\'' . addslashes($user_email) . '\'';
+					$query = 'UPDATE ' . $user_prefix . '_users SET user_password=\'' . $cryptpass . '\' WHERE user_email=\'' . addslashes((string) $user_email) . '\'';
 				}
 				include_once 'header.php';
 				OpenTable();
@@ -89,7 +94,7 @@ if ($db->sql_numrows($result) == 0) {
 				CloseTable();
 				include_once 'footer.php';
 			} else {
-				$areyou = substr($user_password, 0, 10);
+				$areyou = substr((string) $user_password, 0, 10);
 				$message = _USERACCOUNT . ' \'' . $user_name . '\' ' . _AT . ' ' . $sitename . ' ' . _HASTHISEMAIL . ' ' . _AWEBUSERFROM . ' ' . $host_name . ' ' . _CODEREQUESTED . "\r\n\r\n";
 				$message .= _YOURCODEIS . ' ' . $areyou . "\r\n\r\n";
 				$message .= _WITHTHISCODE . "\r\n" . $nukeurl . '/modules.php?name=' . $module_name . "&op=pass_lost\r\n\r\n";
