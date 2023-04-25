@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:42 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -34,7 +39,7 @@ while ($rowbc = $db->sql_fetchrow($resultbc)) {
 }
 
 if ($userinfo['user_avatar_type'] == 1) {
-	$avatar_old = basename($userinfo['user_avatar']);
+	$avatar_old = basename((string) $userinfo['user_avatar']);
 	if (@file_exists('./' . $board_config['avatar_path'] . '/' . $avatar_old) ) {
 		@unlink('./' . $board_config['avatar_path'] . '/' . $avatar_old);
 	}
@@ -43,12 +48,12 @@ if ($userinfo['user_avatar_type'] == 1) {
 // what follows, there isn't even a need for getting the path!
 //$resultbc = $db->sql_query('SELECT config_value FROM ' . $prefix . '_bbconfig WHERE config_name = \'avatar_gallery_path\'');
 //list($direktori) = $db->sql_fetchrow($resultbc);
-if (!preg_match('#^http[s]?:\/\/#i', $avatar)) {
+if (!preg_match('#^http[s]?:\/\/#i', (string) $avatar)) {
 	$avatar = 'http://' . $avatar;
 }
 // montego - added check for valid avatar extension - simply add additional extensions if you wish to allow
 // Note, however, that remote avatars can be dangerous as PHP script can be run even if an extension is valid!
-if (!preg_match('/(\.gif|\.png|\.jpg|\.jpeg)$/is', $avatar)) {
+if (!preg_match('/(\.gif|\.png|\.jpg|\.jpeg)$/is', (string) $avatar)) {
 	$avatar = '';
 	$error = true;
 	$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . _AVATAR_FORMAT : _AVATAR_FORMAT;
@@ -108,7 +113,7 @@ if ($error) {
 	echo '<p class="content" align="center">' . $error_msg . '<br />';
 	echo '[ <a href="modules.php?name=' . $module_name . '&amp;op=edituser">' . _YA_BACKPROFILE . '</a> ]';
 } else {
-	$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_avatar=\'' . addslashes($avatar) . '\', user_avatar_type=\'2\' WHERE username=\'' . $cookie[1] . '\'');
+	$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_avatar=\'' . addslashes((string) $avatar) . '\', user_avatar_type=\'2\' WHERE username=\'' . $cookie[1] . '\'');
 	echo '<p class="content" align="center">' . _YA_AVATARFOR . ' ' . $cookie[1] . ' ' . _YA_SAVED . '<br />';
 	// montego - given that the above IF forces 'http' to be in the $avatar variable, the following IF statement
 	// makes no sense.
