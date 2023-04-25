@@ -14,6 +14,14 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:35 PM
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullCoalescingOperatorRector (https://wiki.php.net/rfc/null_coalesce_equal_operator)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA') || !defined('MODULE_FILE')) {
 	header('Location: ../../../../index.php');
 	die();
@@ -86,10 +94,10 @@ if (is_active('Forums')) {
 				* and admin automatically have access to an ACL forum, similarly we assume admins meet an
 				* auth requirement of MOD
 				*/
-				for($k = 0; $k < count($f_access); $k++) {
+				for($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 					$value = $f_access[$k][$key];
 					$f_forum_id = $f_access[$k]['forum_id'];
-					$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
+					$u_access[$f_forum_id] ??= array();
 					switch( $value ) {
 						case AUTH_ALL:
 							$auth_user[$f_forum_id][$key] = TRUE;
@@ -116,10 +124,10 @@ if (is_active('Forums')) {
 			/*
 			* Is user a moderator?
 			*/
-			for($k = 0; $k < count($f_access); $k++) {
+			for($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 
-				$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
+				$u_access[$f_forum_id] ??= array();
 				$auth_user[$f_forum_id]['auth_mod'] = auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin);
 			}
 
@@ -131,8 +139,8 @@ if (is_active('Forums')) {
 		function auth_check_user($type, $key, $u_access, $is_admin) {
 			$auth_user = 0;
 
-			if ( count($u_access) ) {
-				for($j = 0; $j < count($u_access); $j++) {
+			if ( is_countable($u_access) ? count($u_access) : 0 ) {
+				for($j = 0; $j < (is_countable($u_access) ? count($u_access) : 0); $j++) {
 					$result = 0;
 					switch($type) {
 						case AUTH_ACL:
@@ -171,7 +179,7 @@ if (is_active('Forums')) {
 	if (($db->sql_numrows($result) > 0)) {
 		echo '<br />';
 		OpenTable();
-		echo '<strong>' . htmlspecialchars($usrinfo['username'], ENT_QUOTES, _CHARSET) . '\'s ' . _LAST10BBTOPIC . ':</strong><ul>';
+		echo '<strong>' . htmlspecialchars((string) $usrinfo['username'], ENT_QUOTES, _CHARSET) . '\'s ' . _LAST10BBTOPIC . ':</strong><ul>';
 		$countTopics = 0;
 		while( list( $topic_id, $forum_id, $topic_last_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_moved_id, $topic_status, $forum_name ) = $db->sql_fetchrow($result, SQL_NUM) ) {
 			$skip_display = 0;
@@ -191,8 +199,8 @@ if (is_active('Forums')) {
 			}
 
 			if( $skip_display == 0 || is_admin($admin)) {
-				echo '<li><a href="modules.php?name=Forums&amp;file=viewforum&amp;f=' . $forum_id . '">' . htmlspecialchars($forum_name, ENT_QUOTES, _CHARSET) . '</a> &#187;'
-					. ' <a href="modules.php?name=Forums&amp;file=viewtopic&amp;t=' . $topic_id . '">' . htmlspecialchars($topic_title, ENT_QUOTES, _CHARSET) . '</a></li>';
+				echo '<li><a href="modules.php?name=Forums&amp;file=viewforum&amp;f=' . $forum_id . '">' . htmlspecialchars((string) $forum_name, ENT_QUOTES, _CHARSET) . '</a> &#187;'
+					. ' <a href="modules.php?name=Forums&amp;file=viewtopic&amp;t=' . $topic_id . '">' . htmlspecialchars((string) $topic_title, ENT_QUOTES, _CHARSET) . '</a></li>';
 				$countTopics++;
 			}
 
@@ -210,13 +218,13 @@ if (is_active('Forums')) {
 	if (($db->sql_numrows($result) > 0)) {
 		echo '<br />';
 		OpenTable();
-		echo '<strong>' . htmlspecialchars($usrinfo['username'], ENT_QUOTES, _CHARSET) . '\'s ' . _LAST10BBPOST . ':</strong><ul>';
+		echo '<strong>' . htmlspecialchars((string) $usrinfo['username'], ENT_QUOTES, _CHARSET) . '\'s ' . _LAST10BBPOST . ':</strong><ul>';
 		$countPosts = 0;
 		while (list($post_id, $post_subject, $forum_name, $forum_id) = $db->sql_fetchrow($result, SQL_NUM)) {
 			if ($post_subject == '') {
 				$post_subject = '<span class="italic">' . _NOPOSTSUBJECT . '</span>';
 			} else {
-				$post_subject = htmlspecialchars($post_subject, ENT_QUOTES, _CHARSET);
+				$post_subject = htmlspecialchars((string) $post_subject, ENT_QUOTES, _CHARSET);
 			}
 
 			$skip_display = 0;
@@ -231,7 +239,7 @@ if (is_active('Forums')) {
 			}
 
 			if( $skip_display == 0 ) {
-				echo '<li><a href="modules.php?name=Forums&amp;file=viewforum&amp;f=' . $forum_id . '">' . htmlspecialchars($forum_name, ENT_QUOTES, _CHARSET) . '</a> &#187;'
+				echo '<li><a href="modules.php?name=Forums&amp;file=viewforum&amp;f=' . $forum_id . '">' . htmlspecialchars((string) $forum_name, ENT_QUOTES, _CHARSET) . '</a> &#187;'
 					. ' <a href="modules.php?name=Forums&amp;file=viewtopic&amp;p=' . $post_id . '#' . $post_id . '">' . $post_subject . '</a></li>';
 				$countPosts++;
 			}
