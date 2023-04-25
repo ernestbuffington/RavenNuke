@@ -14,6 +14,12 @@
  /*  CNB Your Account http://www.phpnuke.org.br
  /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
  /**************************************************************************/
+ 
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:28 PM
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
  if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	header('Location: ../../../index.php');
 	exit('Access Denied');
@@ -56,7 +62,7 @@ if (isset($user) && is_user($user)) {
 
 	if ($ya_config['tos'] == 1 AND $op != 'tos' AND $op != 'logout' AND $ya_config['tosall'] == 1 AND $uinfo['agreedtos'] != 1) {
 		if (!isset($_POST['tos_yes']) or $_POST['tos_yes'] != 1) {
-			$break = explode('/', $_SERVER['SCRIPT_NAME']);
+			$break = explode('/', (string) $_SERVER['SCRIPT_NAME']);
 			$qS = $_SERVER['QUERY_STRING'];
 			$redirect = $break[count($break) - 1];
 			if ($qS > '') $redirect = rawurlencode(htmlentities($redirect . '?' . $qS));
@@ -69,7 +75,7 @@ if (isset($user) && is_user($user)) {
 		$r_uid = $uinfo['user_id'];
 		$r_username = $uinfo['username'];
 		setcookie('user');
-		if (trim($cookiepath) != '') setcookie('user', '', '', $ya_config['cookiepath']);
+		if (trim((string) $cookiepath) != '') setcookie('user', '', ['expires' => '', 'path' => $ya_config['cookiepath']]);
 		$db->sql_query('DELETE FROM ' . $prefix . '_session WHERE uname=\'' . $r_username . '\'');
 		$db->sql_query('OPTIMIZE TABLE ' . $prefix . '_session');
 		$db->sql_query('DELETE FROM ' . $prefix . '_bbsessions WHERE session_user_id=\'' . $r_uid . '\'');
@@ -94,8 +100,8 @@ if (isset($user) && is_user($user)) {
 	$configresult = $db->sql_query('SELECT config_value FROM ' . $user_prefix . '_users_config WHERE config_name = \'cookiepath\'');
 	list($config_value) = $db->sql_fetchrow($configresult);
 	setcookie('RNYA_test1', 'value1');
-	setcookie('RNYA_test2', 'value2', time() + 3600);
-	setcookie('RNYA_test3', 'value3', time() + 3600, '/');
-	setcookie('RNYA_test4', 'value4', time() + 3600, $config_value);
+	setcookie('RNYA_test2', 'value2', ['expires' => time() + 3600]);
+	setcookie('RNYA_test3', 'value3', ['expires' => time() + 3600, 'path' => '/']);
+	setcookie('RNYA_test4', 'value4', ['expires' => time() + 3600, 'path' => $config_value]);
 }
 ?>
