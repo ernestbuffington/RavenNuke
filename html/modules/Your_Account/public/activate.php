@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost 04/24/2023 9:40 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -29,8 +34,8 @@ if ($ya_config['expiring'] != 0) {
 	$db->sql_query('OPTIMIZE TABLE ' . $user_prefix . '_users_temp_field_values');
 	$db->sql_query('OPTIMIZE TABLE ' . $user_prefix . '_users_temp');
 }
-$username = isset($username) ? addslashes(trim(check_html($username, 'nohtml'))) : '';
-$check_num = isset($check_num) ? addslashes(trim(check_html($check_num, 'nohtml'))) : '';
+$username = isset($username) ? addslashes(trim((string) check_html($username, 'nohtml'))) : '';
+$check_num = isset($check_num) ? addslashes(trim((string) check_html($check_num, 'nohtml'))) : '';
 $result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_temp WHERE username=\'' . $username . '\' AND check_num=\'' . $check_num . '\'');
 if ($db->sql_numrows($result) == 1) {
 	$row = $db->sql_fetchrow($result);
@@ -89,7 +94,7 @@ if ($db->sql_numrows($result) == 1) {
 	while ($sqlvalue = $db->sql_fetchrow($result)) {
 		$t = (int)$sqlvalue['fid'];
 		list($value) = $db->sql_fetchrow($db->sql_query('SELECT value FROM ' . $user_prefix . '_users_temp_field_values WHERE fid =\'' . $t . '\' AND uid = \'' . $ya_uid . '\''));
-		$value2 = explode('::', $sqlvalue['value']);
+		$value2 = explode('::', (string) $sqlvalue['value']);
 		$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 		echo '<tr><td>' . $name_exit . '<br />';
 		if ($sqlvalue['need'] == '3' or $sqlvalue['need']== '5') echo _REQUIRED;
@@ -98,12 +103,12 @@ if ($db->sql_numrows($result) == 1) {
 		if (count($value2) == 1) {
 			$size = 60;
 			if ($sqlvalue['size'] < 57) $size = $sqlvalue['size']+3;
-			echo '<input type="text" name="nfield[' . $t . ']" value="' . htmlspecialchars($value, ENT_QUOTES, _CHARSET) . '" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" />';
+			echo '<input type="text" name="nfield[' . $t . ']" value="' . htmlspecialchars((string) $value, ENT_QUOTES, _CHARSET) . '" id="nfield' . $t . '" size="' . $size . '" maxlength="' . $sqlvalue['size'] . '" />';
 		} else {
 			echo '<select name="nfield[' . $t . ']">';
 			$j = count($value2);
 			for ($i = 0;$i < $j;++$i) {
-				if (trim($value) == trim($value2[$i])) $sel = ' selected="selected"';
+				if (trim((string) $value) == trim($value2[$i])) $sel = ' selected="selected"';
 				else $sel = '';
 				echo '<option value="' . trim($value2[$i]) . '"' . $sel . '>' . $value2[$i] . '</option>';
 			}
