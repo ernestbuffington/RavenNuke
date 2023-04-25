@@ -14,6 +14,11 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen Buffington (TheGhost) 04/24/2023 9:44 PM
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -34,7 +39,7 @@ while ($rowbc = $db->sql_fetchrow($resultbc)) {
 }
 
 if ($userinfo['user_avatar_type'] == 1) {
-	$avatar_old = basename($userinfo['user_avatar']);
+	$avatar_old = basename((string) $userinfo['user_avatar']);
 	if (@file_exists('./' . $board_config['avatar_path'] . '/' . $avatar_old) ) {
 		@unlink('./' . $board_config['avatar_path'] . '/' . $avatar_old);
 	}
@@ -45,7 +50,7 @@ list($direktori) = $db->sql_fetchrow($resultbc);
 // montego - added security checks to user provided fields
 $category = check_html($category,'nohtml');
 $avatar = check_html($avatar, 'nohtml');
-if (preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/isu', $avatar) && !preg_match('/[.]/', $category) && file_exists('modules/Forums/images/avatars/' . $category . '/' . $avatar)) {
+if (preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/isu', (string) $avatar) && !preg_match('/[.]/', (string) $category) && file_exists('modules/Forums/images/avatars/' . $category . '/' . $avatar)) {
 	$newavatar = $category . '/' . $avatar;
 	$db->sql_query('UPDATE ' . $user_prefix . '_users SET user_avatar=\'' . $newavatar . '\', user_avatar_type=\'3\' WHERE username=\'' . $cookie[1] . '\'');
 	echo '<p class="content" align="center">' . _YA_AVATARFOR . ' ' . $cookie[1] . ' ' . _YA_SAVED . '<br />';
