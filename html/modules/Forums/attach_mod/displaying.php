@@ -43,7 +43,7 @@ function display_compile_cache_clear($filename, $template_var)
 
 		if (file_exists($template->cachedir . $filename . '.' . $phpEx))
 		{
-			@unlink($template->cachedir . $filename . '.' . $phpEx);
+			unlink($template->cachedir . $filename . '.' . $phpEx);
 		}
 	}
 
@@ -91,7 +91,7 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 
 		$filename_2 = $template->files[$template_var];
 
-		$str = implode('', @file($filename_2));
+		$str = implode('', file($filename_2));
 		if (empty($str))
 		{
 			die("Template->loadfile(): File $filename_2 for handle $template_var is empty");
@@ -230,7 +230,7 @@ function init_display_post_attachments($switch_attachment)
 		return;
 	}
 
-	@reset($attachments);
+	reset($attachments);
 
 	for ($i = 0; $i < $num_rows; $i++)
 	{
@@ -326,7 +326,7 @@ function init_display_pm_attachments($switch_attachment)
 
 	$privmsgs_id = $privmsg['privmsgs_id'];
 	
-	@reset($attachments);
+	reset($attachments);
 	$attachments['_' . $privmsgs_id] = get_attachments_from_pm($privmsgs_id);
 
 	if (sizeof($attachments['_' . $privmsgs_id]) == 0)
@@ -368,7 +368,7 @@ function display_review_attachments($post_id, $switch_attachment, $is_auth)
 		return;
 	}
 
-	@reset($attachments);
+	reset($attachments);
 	$attachments['_' . $post_id] = get_attachments_from_post($post_id);
 
 	if (sizeof($attachments['_' . $post_id]) == 0)
