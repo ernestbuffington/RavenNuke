@@ -14,6 +14,13 @@
 /*  CNB Your Account http://www.phpnuke.org.br
 /*  NSN Your Account by Bob Marion, http://www.nukescripts.net
 /**************************************************************************/
+
+/* Applied rules: Ernest Allen BUffington (TheGhost) 04/24/2023 9:59 PM
+ * BinaryOpBetweenNumberAndStringRector (https://3v4l.org/XPEEl)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * NullToStrictStringFuncCallArgRector
+ */
+ 
 if (!defined('RNYA')) {
 	header('Location: ../../../index.php');
 	die();
@@ -22,7 +29,7 @@ $errormsg = '';
 include_once 'header.php';
 $ya_username = check_html($ya_username, 'nohtml');
 ya_userCheck($ya_username);
-$stop = str_replace('<div class="text-center">', '', $stop);
+$stop = str_replace('<div class="text-center">', '', (string) $stop);
 $stop = str_replace('</div>', '', $stop);
 $stop = str_replace('<br />', '', $stop);
 $stop = str_replace('ERROR:', '', $stop);
@@ -30,7 +37,7 @@ if (!empty($stop)) {
 	$errormsg .= $stop . '<br />';
 }
 if (!isset($user_viewemail)) $user_viewemail = '0';
-$ya_user_email = strtolower(check_html($ya_user_email, 'nohtml'));
+$ya_user_email = strtolower((string) check_html($ya_user_email, 'nohtml'));
 if ($ya_config['userealname'] < '2') {
 	$ya_realname = '';
 }
@@ -40,7 +47,7 @@ if ($ya_realname == '' && ($ya_config['userealname'] == 3 or $ya_config['usereal
 if ($ya_config['doublecheckemail'] == 0) {
 	$ya_user_email2 == $ya_user_email;
 } else {
-	$ya_user_email2 = strtolower($ya_user_email2);
+	$ya_user_email2 = strtolower((string) $ya_user_email2);
 	if ($ya_user_email != $ya_user_email2) {
 		$errormsg .= _EMAILDIFFERENT . '<br />';
 	}
@@ -66,12 +73,12 @@ $user_interests = (isset($user_interests)) ? check_html($user_interests, 'nohtml
 $newsletter = (isset($newsletter)) ? intval($newsletter) : 0;
 $user_viewemail = (isset($user_viewemail)) ? intval($user_viewemail) : 0;
 $user_allow_viewonline = (isset($user_allow_viewonline)) ? intval($user_allow_viewonline) : 1;
-$user_sig = (isset($user_sig)) ? str_replace('<br />', "\r\n", $user_sig) : '';
-$bio = (isset($bio)) ? str_replace('<br />', "\r\n", $bio) : '';
+$user_sig = (isset($user_sig)) ? str_replace('<br />', "\r\n", (string) $user_sig) : '';
+$bio = (isset($bio)) ? str_replace('<br />', "\r\n", (string) $bio) : '';
 if ($femail == '' && ($ya_config['usefakeemail'] == '3' or $ya_config['usefakeemail'] == '5')) $errormsg .= _UFAKEMAIL . ' ' . _REQUIRED . '<br />';
 if (!empty($user_website)) {
-	if (!preg_match('#^http[s]?:\/\/#i', $user_website)) $user_website = 'http://' . $user_website;
-	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $user_website)) $errormsg .= _ERRORHOMEPAGE.'<br />';
+	if (!preg_match('#^http[s]?:\/\/#i', (string) $user_website)) $user_website = 'http://' . $user_website;
+	if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', (string) $user_website)) $errormsg .= _ERRORHOMEPAGE.'<br />';
 }
 if ($user_website == '' && ($ya_config['usewebsite'] == '3' or $ya_config['usewebsite'] == '5')) $errormsg .= _YOURHOMEPAGE . ' ' . _REQUIRED . '<br />';
 if ($user_aim == '' && ($ya_config['useinstantmessaim'] == '3' or $ya_config['useinstantmessaim'] == '5')) $errormsg .= _YAIM . ' ' . _REQUIRED . '<br />';
@@ -81,9 +88,9 @@ if ($user_yim == '' && ($ya_config['useinstantmessyim'] == '3' or $ya_config['us
 if ($user_from == '' && ($ya_config['uselocation'] == '3' or $ya_config['uselocation'] == '5')) $errormsg .= _YLOCATION . ' ' . _REQUIRED . '<br />';
 if ($user_occ == '' && ($ya_config['useoccupation'] == '3' or $ya_config['useoccupation'] == '5')) $errormsg .= _YOCCUPATION . ' ' . _REQUIRED . '<br />';
 if ($user_interests == '' && ($ya_config['useinterests'] == '3' or $ya_config['useinterests'] == '5')) $errormsg .= _YINTERESTS . ' ' . _REQUIRED . '<br />';
-if ($newsletter == '' && ($ya_config['usenewsletter'] == '3' or $ya_config['usenewsletter'] == '5')) $errormsg .= _RECEIVENEWSLETTER . ' ' . _REQUIRED . '<br />';
-if ($user_viewemail == '' && ($ya_config['useviewemail'] == '3' or $ya_config['useviewemail'] == '5')) $errormsg .= _ALWAYSSHOWEMAIL . ' ' . _REQUIRED . '<br />';
-if ($user_allow_viewonline == '' && ($ya_config['usehideonline'] == '3' or $ya_config['usehideonline'] == '5')) $errormsg .= _HIDEONLINE . ' ' . _REQUIRED . '<br />';
+if ($newsletter == 0 && ($ya_config['usenewsletter'] == '3' or $ya_config['usenewsletter'] == '5')) $errormsg .= _RECEIVENEWSLETTER . ' ' . _REQUIRED . '<br />';
+if ($user_viewemail == 0 && ($ya_config['useviewemail'] == '3' or $ya_config['useviewemail'] == '5')) $errormsg .= _ALWAYSSHOWEMAIL . ' ' . _REQUIRED . '<br />';
+if ($user_allow_viewonline == 0 && ($ya_config['usehideonline'] == '3' or $ya_config['usehideonline'] == '5')) $errormsg .= _HIDEONLINE . ' ' . _REQUIRED . '<br />';
 if ($user_sig == '' && ($ya_config['usesignature'] == '3' or $ya_config['usesignature'] == '5')) $errormsg .= _SIGNATURE . ' ' . _REQUIRED . '<br />';
 if ($bio == '' && ($ya_config['useextrainfo'] == '3' or $ya_config['useextrainfo'] == '5')) $errormsg .= _EXTRAINFO . ' ' . _REQUIRED . '<br />';
 $stop = str_replace('<div class="text-center">', '', $stop);
@@ -113,13 +120,13 @@ if ($user_password == '' AND $user_password2 == '') {
 	$user_password = YA_MakePass();
 } elseif ($user_password != $user_password2) {
 	$errormsg .= _PASSDIFFERENT . '<br />';
-} elseif ($user_password == $user_password2 AND (strlen($user_password) < $ya_config['pass_min'] OR strlen($user_password) > $ya_config['pass_max'])) {
+} elseif ($user_password == $user_password2 AND (strlen((string) $user_password) < $ya_config['pass_min'] OR strlen((string) $user_password) > $ya_config['pass_max'])) {
 	$errormsg .= _YA_PASSLENGTH . '<br />';
 }
 if (empty($nfield)) $nfield = array();
 $result = $db->sql_query('SELECT * FROM ' . $user_prefix . '_users_fields WHERE need = \'3\' ORDER BY pos');
 while ($sqlvalue = $db->sql_fetchrow($result)) {
-	if (!array_key_exists($sqlvalue['fid'], $nfield) || trim($nfield[$sqlvalue['fid']]) == '') {
+	if (!array_key_exists($sqlvalue['fid'], $nfield) || trim((string) $nfield[$sqlvalue['fid']]) == '') {
 		$name_exit = ya_GetCustomFieldDesc($sqlvalue['name']);
 		$errormsg .= _YA_FILEDNEED1 . $name_exit . _YA_FILEDNEED2 . '<br />';
 	}
@@ -165,7 +172,7 @@ if (empty($errormsg)) {
 		}
 	} else {
 		echo '<div class="text-center title">' . $errormsg . '</div>';
-		$errormsg = htmlentities($errormsg);
+		$errormsg = htmlentities((string) $errormsg);
 		echo '<input type="hidden" name="errormsg" value="' . $errormsg . '" /><br />';
 	}
 	echo '<input type="hidden" name="op" value="new_user" />';
@@ -176,22 +183,22 @@ echo '<input type="hidden" name="ya_user_email" value="' . $ya_user_email . '" /
 echo '<input type="hidden" name="ya_user_email2" value="' . $ya_user_email2 . '" />';
 echo '<input type="hidden" name="user_password" value="' . $user_password . '" />';
 echo '<input type="hidden" name="user_password2" value="' . $user_password2 . '" />';
-if (isset($femail)) echo '<input type="hidden" name="femail" value="' . htmlspecialchars($femail, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_website)) echo '<input type="hidden" name="user_website" value="' . htmlspecialchars($user_website, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_icq)) echo '<input type="hidden" name="user_icq" value="' . htmlspecialchars($user_icq, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_aim)) echo '<input type="hidden" name="user_aim" value="' . htmlspecialchars($user_aim, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_yim)) echo '<input type="hidden" name="user_yim" value="' . htmlspecialchars($user_yim, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_msnm)) echo '<input type="hidden" name="user_msnm" value="' . htmlspecialchars($user_msnm, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_from)) echo '<input type="hidden" name="user_from" value="' . htmlspecialchars($user_from, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_occ)) echo '<input type="hidden" name="user_occ" value="' . htmlspecialchars($user_occ, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_interests)) echo '<input type="hidden" name="user_interests" value="' . htmlspecialchars($user_interests, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($femail)) echo '<input type="hidden" name="femail" value="' . htmlspecialchars((string) $femail, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_website)) echo '<input type="hidden" name="user_website" value="' . htmlspecialchars((string) $user_website, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_icq)) echo '<input type="hidden" name="user_icq" value="' . htmlspecialchars((string) $user_icq, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_aim)) echo '<input type="hidden" name="user_aim" value="' . htmlspecialchars((string) $user_aim, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_yim)) echo '<input type="hidden" name="user_yim" value="' . htmlspecialchars((string) $user_yim, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_msnm)) echo '<input type="hidden" name="user_msnm" value="' . htmlspecialchars((string) $user_msnm, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_from)) echo '<input type="hidden" name="user_from" value="' . htmlspecialchars((string) $user_from, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_occ)) echo '<input type="hidden" name="user_occ" value="' . htmlspecialchars((string) $user_occ, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_interests)) echo '<input type="hidden" name="user_interests" value="' . htmlspecialchars((string) $user_interests, ENT_QUOTES, _CHARSET) . '" />';
 if (isset($newsletter)) echo '<input type="hidden" name="newsletter" value="' . intval($newsletter) . '" />';
 if (isset($user_viewemail)) echo '<input type="hidden" name="user_viewemail" value="' . htmlspecialchars($user_viewemail, ENT_QUOTES, _CHARSET) . '" />';
 if (isset($user_allow_viewonline)) echo '<input type="hidden" name="user_allow_viewonline" value="' . intval($user_allow_viewonline) . '" />';
-if (isset($user_timezone)) echo '<input type="hidden" name="user_timezone" value="' . htmlspecialchars($user_timezone, ENT_QUOTES, _CHARSET) . '" />';
-if (isset($user_dateformat)) echo '<input type="hidden" name="user_dateformat" value="' . htmlspecialchars($user_dateformat, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_timezone)) echo '<input type="hidden" name="user_timezone" value="' . htmlspecialchars((string) $user_timezone, ENT_QUOTES, _CHARSET) . '" />';
+if (isset($user_dateformat)) echo '<input type="hidden" name="user_dateformat" value="' . htmlspecialchars((string) $user_dateformat, ENT_QUOTES, _CHARSET) . '" />';
 if (isset($nfield)) {
-	if (count($nfield) > 0) {
+	if ((is_countable($nfield) ? count($nfield) : 0) > 0) {
 		foreach($nfield as $key => $var) {
 			echo '<input type="hidden" name="nfield[' . check_html($key, 'nohtml') . ']" value="' . check_html($var, 'nothml') . '" />';
 		}
