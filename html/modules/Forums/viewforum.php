@@ -74,7 +74,7 @@ if ( !defined('MODULE_FILE') )
 global $popup;
 if ($popup != "1"){
     $module_name = basename(dirname(__FILE__));
-    require_once("modules/".$module_name."/nukebb.php");
+    require_once("modules/Forums/nukebb.php");
 }
 else
 {
@@ -85,70 +85,39 @@ define('IN_PHPBB', true);
 include_once($phpbb_root_path . 'extension.inc');
 include_once($phpbb_root_path . 'common.'.$phpEx);
 
-//
-// Start initial var setup
-//
-if ( isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]) )
-{
-        $forum_id = ( isset($HTTP_GET_VARS[POST_FORUM_URL]) ) ? intval($HTTP_GET_VARS[POST_FORUM_URL]) : intval($HTTP_POST_VARS[POST_FORUM_URL]);
-}
-else if ( isset($HTTP_GET_VARS['forum']))
-{
-        $forum_id = intval($HTTP_GET_VARS['forum']);
-}
+# Start initial var setup
+if(isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]))
+$forum_id = intval(isset($HTTP_GET_VARS[POST_FORUM_URL]) ? $HTTP_GET_VARS[POST_FORUM_URL] : $HTTP_POST_VARS[POST_FORUM_URL]);
 else
-{
-        $forum_id = '';
-}
+$forum_id = '';
 
-$start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
+$start = (isset($HTTP_GET_VARS['start']) ? intval($HTTP_GET_VARS['start']) : 0);
 $start = ($start < 0) ? 0 : $start;
 
-if ( isset($HTTP_GET_VARS['mark']) || isset($HTTP_POST_VARS['mark']) )
-{
-        $mark_read = $HTTP_POST_VARS['mark'] ?? $HTTP_GET_VARS['mark'];
-}
+if(isset($HTTP_GET_VARS['mark']) || isset($HTTP_POST_VARS['mark']))
+$mark_read = (isset($HTTP_POST_VARS['mark'])) ? $HTTP_POST_VARS['mark'] : $HTTP_GET_VARS['mark'];
 else
-{
-        $mark_read = '';
-}
+$mark_read = '';
+
 //
 // End initial var setup
 //
 
-//
-// Check if the user has actually sent a forum ID with his/her request
-// If not give them a nice error page.
-//
-if ( !empty($forum_id) )
-{
-        //$sql = "SELECT *
-        //        FROM " . FORUMS_TABLE . "
-        //        WHERE forum_id = '$forum_id'";
-   // Modified by Attached Forums MOD
-	$sql = "SELECT *
-		FROM " . FORUMS_TABLE . "
-		WHERE forum_id = $forum_id OR attached_forum_id =$forum_id
-		ORDER BY attached_forum_id ASC";
-   // END Modified by Attached Forums MOD
-        if ( !($result = $db->sql_query($sql)) )
-        {
-                message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
-        }
-}
-else
-{
-        message_die(GENERAL_MESSAGE, 'Forum_not_exist');
-}
+# Check if the user has actually sent a forum ID with his/her request
+# If not give them a nice error page.
+if(!empty($forum_id)):
+        $sql = "SELECT * FROM ".FORUMS_TABLE." WHERE forum_id = '$forum_id'";
+        if(!($result = $db->sql_query($sql))):
+          message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+        endif;
+else:
+  message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+endif;
 
-//
-// If the query doesn't return any rows this isn't a valid forum. Inform
-// the user.
-//
-if ( !($forum_row = $db->sql_fetchrow($result)) )
-{
-        message_die(GENERAL_MESSAGE, 'Forum_not_exist');
-}
+# If the query doesn't return any rows this isn't a valid forum. Inform
+# the user.
+if(!($forum_row = $db->sql_fetchrow($result)))
+message_die(GENERAL_MESSAGE, 'Forum_not_exist');
 
    // added by Attached Forums MOD
 $attachments='';
@@ -158,14 +127,10 @@ if ($db->sql_numrows ($result) > 1)
 }
    // END added by Attached Forums MOD
 
-//
-// Start session management
-//
-$userdata = session_pagestart($user_ip, $forum_id, $nukeuser);
+# Start session management
+$userdata = session_pagestart($user_ip, $forum_id);
 init_userprefs($userdata);
-//
-// End session management
-//
+# End session management
 
 //
 // Start auth check
@@ -178,7 +143,7 @@ if ( !$is_auth['auth_read'] || !$is_auth['auth_view'] )
         if ( !$userdata['session_logged_in'] )
         {
                 $redirect = POST_FORUM_URL . "=$forum_id" . ( ( isset($start) ) ? "&start=$start" : '' );
-                $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
+                $header_location = ( preg_match("/Microsoft|WebSTAR|Xitami/", (string) $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
                 header($header_location . append_sid("login.$phpEx?redirect=viewforum.$phpEx&$redirect", true));
                 exit;
         }
@@ -189,6 +154,7 @@ if ( !$is_auth['auth_read'] || !$is_auth['auth_view'] )
 
         message_die(GENERAL_MESSAGE, $message);
 }
+
 //
 // End of auth check
 //
