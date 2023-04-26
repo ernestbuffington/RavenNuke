@@ -110,7 +110,7 @@ switch ($op) {
 	case 'gfxadminimage':
 		// menelaos: dynamically insert the version number in the admin config panel image Copyright (c) 2004 :-)
 		$icon = 'images/admin/users.png';
-		$image = @imagecreatefrompng($icon);
+		$image = imagecreatefrompng($icon);
 		$text_color = imagecolorallocate($image, 0, 0, 0);
 		Header('Content-type: image/x-png');
 		imagestring($image, 1, 7, 42, (string) $yaversion, $text_color);
