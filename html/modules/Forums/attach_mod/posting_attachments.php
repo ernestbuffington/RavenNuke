@@ -53,7 +53,7 @@ class attach_parent
 	/**
 	* Constructor
 	*/
-	function __construct()
+	function attach_parent()
 	{
 		global $HTTP_POST_VARS, $HTTP_POST_FILES;
 		
