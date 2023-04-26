@@ -35,7 +35,8 @@ if(isset($name)) {
 	if(stristr($name, 'http://')) { die('Hi and Bye'); }
 	if(stristr($file, 'http://')) { die('Hi and Bye'); }
 	$modstring = strtolower($_SERVER['QUERY_STRING']);
-	if(stripos_clone($modstring, '&user=') AND ($name == 'Private_Messages' || $name == 'Forums' || $name == 'Members_List')) header('Location: index.php');
+	if(stripos_clone($modstring, '&user=') AND ($name == 'Private_Messages' || $name == 'Forums' || $name == 'Members_List')) 
+	header('Location: index.php');
 	global $nukeuser, $db, $prefix;
 	// PHP8: Deprecated: base64_decode(): Passing null to parameter #1 ($string) of type string is deprecated FIX: added ?? ''
 	$nukeuser = base64_decode($user ?? '');
